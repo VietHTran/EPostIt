@@ -1,0 +1,15 @@
+C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\EPostIt\EPostIt\EPostIt\EPostIt\bin\Debug\EPostIt.dll
+C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\EPostIt\EPostIt\EPostIt\EPostIt\bin\Debug\EPostIt.pdb
+C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\EPostIt\EPostIt\EPostIt\EPostIt\bin\Debug\Xamarin.Forms.Core.dll
+C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\EPostIt\EPostIt\EPostIt\EPostIt\bin\Debug\Xamarin.Forms.Platform.dll
+C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\EPostIt\EPostIt\EPostIt\EPostIt\bin\Debug\Xamarin.Forms.Xaml.dll
+C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\EPostIt\EPostIt\EPostIt\EPostIt\bin\Debug\Xamarin.Forms.Core.pdb
+C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\EPostIt\EPostIt\EPostIt\EPostIt\bin\Debug\Xamarin.Forms.Core.xml
+C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\EPostIt\EPostIt\EPostIt\EPostIt\bin\Debug\Xamarin.Forms.Platform.pdb
+C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\EPostIt\EPostIt\EPostIt\EPostIt\bin\Debug\Xamarin.Forms.Xaml.pdb
+C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\EPostIt\EPostIt\EPostIt\EPostIt\bin\Debug\Xamarin.Forms.Xaml.xml
+C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\EPostIt\EPostIt\EPostIt\EPostIt\obj\Debug\EPostIt.csprojResolveAssemblyReference.cache
+C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\EPostIt\EPostIt\EPostIt\EPostIt\obj\Debug\EPostIt.dll
+C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\EPostIt\EPostIt\EPostIt\EPostIt\obj\Debug\EPostIt.pdb
+C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\EPostIt\EPostIt\EPostIt\EPostIt\obj\Debug\EPostIt.dll.mdb
+C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\EPostIt\EPostIt\EPostIt\EPostIt\bin\Debug\EPostIt.dll.mdb
