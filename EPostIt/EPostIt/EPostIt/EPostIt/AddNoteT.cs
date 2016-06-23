@@ -7,8 +7,10 @@ using Xamarin.Forms;
 
 namespace EPostIt
 {
-    class AddNoteT : ContentPage
+    class AddNoteT : ContentPage, ITapLock
     {
+        public TapLockVars TapLockVars
+        { get; set; }
         Button ButtonGenerator(String s)
         {
             Button a = new Button { HorizontalOptions = LayoutOptions.FillAndExpand };
@@ -136,21 +138,25 @@ namespace EPostIt
         }
         async Task Cancel(object sender, EventArgs ea)
         {
-            if (textArea.Text == null)
+            if (this.AcquireTapLock())
             {
-                await Navigation.PopAsync();
-            }
-            else if (textArea.Text.Equals(""))
-            {
-                await Navigation.PopAsync();
-            }
-            else
-            {
-                bool exitPage = await DisplayAlert("", "You haven't saved this note yet. Do you want to exit?", "Yes", "No");
-                if (exitPage)
+                if (textArea.Text == null)
                 {
                     await Navigation.PopAsync();
                 }
+                else if (textArea.Text.Equals(""))
+                {
+                    await Navigation.PopAsync();
+                }
+                else
+                {
+                    bool exitPage = await DisplayAlert("", "You haven't saved this note yet. Do you want to exit?", "Yes", "No");
+                    if (exitPage)
+                    {
+                        await Navigation.PopAsync();
+                    }
+                }
+                this.ReleaseTapLock();
             }
         }
         void QuickSwitch(object sender, EventArgs ea)

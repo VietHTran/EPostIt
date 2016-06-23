@@ -101,7 +101,9 @@ namespace EPostIt
             grid.Children.Add(distanceL, 9, 0);
             Grid.SetColumnSpan(distanceL, 2);
 
-            return wrapperLandmark(grid);
+            Frame holder= wrapperLandmark(grid);
+            holder.BackgroundColor = Color.Blue;
+            return holder;
         }
         public void ReCalcDistance()
         {

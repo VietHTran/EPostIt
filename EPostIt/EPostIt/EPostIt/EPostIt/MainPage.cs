@@ -3,18 +3,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading;
 using Xamarin.Forms;
 using System.Diagnostics;
 
 namespace EPostIt
 {
-    class MainPage : ContentPage
+    class MainPage : ContentPage, ITapLock
     {
-
+        private Button add;
+        public TapLockVars TapLockVars
+        { get; set; }
         public MainPage ()
         {
             this.Padding = 20;
-            Button add = new Button {Text="Add New Note" , BackgroundColor= Color.Red, FontSize=32, VerticalOptions= LayoutOptions.FillAndExpand, HorizontalOptions=LayoutOptions.FillAndExpand, TextColor=Color.White, FontAttributes=FontAttributes.Bold};
+            add = new Button {Text="Add New Note" , BackgroundColor= Color.Red, FontSize=32, VerticalOptions= LayoutOptions.FillAndExpand, HorizontalOptions=LayoutOptions.FillAndExpand, TextColor=Color.White, FontAttributes=FontAttributes.Bold};
             add.Clicked += AddNote;
             Button check = new Button { Text = "See Note List", BackgroundColor = Color.Green, FontSize = 32, VerticalOptions = LayoutOptions.FillAndExpand, HorizontalOptions = LayoutOptions.FillAndExpand, TextColor = Color.White, FontAttributes = FontAttributes.Bold };
             Button list = new Button { Text = "Landmark List", BackgroundColor = Color.Blue, FontSize = 32, VerticalOptions = LayoutOptions.FillAndExpand, HorizontalOptions = LayoutOptions.FillAndExpand, TextColor = Color.White, FontAttributes = FontAttributes.Bold };
@@ -64,19 +67,27 @@ namespace EPostIt
             grid.Children.Add(exit, 1, 1);
             Content = grid;
         }
-        void AddNote(object sender, EventArgs ea)
+        async void AddNote(object sender, EventArgs ea)
         {
-            Navigation.PushAsync(new AddNoteOptions());
+            if (this.AcquireTapLock())
+            {
+                await Navigation.PushAsync(new AddNoteOptions());
+                this.ReleaseTapLock();
+            }  
         }
-        void LandmarkList(object sender, EventArgs ea)
+        async void LandmarkList(object sender, EventArgs ea)
         {
-            if (ManagerLocation.latitude == 0 && ManagerLocation.longitude == 0)
+            if (this.AcquireTapLock())
             {
-                DisplayAlert("Location Unknown", "The app has yet to find the location of the device. Please come back in a few minutes", "OK");
-            }
-            else
-            {
-                Navigation.PushAsync(new LandmarkList());
+                if (ManagerLocation.latitude == 0 && ManagerLocation.longitude == 0)
+                {
+                    await DisplayAlert("Location Unknown", "The app has yet to find the location of the device. Please come back in a few minutes", "OK");
+                }
+                else
+                {
+                    await Navigation.PushAsync(new LandmarkList());
+                }
+                this.ReleaseTapLock();
             }
         }
         async Task Exit(object sender, EventArgs ea)

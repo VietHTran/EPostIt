@@ -7,8 +7,10 @@ using Xamarin.Forms;
 
 namespace EPostIt
 {
-    class AddNoteOptions: ContentPage
+    class AddNoteOptions: ContentPage, ITapLock
     {
+        public TapLockVars TapLockVars
+        { get; set; }
         private Button ButtonGenerator(String t)
         {
             Button a = new Button { VerticalOptions = LayoutOptions.FillAndExpand, HorizontalOptions = LayoutOptions.FillAndExpand, TextColor = Color.White, FontAttributes = FontAttributes.Bold };
@@ -34,27 +36,50 @@ namespace EPostIt
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 Children = {quick,time,location,back}
             };
+            
         }
-        void BackB(object sender, EventArgs ea)
+        async void BackB(object sender, EventArgs ea)
         {
-            Navigation.PopAsync();
-        }
-        void AddNoteQ(object sender, EventArgs ea)
-        {
-            Navigation.PushAsync(new AddNoteQ());
-        }
-        void AddNoteT(object sender, EventArgs ea)
-        {
-            Navigation.PushAsync(new AddNoteT());
-        }
-        void AddNoteL(object sender, EventArgs ea)
-        {
-            if (ManagerLocation.latitude==0 && ManagerLocation.longitude==0)
+            if (this.AcquireTapLock())
             {
-                DisplayAlert("Location Unknown","The app has yet to find the location of the device. Please come back in a few minutes","OK");
-            } else
+                await Navigation.PopAsync();
+                this.ReleaseTapLock();
+            } 
+        }
+        async void AddNoteQ(object sender, EventArgs ea)
+        {
+            if (this.AcquireTapLock())
             {
-                Navigation.PushAsync(new AddNoteL());
+                await Navigation.PushAsync(new AddNoteQ());
+                this.ReleaseTapLock();
+            }
+        }
+        async void AddNoteT(object sender, EventArgs ea)
+        {
+            if (this.AcquireTapLock())
+            {
+                await Navigation.PushAsync(new AddNoteT());
+                this.ReleaseTapLock();
+            }
+            /*if (this.AcquireTapLock())
+            {
+                
+                this.ReleaseTapLock();
+            }*/
+        }
+        async void AddNoteL(object sender, EventArgs ea)
+        {
+            if (this.AcquireTapLock())
+            {
+                if (ManagerLocation.latitude == 0 && ManagerLocation.longitude == 0)
+                {
+                    await DisplayAlert("Location Unknown", "The app has yet to find the location of the device. Please come back in a few minutes", "OK");
+                }
+                else
+                {
+                    await Navigation.PushAsync(new AddNoteL());
+                }
+                this.ReleaseTapLock();
             }
         }
     }

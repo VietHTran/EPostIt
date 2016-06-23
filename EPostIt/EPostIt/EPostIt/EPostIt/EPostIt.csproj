@@ -40,11 +40,14 @@
     <Compile Include="AddNoteQ.cs" />
     <Compile Include="AddNoteT.cs" />
     <Compile Include="App.cs" />
+    <Compile Include="AppController.cs" />
     <Compile Include="IExit.cs" />
     <Compile Include="Landmark.cs" />
     <Compile Include="LandmarkCollection.cs" />
     <Compile Include="LandmarkList.cs" />
     <Compile Include="LandmarkListItem.cs" />
+    <Compile Include="LandmarkView.cs" />
+    <Compile Include="LandmarkViewList.cs" />
     <Compile Include="LocationNote.cs" />
     <Compile Include="MainPage.cs" />
     <Compile Include="ManagerLocation.cs" />

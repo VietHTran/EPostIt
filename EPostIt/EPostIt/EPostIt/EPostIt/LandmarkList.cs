@@ -29,6 +29,7 @@ namespace EPostIt
                 Padding=10,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 VerticalOptions = LayoutOptions.FillAndExpand,
+                BackgroundColor=Color.Navy,
                 Children = {a}
             };
             return holder;
@@ -64,7 +65,6 @@ namespace EPostIt
             };
             return holder;
         }
-
         private Button GenerateButton(string text, Color textColor, Color backgroundColor)
         {
             Button holder= new Button {
@@ -76,19 +76,23 @@ namespace EPostIt
             };
             return holder;
         }
-
+        #region Variables
         private StackLayout content;
         private Picker sortBy;
         private Picker sortType;
         private Button delete;
+        private Button deleter;
+        private Button selectAll;
+        private Button deselectAll;
         private Button back;
+        private Grid buttons;
         private Button reloadDistance;
-        private ScrollView list;
-        private List<LandmarkListItem> items;
+        //private ScrollView list;
+        private LandmarkViewList items;
         private StackLayout landmarkContainer;
         private bool selectMode;
         private int selectDelete;
-
+        #endregion
         public LandmarkList()
         {
             selectMode = true;
@@ -100,10 +104,10 @@ namespace EPostIt
                 HorizontalOptions=LayoutOptions.FillAndExpand,
             };
 
-            Frame nameH = wrapperStackLayout(wrapperLabel(GenerateLabel("Name",Color.White,25,FontAttributes.None,TextAlignment.Center)));
-            Frame dateH = wrapperStackLayout(wrapperLabel(GenerateLabel("Date Assigned", Color.White, 25, FontAttributes.None, TextAlignment.Center)));
-            Frame noteCountH = wrapperStackLayout(wrapperLabel(GenerateLabel("Note set", Color.White, 25, FontAttributes.None, TextAlignment.Center)));
-            Frame distanceH = wrapperStackLayout(wrapperLabel(GenerateLabel("Distance (meters)", Color.White, 25, FontAttributes.None, TextAlignment.Center)));
+            StackLayout nameH = wrapperLabel(GenerateLabel("Name",Color.White,25,FontAttributes.None,TextAlignment.Center));
+            StackLayout dateH = wrapperLabel(GenerateLabel("Date Assigned", Color.White, 25, FontAttributes.None, TextAlignment.Center));
+            StackLayout noteCountH = wrapperLabel(GenerateLabel("Note set", Color.White, 25, FontAttributes.None, TextAlignment.Center));
+            StackLayout distanceH = wrapperLabel(GenerateLabel("Distance (meters)", Color.White, 25, FontAttributes.None, TextAlignment.Center));
 
             heading.Children.Add(nameH,0,0);
             Grid.SetColumnSpan(nameH,4);
@@ -154,14 +158,20 @@ namespace EPostIt
             sorter.Children.Add(sortType, 3, 0);
 
             delete = GenerateButton("Select\nMode",Color.White,Color.Blue);
-            reloadDistance= GenerateButton("Reload", Color.White, Color.Blue);
+            deleter = GenerateButton("Delete", Color.White, Color.Blue);
+            //deleter.Clicked += 
+            selectAll= GenerateButton("Select\nAll", Color.White, Color.Blue);
+            selectAll.Clicked += SelectAll;
+            deselectAll = GenerateButton("Deselect\nAll", Color.White, Color.Blue);
+            deselectAll.Clicked += DeselectAll;
+            reloadDistance = GenerateButton("Reload", Color.White, Color.Blue);
             back = GenerateButton("Back", Color.White, Color.Gray);
             back.Clicked += Back;
             delete.HorizontalOptions = LayoutOptions.FillAndExpand;
             delete.Clicked += ToggleMode;
             back.HorizontalOptions = LayoutOptions.FillAndExpand;
             reloadDistance.HorizontalOptions = LayoutOptions.FillAndExpand;
-            Grid buttons = new Grid
+            buttons = new Grid
             {
                 HorizontalOptions=LayoutOptions.FillAndExpand,
             };
@@ -211,40 +221,81 @@ namespace EPostIt
         void Initialization()
         {
             
-            items = new List<LandmarkListItem>();
+            items = new LandmarkViewList();
             landmarkContainer = new StackLayout
             {
                 //HorizontalOptions = LayoutOptions.FillAndExpand,
                 //VerticalOptions = LayoutOptions.FillAndExpand,
                 Spacing=10,
             };
-            foreach (var i in LandmarkCollection.landmarks)
+            for (int i=1;i<items.Count;i++)
             {
-                if (i.name.Equals("None"))
-                {
-                    continue;
-                }
-
-                items.Add(new LandmarkListItem(i));
-                Frame h = items[items.Count - 1].GenerateViewItem();
                 var tgr = new TapGestureRecognizer();
                 tgr.Tapped += (s, e) => SelectLandmark(s, e);
-                h.GestureRecognizers.Add(tgr);
-                //h.GestureRecognizers.Add(new TapGestureRecognizer((view) =>SelectLandmark()));
-                landmarkContainer.Children.Add(h);
+                items[i].GestureRecognizers.Add(tgr);
+                landmarkContainer.Children.Add(items[i]);
             }
-
+            #region List
+            /*
             list = new ScrollView
             {
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 VerticalOptions = LayoutOptions.FillAndExpand,
                 Content = landmarkContainer
             };
-
+            */
+            #endregion
         }
         void Back(object sender, EventArgs ea)
         {
             Navigation.PopAsync();
+        }
+        void ActivateDeleteMode()
+        {
+            buttons.Children.Add(deleter, 3, 2);
+            buttons.Children.Add(selectAll, 3, 1);
+            buttons.Children.Add(deselectAll, 2, 1);
+            deleter.IsEnabled = false;
+            deleter.BackgroundColor = Color.Navy;
+        }
+        void DeactivateDeleteMode()
+        {
+            buttons.Children.Remove(deleter);
+            buttons.Children.Remove(selectAll);
+            buttons.Children.Remove(deselectAll);
+            deleter.IsEnabled = false;
+            deleter.BackgroundColor = Color.Navy;
+            TurnAllBlue();
+        }
+        void SelectAll(object sender, EventArgs ea)
+        {
+            if (!deleter.IsEnabled)
+            {
+                deleter.IsEnabled = true;
+                deleter.BackgroundColor = Color.Blue;
+            }
+            for (int i = 1; i < items.Count; i++)
+            {
+                items[i].BackgroundColor = Color.Green;
+            }
+            selectDelete = items.Count - 1;
+        }
+        void DeselectAll(object sender, EventArgs ea)
+        {
+            if (deleter.IsEnabled)
+            {
+                deleter.IsEnabled = false;
+                deleter.BackgroundColor = Color.Navy;
+            }
+            TurnAllBlue();
+            selectDelete = 0;
+        }
+        void TurnAllBlue()
+        {
+            for (int i = 1; i < items.Count; i++)
+            {
+                items[i].BackgroundColor = Color.Blue;
+            }
         }
         void ToggleMode(object sender, EventArgs ea)
         {
@@ -253,20 +304,21 @@ namespace EPostIt
                 selectMode = false;
                 delete.Text = "Delete\nMode";
                 delete.BackgroundColor = Color.Navy;
+                ActivateDeleteMode();
             } else
             {
                 selectMode = true;
                 delete.Text = "Select\nMode";
                 delete.BackgroundColor = Color.Blue;
                 selectDelete = 0;
-                //Deselect All Items
+                DeactivateDeleteMode();
             }
         }
         void SelectLandmark(object sender, EventArgs ea)
         {
             if (selectMode)
                 return;
-            Frame holder = sender as Frame;
+            Grid holder = sender as Grid;
             if (holder.BackgroundColor == Color.Blue)
             {
                 holder.BackgroundColor = Color.Green;
@@ -276,6 +328,25 @@ namespace EPostIt
             {
                 holder.BackgroundColor = Color.Blue;
                 selectDelete--;
+            }
+            if (selectDelete>0 && !deleter.IsEnabled)
+            {
+                deleter.IsEnabled = true;
+                deleter.BackgroundColor = Color.Blue;
+            } else if (selectDelete==0 && deleter.IsEnabled)
+            {
+                deleter.IsEnabled = false;
+                deleter.BackgroundColor = Color.Navy;
+            }
+        }
+        async Task DeleteItems(object sender, EventArgs ea)
+        {
+            for (int i=1;i<items.Count;i++)
+            {
+                if (items[i].BackgroundColor==Color.Green)
+                {
+                    items.DeleteLandmark(items[i]);
+                }
             }
         }
     }
