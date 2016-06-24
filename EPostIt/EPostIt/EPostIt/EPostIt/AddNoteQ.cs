@@ -13,7 +13,7 @@ namespace EPostIt
         { get; set; }
         Button ButtonGenerator(String s)
         {
-            Button a = new Button { HorizontalOptions = LayoutOptions.FillAndExpand};
+            Button a = new Button { HorizontalOptions = LayoutOptions.FillAndExpand };
             a.Text = s;
             a.BackgroundColor = Color.Red;
             a.FontSize = 32;
@@ -31,18 +31,19 @@ namespace EPostIt
         public AddNoteQ()
         {
             this.Padding = 20;
-            textArea = new Editor{HorizontalOptions=LayoutOptions.FillAndExpand, VerticalOptions= LayoutOptions.FillAndExpand, Text = "" };
+            textArea = new Editor { HorizontalOptions = LayoutOptions.FillAndExpand, VerticalOptions = LayoutOptions.FillAndExpand, Text = "" };
             textArea.BackgroundColor = Color.Yellow;
             textArea.TextColor = Color.Black;
             textArea.FontSize = 32;
             if (SaveDataSwitcher.isSwitchType)
             {
-                Task.Run(()=> {
+                Task.Run(() => {
                     textArea.Text = SaveDataSwitcher.savedText;
                     SaveDataSwitcher.isSwitchType = false;
                 });
             }
-            currentType = new Picker {
+            currentType = new Picker
+            {
                 Title = "Note Type"
             };
             foreach (var i in noteType.Keys)
@@ -51,7 +52,8 @@ namespace EPostIt
             }
             currentType.SelectedIndex = 0;
             currentType.SelectedIndexChanged += QuickSwitch;
-            StackLayout quickSwitch = new StackLayout {
+            StackLayout quickSwitch = new StackLayout
+            {
                 HorizontalOptions = LayoutOptions.End,
                 Orientation = StackOrientation.Horizontal,
                 Children = {
@@ -64,12 +66,13 @@ namespace EPostIt
             save.Clicked += async (sender, ea) => await Save(sender, ea);
             //If have text==>Popup confirm else back to previous page
             Button cancel = ButtonGenerator("Cancel");
-            cancel.Clicked+= async (sender, ea) => await Cancel(sender, ea);
+            cancel.Clicked += async (sender, ea) => await Cancel(sender, ea);
             cancel.BackgroundColor = Color.Gray;
-            Content = new StackLayout {
-                HorizontalOptions=LayoutOptions.FillAndExpand,
-                VerticalOptions=LayoutOptions.FillAndExpand,
-                Spacing=15,
+            Content = new StackLayout
+            {
+                HorizontalOptions = LayoutOptions.FillAndExpand,
+                VerticalOptions = LayoutOptions.FillAndExpand,
+                Spacing = 15,
                 Children = {quickSwitch,textArea, new StackLayout {
                     Orientation=StackOrientation.Horizontal,
                     HorizontalOptions=LayoutOptions.FillAndExpand,
@@ -80,13 +83,15 @@ namespace EPostIt
         }
         async Task Save(object sender, EventArgs ea)
         {
-            if (textArea.Text== null)
+            if (textArea.Text == null)
             {
                 await DisplayAlert("Empty Text", "Please type in some text in order to save.", "OK");
-            } else if (textArea.Text.Equals(""))
+            }
+            else if (textArea.Text.Equals(""))
             {
                 await DisplayAlert("Empty Text", "Please type in some text in order to save.", "OK");
-            } else
+            }
+            else
             {
                 NoteManager.quickNotes.Add(new Note(textArea.Text));
                 bool backToMenu = await DisplayAlert("Note Saved", "Note successfully saved.", "Back To Menu", "Create New Note");
@@ -94,7 +99,8 @@ namespace EPostIt
                 {
                     textArea.Text = "";
                     await Navigation.PopToRootAsync();
-                } else
+                }
+                else
                 {
                     await Navigation.PopAsync();
                 }
@@ -122,11 +128,11 @@ namespace EPostIt
                 }
                 this.ReleaseTapLock();
             }
-            
+
         }
         void QuickSwitch(object sender, EventArgs ea)
         {
-            bool isNeedTransfer=true;
+            bool isNeedTransfer = true;
             if (textArea.Text == null)
             {
                 isNeedTransfer = false;

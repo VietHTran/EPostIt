@@ -8,7 +8,7 @@ namespace EPostIt
 {
     static class AppController
     {
-        
+
     }
     public interface ITapLock
     {

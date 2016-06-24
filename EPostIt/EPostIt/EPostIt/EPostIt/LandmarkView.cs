@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Diagnostics;
 using Xamarin.Forms;
 
 namespace EPostIt
@@ -13,7 +14,7 @@ namespace EPostIt
         public DateTime assignedTime { get; set; }
         public Landmark landmark { get; set; }
         private Label distanceL;
-        public LandmarkView (Landmark l)
+        public LandmarkView(Landmark l)
         {
             this.landmark = l;
             this.assignedTime = l.assignedTime;
@@ -26,18 +27,20 @@ namespace EPostIt
             Label name = GenerateLabel(landmark.name, Color.White, 25, FontAttributes.None, TextAlignment.Center);
             Label dateAssigned = GenerateLabel(date, Color.White, 25, FontAttributes.None, TextAlignment.Center);
             Label noteCount;
-            
-            if (landmark.assignedEvents<=99)
+
+            if (landmark.assignedEvents <= 99)
             {
                 noteCount = GenerateLabel(landmark.assignedEvents.ToString(), Color.White, 25, FontAttributes.None, TextAlignment.Center);
-            } else
+            }
+            else
             {
                 noteCount = GenerateLabel("+99", Color.White, 25, FontAttributes.None, TextAlignment.Center);
             }
-            if (distance>999)
+            if (distance > 999)
             {
                 distanceL = GenerateLabel("+999", Color.White, 25, FontAttributes.None, TextAlignment.Center);
-            } else
+            }
+            else
             {
                 distanceL = GenerateLabel(Math.Round(distance, 1).ToString(), Color.White, 25, FontAttributes.None, TextAlignment.Center);
             }
@@ -69,6 +72,22 @@ namespace EPostIt
         public void DeleteFromMainData()
         {
             LandmarkCollection.landmarks.Remove(landmark);
+        }
+        public void ReCalcDistance()
+        {
+            Children.Remove(distanceL);
+            this.distance = ManagerLocation.CalcDistance(landmark.latitude, landmark.longitude);
+            if (distance > 999)
+            {
+                distanceL = GenerateLabel("+999", Color.White, 25, FontAttributes.None, TextAlignment.Center);
+            }
+            else
+            {
+                string a = Math.Round(distance, 1).ToString();
+                distanceL = GenerateLabel(a, Color.White, 25, FontAttributes.None, TextAlignment.Center);
+            }
+            Children.Add(distanceL, 9, 0);
+            Grid.SetColumnSpan(distanceL, 2);
         }
     }
 }

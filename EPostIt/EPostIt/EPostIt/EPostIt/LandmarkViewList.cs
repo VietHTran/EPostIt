@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Diagnostics;
 using Xamarin.Forms;
 
 namespace EPostIt
 {
-    class LandmarkViewList:List<LandmarkView>
+    class LandmarkViewList : List<LandmarkView>
     {
-        public LandmarkViewList ()
+        public LandmarkViewList()
         {
             foreach (var i in LandmarkCollection.landmarks)
             {
@@ -20,6 +21,13 @@ namespace EPostIt
         {
             l.DeleteFromMainData();
             Remove(l);
+        }
+        public void MassReload()
+        {
+            for (int i = 1; i < this.Count; i++)
+            {
+                this[i].ReCalcDistance();
+            }
         }
     }
 }

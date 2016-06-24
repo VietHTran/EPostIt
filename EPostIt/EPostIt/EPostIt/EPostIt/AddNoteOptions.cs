@@ -7,7 +7,7 @@ using Xamarin.Forms;
 
 namespace EPostIt
 {
-    class AddNoteOptions: ContentPage, ITapLock
+    class AddNoteOptions : ContentPage, ITapLock
     {
         public TapLockVars TapLockVars
         { get; set; }
@@ -30,13 +30,14 @@ namespace EPostIt
             location.Clicked += AddNoteL;
             Button back = ButtonGenerator("Back");
             back.Clicked += BackB;
-            Content = new StackLayout {
+            Content = new StackLayout
+            {
                 Spacing = 15,
                 VerticalOptions = LayoutOptions.FillAndExpand,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
-                Children = {quick,time,location,back}
+                Children = { quick, time, location, back }
             };
-            
+
         }
         async void BackB(object sender, EventArgs ea)
         {
@@ -44,7 +45,7 @@ namespace EPostIt
             {
                 await Navigation.PopAsync();
                 this.ReleaseTapLock();
-            } 
+            }
         }
         async void AddNoteQ(object sender, EventArgs ea)
         {

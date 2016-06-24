@@ -14,15 +14,16 @@ namespace EPostIt
         private Button add;
         public TapLockVars TapLockVars
         { get; set; }
-        public MainPage ()
+        public MainPage()
         {
             this.Padding = 20;
-            add = new Button {Text="Add New Note" , BackgroundColor= Color.Red, FontSize=32, VerticalOptions= LayoutOptions.FillAndExpand, HorizontalOptions=LayoutOptions.FillAndExpand, TextColor=Color.White, FontAttributes=FontAttributes.Bold};
+            add = new Button { Text = "Add New Note", BackgroundColor = Color.Red, FontSize = 32, VerticalOptions = LayoutOptions.FillAndExpand, HorizontalOptions = LayoutOptions.FillAndExpand, TextColor = Color.White, FontAttributes = FontAttributes.Bold };
             add.Clicked += AddNote;
             Button check = new Button { Text = "See Note List", BackgroundColor = Color.Green, FontSize = 32, VerticalOptions = LayoutOptions.FillAndExpand, HorizontalOptions = LayoutOptions.FillAndExpand, TextColor = Color.White, FontAttributes = FontAttributes.Bold };
             Button list = new Button { Text = "Landmark List", BackgroundColor = Color.Blue, FontSize = 32, VerticalOptions = LayoutOptions.FillAndExpand, HorizontalOptions = LayoutOptions.FillAndExpand, TextColor = Color.White, FontAttributes = FontAttributes.Bold };
             list.Clicked += LandmarkList;
-            Button exit = new Button {
+            Button exit = new Button
+            {
                 Text = "Exit   ",
                 BackgroundColor = Color.Yellow,
                 FontSize = 32,
@@ -54,14 +55,15 @@ namespace EPostIt
                 }
             };
             */
-            var grid = new Grid {
+            var grid = new Grid
+            {
                 ColumnSpacing = 15,
-                RowSpacing=15,
+                RowSpacing = 15,
                 VerticalOptions = LayoutOptions.FillAndExpand,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 //Children= {add,check,help,exit}
             };
-            grid.Children.Add(add,0,0);
+            grid.Children.Add(add, 0, 0);
             grid.Children.Add(check, 1, 0);
             grid.Children.Add(list, 0, 1);
             grid.Children.Add(exit, 1, 1);
@@ -73,7 +75,7 @@ namespace EPostIt
             {
                 await Navigation.PushAsync(new AddNoteOptions());
                 this.ReleaseTapLock();
-            }  
+            }
         }
         async void LandmarkList(object sender, EventArgs ea)
         {
@@ -92,8 +94,8 @@ namespace EPostIt
         }
         async Task Exit(object sender, EventArgs ea)
         {
-            bool isExit=await DisplayAlert("", "You haven't saved this note yet. Do you want to exit?", "Yes", "No");
-            if(!isExit)
+            bool isExit = await DisplayAlert("", "Do you want to exit the app?", "Yes", "No");
+            if (!isExit)
             {
                 return;
             }

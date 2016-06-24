@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using System.Diagnostics;
 using Xamarin.Forms;
 
 namespace EPostIt
@@ -40,25 +40,30 @@ namespace EPostIt
         private Picker currentType;
         public AddNoteL()
         {
+            lat = ManagerLocation.latitude;
+            lon = ManagerLocation.longitude;
             this.Padding = 20;
             //Trigger Range
-            Label rangeT = new Label{ FontSize = 25, Text = "Trigger Range (meters)", FontAttributes = FontAttributes.Bold, TextColor = Color.White, VerticalOptions = LayoutOptions.Center };
-            rangeP = new Picker {
-                Title="Range",
-                Items = {"0.25","0.5","1","2","3","4","5"}
+            Label rangeT = new Label { FontSize = 25, Text = "Trigger Range (meters)", FontAttributes = FontAttributes.Bold, TextColor = Color.White, VerticalOptions = LayoutOptions.Center };
+            rangeP = new Picker
+            {
+                Title = "Range",
+                Items = { "0.25", "0.5", "1", "2", "3", "4", "5" }
             };
             rangeP.SelectedIndex = 2;
             //Print Saved Landmarks
-            savedLandmarks = new Picker {
+            savedLandmarks = new Picker
+            {
                 Title = "Saved Landmarks  ",
-                HorizontalOptions=LayoutOptions.FillAndExpand
+                HorizontalOptions = LayoutOptions.FillAndExpand
             };
-            Task.Run(()=> {
-                if (LandmarkCollection.landmarks.Count==0)
+            Task.Run(() => {
+                if (LandmarkCollection.landmarks.Count == 0)
                 {
                     savedLandmarks.IsEnabled = false;
                     savedLandmarks.Title = "No landmark saved";
-                } else
+                }
+                else
                 {
                     foreach (var i in LandmarkCollection.landmarks)
                     {
@@ -70,10 +75,11 @@ namespace EPostIt
             savedLandmarks.SelectedIndexChanged += ChangeLandmarkSetting;
             eventSwitch = true;
             //Save New Landmark
-            nameNewLandmark = new Entry { FontSize = 20, Placeholder = "Landmark name", HorizontalOptions = LayoutOptions.FillAndExpand, Text="" };
+            nameNewLandmark = new Entry { FontSize = 20, Placeholder = "Landmark name", HorizontalOptions = LayoutOptions.FillAndExpand, Text = "" };
             nameNewLandmark.TextChanged += OnTexChanged;
             setNewLandmarkTitle = new Label { FontSize = 25, Text = "Set New Landmark", FontAttributes = FontAttributes.Bold, TextColor = Color.White, VerticalOptions = LayoutOptions.Center };
-            saveNewLandmark = new StackLayout {
+            saveNewLandmark = new StackLayout
+            {
                 Orientation = StackOrientation.Horizontal,
                 Spacing = 15,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
@@ -96,7 +102,7 @@ namespace EPostIt
                 }
             };
             // Location
-            textArea = new Editor { HorizontalOptions = LayoutOptions.FillAndExpand, VerticalOptions = LayoutOptions.FillAndExpand, Text="" };
+            textArea = new Editor { HorizontalOptions = LayoutOptions.FillAndExpand, VerticalOptions = LayoutOptions.FillAndExpand, Text = "" };
             textArea.BackgroundColor = Color.Yellow;
             textArea.TextColor = Color.Black;
             textArea.FontSize = 32;
@@ -154,17 +160,22 @@ namespace EPostIt
             {
                 return;
             }
-            
-            if (nameNewLandmark.Text.Length>20)
+
+            if (nameNewLandmark.Text.Length > 20)
             {
-                nameNewLandmark.Text=nameNewLandmark.Text.Remove(20);
+                nameNewLandmark.Text = nameNewLandmark.Text.Remove(20);
             }
         }
         void ChangeLandmarkSetting(object sender, EventArgs ea)
         {
-            if (savedLandmarks.SelectedIndex==0)
+            if (savedLandmarks.SelectedIndex == 0)
             {
-                Task.Run(()=> {
+                Task.Run(() => {
+                    while (ManagerLocation.latitude == 0)
+                    {
+                        lat = ManagerLocation.latitude;
+                        lon = ManagerLocation.longitude;
+                    }
                     lat = ManagerLocation.latitude;
                     lon = ManagerLocation.longitude;
                 });
@@ -176,9 +187,12 @@ namespace EPostIt
                 nameNewLandmark.Text = "";
                 nameNewLandmark.IsEnabled = true;
                 setNewLandmarkTitle.Text = "Set New Landmark";
-            } else
+            }
+            else
             {
-                Task.Run(()=> {
+                Task.Run(() => {
+                    Debug.WriteLine("Landmark name below:");
+                    Debug.WriteLine(savedLandmarks.Items[savedLandmarks.SelectedIndex]);
                     Landmark landmarkHolder = LandmarkCollection.SearchName(savedLandmarks.Items[savedLandmarks.SelectedIndex]);
                     lat = landmarkHolder.latitude;
                     lon = landmarkHolder.longitude;
@@ -212,22 +226,23 @@ namespace EPostIt
                     await DisplayAlert("", "Please type in the landmark name.", "OK");
                     return;
                 }
-                int landmarkIndex= LandmarkCollection.nameList.IndexOf(nameNewLandmark.Text);
-                if (savedLandmarks.SelectedIndex==0 && landmarkIndex!=-1)
+                int landmarkIndex = LandmarkCollection.nameList.IndexOf(nameNewLandmark.Text);
+                if (savedLandmarks.SelectedIndex == 0 && landmarkIndex != -1)
                 {
                     await DisplayAlert("", "Landmark name has already existed.", "OK");
                     return;
                 }
                 double triggerRadius = Double.Parse(rangeP.Items[rangeP.SelectedIndex]);
-                if (savedLandmarks.SelectedIndex==0)
+                if (savedLandmarks.SelectedIndex == 0)
                 {
                     LandmarkCollection.CreateLandmark(nameNewLandmark.Text, lat, lon);
                     LandmarkCollection.landmarks[LandmarkCollection.landmarks.Count - 1].AssignEvent();
-                } else
+                }
+                else
                 {
                     LandmarkCollection.landmarks[landmarkIndex].AssignEvent();
                 }
-                NoteManager.locationNotes.Add(new LocationNote(textArea.Text,lat,lon,triggerRadius));
+                NoteManager.locationNotes.Add(new LocationNote(textArea.Text, lat, lon, triggerRadius));
                 bool backToMenu = await DisplayAlert("Note Saved", "Note successfully saved.", "Back To Menu", "Create New Note");
                 if (backToMenu)
                 {
