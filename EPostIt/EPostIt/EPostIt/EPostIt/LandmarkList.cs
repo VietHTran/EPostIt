@@ -183,6 +183,8 @@ namespace EPostIt
             Grid.SetColumnSpan(sortByG, 2);
             sorter.Children.Add(sortTypeT, 2, 0);
             sorter.Children.Add(sortType, 3, 0);
+            sortBy.SelectedIndexChanged += SortByChangeValue;
+            sortType.SelectedIndexChanged += SortyTypeChange;
 
             empty = GenerateLabel("\n\n\n\n\nNo landmark registered\n\n\n\n\n", Color.White, 30, FontAttributes.None, TextAlignment.Center);
             empty.HorizontalOptions = LayoutOptions.FillAndExpand;
@@ -250,20 +252,7 @@ namespace EPostIt
             Grid.SetColumnSpan(name, 3);
             cancel.Clicked += CancelLandmark;
             save.Clicked += SaveLandmark;
-            /*
-            Grid replaceContent = new Grid {
-                HorizontalOptions = LayoutOptions.FillAndExpand,
-                VerticalOptions = LayoutOptions.FillAndExpand,
-            };
-            replaceContent.Children.Add(pageTitleW,0,0);
-            replaceContent.Children.Add(sorter, 0, 1);
-            replaceContent.Children.Add(heading, 0, 2);
-            replaceContent.Children.Add(list, 0, 3);
-            replaceContent.Children.Add(buttons, 0, 9);
-
-            Grid.SetRowSpan(heading,1);
-            Grid.SetRowSpan(list, 6);
-            */
+            
             ScrollView wrapperScroll = new ScrollView
             {
                 HorizontalOptions = LayoutOptions.FillAndExpand,
@@ -295,16 +284,6 @@ namespace EPostIt
                 items[i].GestureRecognizers.Add(tgr);
                 landmarkContainer.Children.Add(items[i]);
             }
-            #region List
-            /*
-            list = new ScrollView
-            {
-                HorizontalOptions = LayoutOptions.FillAndExpand,
-                VerticalOptions = LayoutOptions.FillAndExpand,
-                Content = landmarkContainer
-            };
-            */
-            #endregion
         }
         void Back(object sender, EventArgs ea)
         {
@@ -452,13 +431,9 @@ namespace EPostIt
                 return;
             }
             (sender as Button).IsEnabled = false;
-            /*
-            Task.Run(()=>{
-                
-            });
-            */
-            for (int i = 0; i < landmarkContainer.Children.Count; i++)
+            for (int i = landmarkContainer.Children.Count-1; i>=0 ; i--)
             {
+                Debug.WriteLine((landmarkContainer.Children[i] as LandmarkView).landmark.name);
                 //((LandmarkView)landmarkContainer.Children[i]).ReCalcDistance();
                 landmarkContainer.Children.RemoveAt(i);
                 items[i + 1].ReCalcDistance();
@@ -478,6 +453,17 @@ namespace EPostIt
             DisableButton(holder);
             DisableButton(reloadDistance);
             DisableButton(delete);
+            DisableSort();
+        }
+        void DisableSort()
+        {
+            sortBy.IsEnabled = false;
+            sortType.IsEnabled = false;
+        }
+        void EnableSort()
+        {
+            sortBy.IsEnabled = true;
+            sortType.IsEnabled = true;
         }
         void DisableButton(Button b)
         {
@@ -496,6 +482,7 @@ namespace EPostIt
             EnableButton(add);
             EnableButton(reloadDistance);
             EnableButton(delete);
+            EnableSort();
         }
         void OnTexChanged(object sender, EventArgs ea)
         {
@@ -527,6 +514,9 @@ namespace EPostIt
                 EnableButton(add);
                 EnableButton(reloadDistance);
                 EnableButton(delete);
+                sortBy.SelectedIndex = -1;
+                sortType.SelectedIndex = -1;
+                EnableSort();
             }
         }
         bool CheckValidity()
@@ -560,7 +550,67 @@ namespace EPostIt
         }
         void SortByChangeValue(object sender, EventArgs ea)
         {
+            //{ "Name", "Date Created", "Note Set", "Distance" }
+            //0             1           2           3
             
+            if (sortBy.SelectedIndex==-1 || items.Count == 1)
+            {
+                return;
+            }
+            if (sortType.SelectedIndex==-1)
+            {
+                sortType.SelectedIndex = 0;
+            }
+            ExecuteSort();
+        }
+        void SortyTypeChange(object sender, EventArgs ea)
+        {
+            if (sortType.SelectedIndex==-1 || items.Count == 1)
+            {
+                return;
+            }
+            if (sortBy.SelectedIndex==-1)
+            {
+                sortBy.SelectedIndex = 2;
+            }
+            ExecuteSort();
+        }
+        void ResetItems(List<LandmarkView> l)
+        {
+            items.Clear();
+            items.Add(new LandmarkView(LandmarkCollection.landmarks[0]));
+            foreach (var i in l)
+            {
+                items.Add(i);
+            }
+        }
+        void ExecuteSort()
+        {
+            if (sortBy.SelectedIndex == 0)
+            {
+                ResetItems(items.NameSort(sortType.SelectedIndex));
+            }
+            else if (sortBy.SelectedIndex == 1)
+            {
+                ResetItems(items.DateSort(sortType.SelectedIndex));
+            }
+            else if (sortBy.SelectedIndex == 2)
+            {
+                ResetItems(items.NoteSetSort(sortType.SelectedIndex));
+            }
+            else if (sortBy.SelectedIndex == 3)
+            {
+                ResetItems(items.DistanceSort(sortType.SelectedIndex));
+            }
+            landmarkContainer.Children.Clear();
+            foreach (var i in items)
+            {
+                if (i.landmark.name.Equals("None"))
+                {
+                    continue;
+                }
+                landmarkContainer.Children.Add(i);
+            }
         }
     }
 }

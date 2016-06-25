@@ -25,6 +25,7 @@ C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\GitHub\EPostIt\EPostIt\EPostIt\
 C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\GitHub\EPostIt\EPostIt\EPostIt\EPostIt\EPostIt.Droid\obj\Debug\android\assets\System.Collections.dll
 C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\GitHub\EPostIt\EPostIt\EPostIt\EPostIt\EPostIt.Droid\obj\Debug\android\assets\System.Threading.Tasks.dll
 C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\GitHub\EPostIt\EPostIt\EPostIt\EPostIt\EPostIt.Droid\obj\Debug\android\assets\System.Runtime.Extensions.dll
+C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\GitHub\EPostIt\EPostIt\EPostIt\EPostIt\EPostIt.Droid\obj\Debug\android\assets\System.Linq.dll
 C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\GitHub\EPostIt\EPostIt\EPostIt\EPostIt\EPostIt.Droid\obj\Debug\android\assets\System.ObjectModel.dll
 C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\GitHub\EPostIt\EPostIt\EPostIt\EPostIt\EPostIt.Droid\obj\Debug\android\assets\System.Globalization.dll
 C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\GitHub\EPostIt\EPostIt\EPostIt\EPostIt\EPostIt.Droid\obj\Debug\android\assets\System.Linq.Expressions.dll
@@ -34,7 +35,6 @@ C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\GitHub\EPostIt\EPostIt\EPostIt\
 C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\GitHub\EPostIt\EPostIt\EPostIt\EPostIt\EPostIt.Droid\obj\Debug\android\assets\System.Dynamic.Runtime.dll
 C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\GitHub\EPostIt\EPostIt\EPostIt\EPostIt\EPostIt.Droid\obj\Debug\android\assets\System.Threading.dll
 C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\GitHub\EPostIt\EPostIt\EPostIt\EPostIt\EPostIt.Droid\obj\Debug\android\assets\System.IO.dll
-C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\GitHub\EPostIt\EPostIt\EPostIt\EPostIt\EPostIt.Droid\obj\Debug\android\assets\System.Linq.dll
 C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\GitHub\EPostIt\EPostIt\EPostIt\EPostIt\EPostIt.Droid\obj\Debug\android\assets\System.Reflection.Extensions.dll
 C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\GitHub\EPostIt\EPostIt\EPostIt\EPostIt\EPostIt.Droid\obj\Debug\android\assets\System.Net.Http.dll
 C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\GitHub\EPostIt\EPostIt\EPostIt\EPostIt\EPostIt.Droid\obj\Debug\android\assets\System.Runtime.Serialization.dll

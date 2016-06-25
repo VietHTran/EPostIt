@@ -19,6 +19,7 @@ namespace EPostIt
             this.latitude = lat;
             this.longitude = lon;
             this.assignedTime = DateTime.Now;
+            this.assignedEvents = 0;
         }
         public void AssignEvent()
         {

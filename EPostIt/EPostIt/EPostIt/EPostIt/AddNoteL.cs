@@ -210,12 +210,6 @@ namespace EPostIt
         }
         async Task Save(object sender, EventArgs ea)
         {
-            /*
-            if (this.AcquireTapLock())
-            {
-                this.ReleaseTapLock();
-            }
-            */
             if (this.AcquireTapLock())
             {
                 if (textArea.Text == null)
