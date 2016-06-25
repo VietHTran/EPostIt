@@ -106,35 +106,46 @@ namespace EPostIt
         }
         async Task Save(object sender, EventArgs ea)
         {
-            if (textArea.Text == null)
+            /*
+            if (this.AcquireTapLock())
             {
-                await DisplayAlert("Empty Text", "Please type in some text in order to save.", "OK");
+                this.ReleaseTapLock();
             }
-            else if (textArea.Text.Equals(""))
+            */
+            if (this.AcquireTapLock())
             {
-                await DisplayAlert("Empty Text", "Please type in some text in order to save.", "OK");
-            }
-            else
-            {
-                //NoteManager.quickNotes.Add(new Note(textArea.Text));
-                DateTime dateTimeHolder = date.Date.Add(time.Time);
-                if (!TimeNote.compareDateTime(dateTimeHolder))
+                if (textArea.Text == null)
                 {
-                    await DisplayAlert("Invalid date time", "It's already past the time set in note.", "OK");
-                    return;
+                    await DisplayAlert("Empty Text", "Please type in some text in order to save.", "OK");
                 }
-                NoteManager.timeNotes.Add(new TimeNote(textArea.Text, dateTimeHolder));
-                bool backToMenu = await DisplayAlert("Note Saved", "Note successfully saved.", "Back To Menu", "Create New Note");
-                if (backToMenu)
+                else if (textArea.Text.Equals(""))
                 {
-                    textArea.Text = "";
-                    await Navigation.PopToRootAsync();
+                    await DisplayAlert("Empty Text", "Please type in some text in order to save.", "OK");
                 }
                 else
                 {
-                    await Navigation.PopAsync();
+                    //NoteManager.quickNotes.Add(new Note(textArea.Text));
+                    DateTime dateTimeHolder = date.Date.Add(time.Time);
+                    if (!TimeNote.compareDateTime(dateTimeHolder))
+                    {
+                        await DisplayAlert("Invalid date time", "It's already past the time set in note.", "OK");
+                        return;
+                    }
+                    NoteManager.timeNotes.Add(new TimeNote(textArea.Text, dateTimeHolder));
+                    bool backToMenu = await DisplayAlert("Note Saved", "Note successfully saved.", "Back To Menu", "Create New Note");
+                    if (backToMenu)
+                    {
+                        textArea.Text = "";
+                        await Navigation.PopToRootAsync();
+                    }
+                    else
+                    {
+                        await Navigation.PopAsync();
+                    }
                 }
+                this.ReleaseTapLock();
             }
+            
         }
         async Task Cancel(object sender, EventArgs ea)
         {

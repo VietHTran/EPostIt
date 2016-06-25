@@ -81,6 +81,20 @@ namespace EPostIt
             };
             return holder;
         }
+        private Grid GenerateInput()
+        {
+            Grid createNew = new Grid {
+                HorizontalOptions=LayoutOptions.FillAndExpand,
+                ColumnSpacing=10,
+                RowSpacing=10
+            };
+            Label title = GenerateLabel("Name: ",Color.White,20,FontAttributes.Bold,TextAlignment.Start);
+            Entry name = new Entry
+            {
+
+            };
+            return createNew;
+        }
         #region Variables
         private StackLayout content;
         private Picker sortBy;
@@ -99,6 +113,10 @@ namespace EPostIt
         private bool selectMode;
         private int selectDelete;
         private Label empty;
+        private Grid createNew;
+        private Button cancel;
+        private Button save;
+        private Entry name;
         #endregion
         public LandmarkList()
         {
@@ -212,6 +230,26 @@ namespace EPostIt
                 }
             };
 
+            createNew = new Grid
+            {
+                HorizontalOptions = LayoutOptions.FillAndExpand,
+                ColumnSpacing = 10,
+                RowSpacing = 10,
+                Padding=10,
+                BackgroundColor=Color.Navy
+            };
+            Label title = GenerateLabel("Name: ", Color.White, 25, FontAttributes.Bold, TextAlignment.Start);
+            name = new Entry { Placeholder = "Landmark Name",FontSize=25, HorizontalOptions=LayoutOptions.FillAndExpand };
+            name.TextChanged += OnTexChanged;
+            save = GenerateButton("Save",Color.White,Color.Blue);
+            cancel = GenerateButton("Cancel",Color.White,Color.Gray);
+            createNew.Children.Add(title,0,0);
+            createNew.Children.Add(name,1,0);
+            createNew.Children.Add(save,4,0);
+            createNew.Children.Add(cancel, 5, 0);
+            Grid.SetColumnSpan(name, 3);
+            cancel.Clicked += CancelLandmark;
+            save.Clicked += SaveLandmark;
             /*
             Grid replaceContent = new Grid {
                 HorizontalOptions = LayoutOptions.FillAndExpand,
@@ -235,7 +273,6 @@ namespace EPostIt
 
             Content = wrapperScroll;
         }
-
         void Initialization()
         {
 
@@ -328,6 +365,7 @@ namespace EPostIt
                 delete.Text = "Delete\nMode";
                 delete.BackgroundColor = Color.Navy;
                 ActivateDeleteMode();
+                DisableButton(add);
             }
             else
             {
@@ -336,6 +374,7 @@ namespace EPostIt
                 delete.BackgroundColor = Color.Blue;
                 selectDelete = 0;
                 DeactivateDeleteMode();
+                EnableButton(add);
             }
         }
         void SelectLandmark(object sender, EventArgs ea)
@@ -408,11 +447,11 @@ namespace EPostIt
         }
         void Reload(object sender, EventArgs ea)
         {
-            (sender as Button).IsEnabled = false;
             if (items.Count == 1)
             {
                 return;
             }
+            (sender as Button).IsEnabled = false;
             /*
             Task.Run(()=>{
                 
@@ -431,7 +470,97 @@ namespace EPostIt
         }
         void AddLandmark(object sender, EventArgs ea)
         {
-
+            if (!landmarkContainer.Children.Contains(createNew))
+            {
+                landmarkContainer.Children.Add(createNew);
+            }
+            Button holder = sender as Button;
+            DisableButton(holder);
+            DisableButton(reloadDistance);
+            DisableButton(delete);
+        }
+        void DisableButton(Button b)
+        {
+            b.BackgroundColor = Color.Navy;
+            b.IsEnabled = false;
+        }
+        void EnableButton(Button b)
+        {
+            b.BackgroundColor = Color.Blue;
+            b.IsEnabled = true;
+        }
+        void CancelLandmark(object sender, EventArgs ea)
+        {
+            landmarkContainer.Children.Remove(createNew);
+            name.Text = "";
+            EnableButton(add);
+            EnableButton(reloadDistance);
+            EnableButton(delete);
+        }
+        void OnTexChanged(object sender, EventArgs ea)
+        {
+            if (name.Text.Length > 20)
+            {
+                name.Text = name.Text.Remove(20);
+            }
+        }
+        void SaveLandmark(object sender, EventArgs ea)
+        {
+            if (!CheckValidity())
+            {
+                return;
+            } else
+            {
+                LandmarkCollection.CreateLandmark(name.Text,ManagerLocation.latitude,ManagerLocation.longitude);
+                landmarkContainer.Children.Remove(createNew);
+                items.Add(new LandmarkView(LandmarkCollection.landmarks[LandmarkCollection.landmarks.Count-1]));
+                if (items.Count==2)
+                {
+                    landmarkContainer.Children.Remove(empty);
+                }
+                var tgr = new TapGestureRecognizer();
+                tgr.Tapped += (s, e) => SelectLandmark(s, e);
+                items[items.Count - 1].GestureRecognizers.Add(tgr);
+                landmarkContainer.Children.Add(items[items.Count-1]);
+                DisplayAlert("Added","Location successcully added","OK");
+                name.Text = "";
+                EnableButton(add);
+                EnableButton(reloadDistance);
+                EnableButton(delete);
+            }
+        }
+        bool CheckValidity()
+        {
+            if (name.Text==null)
+            {
+                DisplayAlert("Empty Input", "Please enter landmark name in the textbox", "OK");
+                return false;
+            }
+            if (name.Text.Equals("None"))
+            {
+                DisplayAlert("Invalid Name","You are not allowed to use this name. Try something else","OK");
+                return false;
+            } else if (name.Text.Equals(""))
+            {
+                DisplayAlert("Empty Input", "Please enter landmark name in the textbox", "OK");
+                return false;
+            }
+            else
+            {
+                foreach (var i in LandmarkCollection.landmarks)
+                {
+                    if (name.Text.Equals(i.name))
+                    {
+                        DisplayAlert("Invalid Name", "The name is already used by another landmark", "OK");
+                        return false;
+                    }
+                }
+            }
+            return true;    
+        }
+        void SortByChangeValue(object sender, EventArgs ea)
+        {
+            
         }
     }
 }

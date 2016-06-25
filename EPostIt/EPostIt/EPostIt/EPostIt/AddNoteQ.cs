@@ -83,31 +83,40 @@ namespace EPostIt
         }
         async Task Save(object sender, EventArgs ea)
         {
-            if (textArea.Text == null)
+            if (this.AcquireTapLock())
             {
-                await DisplayAlert("Empty Text", "Please type in some text in order to save.", "OK");
-            }
-            else if (textArea.Text.Equals(""))
-            {
-                await DisplayAlert("Empty Text", "Please type in some text in order to save.", "OK");
-            }
-            else
-            {
-                NoteManager.quickNotes.Add(new Note(textArea.Text));
-                bool backToMenu = await DisplayAlert("Note Saved", "Note successfully saved.", "Back To Menu", "Create New Note");
-                if (backToMenu)
+                if (textArea.Text == null)
                 {
-                    textArea.Text = "";
-                    await Navigation.PopToRootAsync();
+                    await DisplayAlert("Empty Text", "Please type in some text in order to save.", "OK");
+                }
+                else if (textArea.Text.Equals(""))
+                {
+                    await DisplayAlert("Empty Text", "Please type in some text in order to save.", "OK");
                 }
                 else
                 {
-                    await Navigation.PopAsync();
+                    NoteManager.quickNotes.Add(new Note(textArea.Text));
+                    bool backToMenu = await DisplayAlert("Note Saved", "Note successfully saved.", "Back To Menu", "Create New Note");
+                    if (backToMenu)
+                    {
+                        textArea.Text = "";
+                        await Navigation.PopToRootAsync();
+                    }
+                    else
+                    {
+                        await Navigation.PopAsync();
+                    }
                 }
+                this.ReleaseTapLock();
             }
         }
         async Task Cancel(object sender, EventArgs ea)
         {
+            /*if (this.AcquireTapLock())
+            {
+             this.ReleaseTapLock();
+            }
+             */
             if (this.AcquireTapLock())
             {
                 if (textArea.Text == null)

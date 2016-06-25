@@ -210,49 +210,59 @@ namespace EPostIt
         }
         async Task Save(object sender, EventArgs ea)
         {
-            if (textArea.Text == null)
+            /*
+            if (this.AcquireTapLock())
             {
-                await DisplayAlert("Empty Text", "Please type in some text in order to save.", "OK");
+                this.ReleaseTapLock();
             }
-            else if (textArea.Text.Equals(""))
+            */
+            if (this.AcquireTapLock())
             {
-                await DisplayAlert("Empty Text", "Please type in some text in order to save.", "OK");
-            }
-            else
-            {
-                //NoteManager.quickNotes.Add(new Note(textArea.Text));
-                if (savedLandmarks.SelectedIndex == 0 && nameNewLandmark.Text.Equals(""))
+                if (textArea.Text == null)
                 {
-                    await DisplayAlert("", "Please type in the landmark name.", "OK");
-                    return;
+                    await DisplayAlert("Empty Text", "Please type in some text in order to save.", "OK");
                 }
-                int landmarkIndex = LandmarkCollection.nameList.IndexOf(nameNewLandmark.Text);
-                if (savedLandmarks.SelectedIndex == 0 && landmarkIndex != -1)
+                else if (textArea.Text.Equals(""))
                 {
-                    await DisplayAlert("", "Landmark name has already existed.", "OK");
-                    return;
-                }
-                double triggerRadius = Double.Parse(rangeP.Items[rangeP.SelectedIndex]);
-                if (savedLandmarks.SelectedIndex == 0)
-                {
-                    LandmarkCollection.CreateLandmark(nameNewLandmark.Text, lat, lon);
-                    LandmarkCollection.landmarks[LandmarkCollection.landmarks.Count - 1].AssignEvent();
+                    await DisplayAlert("Empty Text", "Please type in some text in order to save.", "OK");
                 }
                 else
                 {
-                    LandmarkCollection.landmarks[landmarkIndex].AssignEvent();
+                    //NoteManager.quickNotes.Add(new Note(textArea.Text));
+                    if (savedLandmarks.SelectedIndex == 0 && nameNewLandmark.Text.Equals(""))
+                    {
+                        await DisplayAlert("", "Please type in the landmark name.", "OK");
+                        return;
+                    }
+                    int landmarkIndex = LandmarkCollection.nameList.IndexOf(nameNewLandmark.Text);
+                    if (savedLandmarks.SelectedIndex == 0 && landmarkIndex != -1)
+                    {
+                        await DisplayAlert("", "Landmark name has already existed.", "OK");
+                        return;
+                    }
+                    double triggerRadius = Double.Parse(rangeP.Items[rangeP.SelectedIndex]);
+                    if (savedLandmarks.SelectedIndex == 0)
+                    {
+                        LandmarkCollection.CreateLandmark(nameNewLandmark.Text, lat, lon);
+                        LandmarkCollection.landmarks[LandmarkCollection.landmarks.Count - 1].AssignEvent();
+                    }
+                    else
+                    {
+                        LandmarkCollection.landmarks[landmarkIndex].AssignEvent();
+                    }
+                    NoteManager.locationNotes.Add(new LocationNote(textArea.Text, lat, lon, triggerRadius));
+                    bool backToMenu = await DisplayAlert("Note Saved", "Note successfully saved.", "Back To Menu", "Create New Note");
+                    if (backToMenu)
+                    {
+                        textArea.Text = "";
+                        await Navigation.PopToRootAsync();
+                    }
+                    else
+                    {
+                        await Navigation.PopAsync();
+                    }
                 }
-                NoteManager.locationNotes.Add(new LocationNote(textArea.Text, lat, lon, triggerRadius));
-                bool backToMenu = await DisplayAlert("Note Saved", "Note successfully saved.", "Back To Menu", "Create New Note");
-                if (backToMenu)
-                {
-                    textArea.Text = "";
-                    await Navigation.PopToRootAsync();
-                }
-                else
-                {
-                    await Navigation.PopAsync();
-                }
+                this.ReleaseTapLock();
             }
         }
         async Task Cancel(object sender, EventArgs ea)
