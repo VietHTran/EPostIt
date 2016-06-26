@@ -56,6 +56,7 @@
     <Compile Include="PageManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SaveDataSwitcher.cs" />
+    <Compile Include="SeeNote.cs" />
     <Compile Include="TimeNote.cs" />
   </ItemGroup>
   <ItemGroup>

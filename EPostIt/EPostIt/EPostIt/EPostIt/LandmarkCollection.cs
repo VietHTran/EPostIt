@@ -30,6 +30,7 @@ namespace EPostIt
                 nameList = new List<string>();
             }
             landmarks.Add(new Landmark(n, lat, lon));
+
             nameList.Add(n);
         }
         public static Landmark SearchName(string n)
