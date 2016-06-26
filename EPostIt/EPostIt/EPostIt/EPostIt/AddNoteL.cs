@@ -151,6 +151,16 @@ namespace EPostIt
                     Children= {cancel,save}
                 } }
             };
+            Debug.WriteLine("Landmark Items: ");
+            foreach (var i in LandmarkCollection.landmarks)
+            {
+                Debug.WriteLine(i.name);
+            }
+            Debug.WriteLine("Landmark Names: ");
+            foreach (var i in LandmarkCollection.nameList)
+            {
+                Debug.WriteLine(i);
+            }
             Content = pageContent;
         }
 
@@ -242,6 +252,7 @@ namespace EPostIt
                     }
                     else
                     {
+                        Debug.WriteLine($"index {landmarkIndex}, name {LandmarkCollection.landmarks[landmarkIndex].name}");
                         LandmarkCollection.landmarks[landmarkIndex].AssignEvent();
                     }
                     NoteManager.locationNotes.Add(new LocationNote(textArea.Text, lat, lon, triggerRadius));

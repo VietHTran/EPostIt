@@ -71,6 +71,7 @@ namespace EPostIt
         }
         public void DeleteFromMainData()
         {
+            LandmarkCollection.nameList.Remove(landmark.name);
             LandmarkCollection.landmarks.Remove(landmark);
         }
         public void ReCalcDistance()
