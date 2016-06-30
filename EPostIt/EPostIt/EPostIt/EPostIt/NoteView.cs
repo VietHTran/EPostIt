@@ -24,23 +24,21 @@ namespace EPostIt
                 VerticalOptions = LayoutOptions.FillAndExpand,
             };
         }
-
         private int code; // quick(0), time(1), location(2)
         public Note note { get; set; }
         public string shortText;
         public string quickNText;
+        public string timeNText;
         public LocationNote noteL { get; set; }
         public TimeNote noteT { get; set; }
         private string dateC;
         private string noteType;
         //Location-based only
-        Label distanceL;
         double distance;
         public NoteView(Note n)
         {
             this.code = 0;
             note = n;
-            Debug.WriteLine($"supperupper: {note.dateCreated.ToString("MM/dd/yyyy")}");
             HorizontalOptions = LayoutOptions.FillAndExpand;
             noteType = "Quick";
             CommonGenerate();
@@ -65,57 +63,82 @@ namespace EPostIt
             noteType = "Location-based";
             CommonGenerate();
             GenerateLocationNote();
+            Debug.WriteLine("salude4");
         }
         void GenerateText()
         {
-            if (note.NoteContent.Length>=25)
+            int u=-1;
+            string[] holder = note.NoteContent.Split('\n');
+            for (int i=0;i<holder.Length;i++)
             {
-                shortText = note.NoteContent.Substring(0,25);
+                if (!holder[i].Equals(""))
+                {
+                    u = i;
+                    break;
+                }
+            }
+            if (u == -1) u = 0;
+            if (holder[u].Length>=20)
+            {
+                shortText = holder[u].Substring(0,20);
                 shortText += "...";
             } else
             {
-                shortText = note.NoteContent;
+                shortText = holder[u];
             }
         }
         void GenerateTextLimit(int l)
         {
-            if (note.NoteContent.Length >= l)
+            int u = -1;
+            string[] holder = note.NoteContent.Split('\n');
+            for (int i = 0; i < holder.Length; i++)
             {
-                quickNText = note.NoteContent.Substring(0, l);
+                if (!holder[i].Equals(""))
+                {
+                    u = i;
+                    break;
+                }
+            }
+            if (u == -1) u = 0;
+            if (holder[u].Length >= l)
+            {
+                quickNText = holder[u].Substring(0, l);
                 quickNText += "...";
             }
             else
             {
-                quickNText = note.NoteContent;
+                quickNText = holder[u];
+            }
+        }
+        void GenerateTextLimitTime(int l)
+        {
+            if (note.NoteContent.Length >= l)
+            {
+                timeNText = note.NoteContent.Substring(0, l);
+                timeNText += "...";
+            }
+            else
+            {
+                timeNText = note.NoteContent;
             }
         }
         void CommonGenerate()
         {
             Padding = 0;
-            HeightRequest = 90;
+            HeightRequest = 70;
             BackgroundColor = Color.Green;
             GenerateText();
-            GenerateTextLimit(35);
-            //dateC = note.dateCreated.ToString("MM/dd/yyyy");
-            Debug.WriteLine("I'm tired of your bullshit");
-            try
-            {
-                Debug.WriteLine($"supperupper: {note.dateCreated.ToString("MM/dd/yyyy")}");
-            } catch (NullReferenceException e)
-            {
-                Debug.WriteLine("I'm tired of your bullshit");
-            }
-            
-            dateC = DateTime.Now.ToString("MM/dd/yyyy");
-            Debug.WriteLine("supper");
+            GenerateTextLimit(45);
+            GenerateTextLimitTime(10);
+            dateC = note.dateCreated.ToString("MM/dd/yyyy");
         }
-        void SpecialGenerate()
+        /*void SpecialGenerate()
         {
             if (code==1)
             {
 
             }
-        }
+        }*/
         public void GenerateTimeNote()
         {
             Children.Clear();
@@ -134,12 +157,13 @@ namespace EPostIt
             Label statusT = GenerateLabel(status, Color.White, 25, FontAttributes.None, TextAlignment.Center);
 
             Children.Add(name,0,0);
-            Grid.SetColumnSpan(name,4);
-            Children.Add(dateCreated, 4, 0);
-            Grid.SetColumnSpan(dateCreated, 2);
-            Children.Add(dateTriggered, 6, 0);
-            Grid.SetColumnSpan(dateTriggered, 2);
-            Children.Add(statusT, 8, 0);
+            Grid.SetColumnSpan(name,7);
+            Children.Add(dateCreated, 7, 0);
+            Grid.SetColumnSpan(dateCreated, 4);
+            Children.Add(dateTriggered, 11, 0);
+            Grid.SetColumnSpan(dateTriggered, 4);
+            Children.Add(statusT, 15, 0);
+            Grid.SetColumnSpan(statusT, 3);
         }
         public void GenerateLocationNote()
         {
@@ -147,7 +171,7 @@ namespace EPostIt
             string landmarkN = noteL.landmark.name;
             distance = ManagerLocation.CalcDistance(noteL.landmark.latitude,noteL.landmark.longitude);
             string status;
-            if (noteT.isTriggered)
+            if (noteL.isTriggered)
             {
                 status = "On";
             }
@@ -155,28 +179,16 @@ namespace EPostIt
             {
                 status = "Off";
             }
-            Label name = GenerateLabel(shortText, Color.White, 25, FontAttributes.None, TextAlignment.Center);
+            Label name = GenerateLabel(timeNText, Color.White, 25, FontAttributes.None, TextAlignment.Center);
             Label statusT = GenerateLabel(status, Color.White, 25, FontAttributes.None, TextAlignment.Center);
             Label dateCreated = GenerateLabel(dateC, Color.White, 25, FontAttributes.None, TextAlignment.Center);
             Label landmarkL = GenerateLabel(landmarkN, Color.White, 25, FontAttributes.None, TextAlignment.Center);
-            /*
-            if (distance > 999)
-            {
-                distanceL = GenerateLabel("+999", Color.White, 25, FontAttributes.None, TextAlignment.Center);
-            }
-            else
-            {
-                distanceL = GenerateLabel(Math.Round(distance, 1).ToString(), Color.White, 25, FontAttributes.None, TextAlignment.Center);
-            }
-            */
             Children.Add(name,0,0);
             Grid.SetColumnSpan(name,4);
             Children.Add(dateCreated, 4, 0);
             Grid.SetColumnSpan(dateCreated, 3);
             Children.Add(landmarkL, 7, 0);
             Grid.SetColumnSpan(landmarkL, 4);
-            //Children.Add(distanceL, 9, 0);
-            //Grid.SetColumnSpan(distanceL, 2);
             Children.Add(statusT,11, 0);
             Grid.SetColumnSpan(statusT, 2);
         }
@@ -187,7 +199,7 @@ namespace EPostIt
             Label dateCreated = GenerateLabel(dateC, Color.White, 25, FontAttributes.None, TextAlignment.Center);
             
             Children.Add(name, 0, 0);
-            Grid.SetColumnSpan(name, 7);
+            Grid.SetColumnSpan(name, 8);
             Children.Add(dateCreated, 8, 0);
             Grid.SetColumnSpan(dateCreated, 3);
         }
@@ -200,9 +212,9 @@ namespace EPostIt
             Label typeL = GenerateLabel(noteType, Color.White, 25, FontAttributes.None, TextAlignment.Center);
             grid.Children.Add(name, 0, 0);
             Grid.SetColumnSpan(name, 5);
-            grid.Children.Add(typeL, 5, 0);
+            grid.Children.Add(typeL, 8, 0);
             Grid.SetColumnSpan(typeL, 3);
-            grid.Children.Add(dateCreated, 8, 0);
+            grid.Children.Add(dateCreated, 5, 0);
             Grid.SetColumnSpan(dateCreated, 3);
             return grid;
         }

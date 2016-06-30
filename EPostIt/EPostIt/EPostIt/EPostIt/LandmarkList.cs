@@ -433,7 +433,6 @@ namespace EPostIt
             (sender as Button).IsEnabled = false;
             for (int i = landmarkContainer.Children.Count-1; i>=0 ; i--)
             {
-                Debug.WriteLine((landmarkContainer.Children[i] as LandmarkView).landmark.name);
                 //((LandmarkView)landmarkContainer.Children[i]).ReCalcDistance();
                 landmarkContainer.Children.RemoveAt(i);
                 items[i + 1].ReCalcDistance();

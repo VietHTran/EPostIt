@@ -23,19 +23,18 @@ namespace EPostIt
             
             foreach (var i in NoteManager.quickNotes)
             {
-                Debug.WriteLine($"this is i: {i.NoteContent}");
                 quickNotes.Add(new NoteView(i));
                 allNotes.Add(quickNotes[quickNotes.Count-1].GenerateAllNote());
-            }
-            foreach (var i in NoteManager.locationNotes)
-            {
-                locationNotes.Add(new NoteView(i));
-                allNotes.Add(locationNotes[locationNotes.Count - 1].GenerateAllNote());
             }
             foreach (var i in NoteManager.timeNotes)
             {
                 timeNotes.Add(new NoteView(i));
                 allNotes.Add(timeNotes[timeNotes.Count - 1].GenerateAllNote());
+            }
+            foreach (var i in NoteManager.locationNotes)
+            {
+                locationNotes.Add(new NoteView(i));
+                allNotes.Add(locationNotes[locationNotes.Count - 1].GenerateAllNote());
             }
         }
         public List<NoteView> All()

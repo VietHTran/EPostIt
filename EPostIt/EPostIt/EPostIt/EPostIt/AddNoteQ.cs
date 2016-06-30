@@ -96,7 +96,6 @@ namespace EPostIt
                 else
                 {
                     NoteManager.quickNotes.Add(new Note(textArea.Text));
-                    //System.Diagnostics.Debug.WriteLine($"this is {NoteManager.quickNotes[NoteManager.quickNotes.Count-1].dateCreated.ToString("MM/dd/yyyy")}");
                     bool backToMenu = await DisplayAlert("Note Saved", "Note successfully saved.", "Back To Menu", "Create New Note");
                     if (backToMenu)
                     {
