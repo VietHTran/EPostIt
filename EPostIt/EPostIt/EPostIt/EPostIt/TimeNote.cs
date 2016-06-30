@@ -11,7 +11,7 @@ namespace EPostIt
     {
         public DateTime DateTimeSet { get; set; }
         //Only load once. To reload-> Change time
-        public bool isTriggered { get; }
+        public bool isTriggered { get; set; }
         public TimeNote(string s, DateTime setter) : base (s)
         {
             this.DateTimeSet = setter;

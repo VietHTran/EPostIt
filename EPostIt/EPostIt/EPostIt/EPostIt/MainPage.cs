@@ -19,7 +19,7 @@ namespace EPostIt
             this.Padding = 20;
             add = new Button { Text = "Add New Note", BackgroundColor = Color.Red, FontSize = 32, VerticalOptions = LayoutOptions.FillAndExpand, HorizontalOptions = LayoutOptions.FillAndExpand, TextColor = Color.White, FontAttributes = FontAttributes.Bold };
             add.Clicked += AddNote;
-            Button check = new Button { Text = "SNote List", BackgroundColor = Color.Green, FontSize = 32, VerticalOptions = LayoutOptions.FillAndExpand, HorizontalOptions = LayoutOptions.FillAndExpand, TextColor = Color.White, FontAttributes = FontAttributes.Bold };
+            Button check = new Button { Text = "Note List", BackgroundColor = Color.Green, FontSize = 32, VerticalOptions = LayoutOptions.FillAndExpand, HorizontalOptions = LayoutOptions.FillAndExpand, TextColor = Color.White, FontAttributes = FontAttributes.Bold };
             check.Clicked += SeeNote;
             Button list = new Button { Text = "Landmark List", BackgroundColor = Color.Blue, FontSize = 32, VerticalOptions = LayoutOptions.FillAndExpand, HorizontalOptions = LayoutOptions.FillAndExpand, TextColor = Color.White, FontAttributes = FontAttributes.Bold };
             list.Clicked += LandmarkList;

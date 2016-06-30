@@ -252,10 +252,10 @@ namespace EPostIt
                     }
                     else
                     {
-                        Debug.WriteLine($"index {landmarkIndex}, name {LandmarkCollection.landmarks[landmarkIndex].name}");
+                        //Debug.WriteLine($"index {landmarkIndex}, name {LandmarkCollection.landmarks[landmarkIndex].name}");
                         LandmarkCollection.landmarks[landmarkIndex].AssignEvent();
                     }
-                    NoteManager.locationNotes.Add(new LocationNote(textArea.Text, lat, lon, triggerRadius));
+                    NoteManager.locationNotes.Add(new LocationNote(textArea.Text, LandmarkCollection.landmarks[LandmarkCollection.landmarks.Count - 1], triggerRadius));
                     bool backToMenu = await DisplayAlert("Note Saved", "Note successfully saved.", "Back To Menu", "Create New Note");
                     if (backToMenu)
                     {

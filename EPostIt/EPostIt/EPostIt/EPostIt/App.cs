@@ -25,12 +25,7 @@ namespace EPostIt
                 LandmarkCollection.CreateLandmark("NEHS", 40.055595, -75.071062);
                 LandmarkCollection.CreateLandmark("Random Place", 40.057770, -75.065449);
             }
-            if (NoteManager.quickNotes==null)
-            {
-                NoteManager.quickNotes = new List<Note>();
-                NoteManager.locationNotes = new List<LocationNote>();
-                NoteManager.timeNotes = new List<TimeNote>();
-            }
+            NoteManager.Init();
         }
 
         protected override void OnSleep()

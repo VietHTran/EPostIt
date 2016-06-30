@@ -59,6 +59,7 @@ namespace EPostIt
                 Spacing=10
             };
         }
+        NoteViewList items;
         private StackLayout GenerateAllNoteS()
         {
             StackLayout holder = new StackLayout
@@ -84,9 +85,12 @@ namespace EPostIt
             heading.Children.Add(typeH, 8, 0);
             Grid.SetColumnSpan(typeH, 2);
             
-
-            //InitializeAllNote();
             holder.Children.Add(heading);
+            foreach (var i in items.allNotes)
+            {
+                holder.Children.Add(i);
+            }
+            
             return holder;
         }
         private StackLayout GenerateQuickNoteS()
@@ -104,28 +108,30 @@ namespace EPostIt
             StackLayout holder = GenerateSectionStack();
             return holder;
         }
-        private Button quickNoteS, timeNoteS, locationNoteS, allNoteS, currentButton;
-        private Grid tabButtons;
+        private Button quickNoteS, timeNoteS, locationNoteS, allNoteS, currentButton, back, add, toggleMode, reload;
+        private Grid tabButtons, buttonList;
         private StackLayout content, allNotes, quickNotes, timeNotes, locationNotes, currentContent;
-
+        private bool selectMode;
+        private Label empty;
         public SeeNote()
         {
+            Initialization();
             this.Padding = new Thickness(10, Device.OnPlatform(20, 0, 0), 10, 5);
             Title = "Note Lists";
-            quickNoteS = GenerateButton("Quick Notes",Color.White,Color.Green);
+            quickNoteS = GenerateButton("Quick Notes", Color.White, Color.Green);
             timeNoteS = GenerateButton("Time-based\nNotes", Color.White, Color.Green);
             locationNoteS = GenerateButton("Location-based\nNotes", Color.White, Color.Green);
             allNoteS = GenerateButton("All Notes", Color.White, Color.Green);
             tabButtons = new Grid
             {
-                HorizontalOptions=LayoutOptions.FillAndExpand,
-                Padding=10,
+                HorizontalOptions = LayoutOptions.FillAndExpand,
+                Padding = 10,
             };
-            tabButtons.Children.Add(quickNoteS,1,0);
+            tabButtons.Children.Add(quickNoteS, 1, 0);
             tabButtons.Children.Add(timeNoteS, 2, 0);
             tabButtons.Children.Add(locationNoteS, 3, 0);
             tabButtons.Children.Add(allNoteS, 0, 0);
-
+            
             allNoteS.Clicked += OpenAll;
             quickNoteS.Clicked += OpenQuick;
             locationNoteS.Clicked += OpenLocation;
@@ -134,11 +140,33 @@ namespace EPostIt
             currentButton = allNoteS;
             UpdateButton();
 
+            Debug.WriteLine("Block A");
             allNotes = GenerateAllNoteS();
+            Debug.WriteLine("Block B");
             quickNotes = GenerateQuickNoteS();
+            Debug.WriteLine("Block C");
             timeNotes = GenerateTimeNoteS();
+            Debug.WriteLine("Block D");
             locationNotes = GenerateLocationNoteS();
+            Debug.WriteLine("Block E");
             currentContent = allNotes;
+
+            back = GenerateButton("Back", Color.White, Color.Gray);
+            add = GenerateButton("Add Note", Color.White, Color.Green);
+            toggleMode = GenerateButton("Select Mode", Color.White, Color.Green);
+            reload = GenerateButton("Reload", Color.White, Color.Green);
+            
+            buttonList = new Grid {
+                HorizontalOptions=LayoutOptions.FillAndExpand
+            };
+            buttonList.Children.Add(back,0,0);
+            //buttonList.Children.Add(reload, 1, 0);
+            //buttonList.Children.Add(add,2,0);
+            buttonList.Children.Add(toggleMode, 3, 0);
+            
+            empty = GenerateLabel("\n\n\n\n\nNo landmark registered\n\n\n\n\n", Color.White, 30, FontAttributes.None, TextAlignment.Center);
+            empty.HorizontalOptions = LayoutOptions.FillAndExpand;
+            empty.VerticalOptions = LayoutOptions.FillAndExpand;
 
             content = new StackLayout
             {
@@ -148,7 +176,8 @@ namespace EPostIt
                 Children=
                 {
                     tabButtons,
-                    currentContent
+                    currentContent,
+                    buttonList
                 }
             };
             Content = content;
@@ -193,6 +222,26 @@ namespace EPostIt
             content.Children.Insert(1, currentContent);
             currentButton = locationNoteS;
             UpdateButton();
+        }
+        void Initialization ()
+        {
+            Task.Run(() => {
+                items = new NoteViewList();
+                /*
+                foreach (var i in items.quickNotes)
+                {
+                    quickNotes.Children.Add(i);
+                }
+                foreach (var i in items.timeNotes)
+                {
+                    timeNotes.Children.Add(i);
+                }
+                foreach (var i in items.locationNotes)
+                {
+                    locationNotes.Children.Add(i);
+                }
+                */
+            });
         }
     }
 }
