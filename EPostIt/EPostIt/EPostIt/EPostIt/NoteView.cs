@@ -63,7 +63,6 @@ namespace EPostIt
             noteType = "Location-based";
             CommonGenerate();
             GenerateLocationNote();
-            Debug.WriteLine("salude4");
         }
         void GenerateText()
         {

@@ -87,6 +87,9 @@ namespace EPostIt
             holder.Children.Add(heading);
             foreach (var i in items.allNotes)
             {
+                var tgr = new TapGestureRecognizer();
+                tgr.Tapped += (s, e) => SelectNote(s, e);
+                i.GestureRecognizers.Add(tgr);
                 holder.Children.Add(i);
             }
             
@@ -112,6 +115,9 @@ namespace EPostIt
             holder.Children.Add(heading);
             foreach (var i in items.quickNotes)
             {
+                var tgr = new TapGestureRecognizer();
+                tgr.Tapped += (s, e) => SelectNote(s, e);
+                i.GestureRecognizers.Add(tgr);
                 holder.Children.Add(i);
             }
 
@@ -143,6 +149,9 @@ namespace EPostIt
             holder.Children.Add(heading);
             foreach (var i in items.timeNotes)
             {
+                var tgr = new TapGestureRecognizer();
+                tgr.Tapped += (s, e) => SelectNote(s, e);
+                i.GestureRecognizers.Add(tgr);
                 holder.Children.Add(i);
             }
 
@@ -174,23 +183,25 @@ namespace EPostIt
             holder.Children.Add(heading);
             foreach (var i in items.locationNotes)
             {
+                var tgr = new TapGestureRecognizer();
+                tgr.Tapped += (s, e) => SelectNote(s, e);
+                i.GestureRecognizers.Add(tgr);
                 holder.Children.Add(i);
             }
 
             return holder;
         }
-        private Button quickNoteS, timeNoteS, locationNoteS, allNoteS, currentButton, back, add, toggleMode, reload;
-        private Grid tabButtons, buttonList;
+        private Button quickNoteS, timeNoteS, locationNoteS, allNoteS, currentButton, back, toggleMode, activate, delete, selectAll,deselectAll;
+        private Grid tabButtons, buttonList, sorter;
         private StackLayout content, allNotes, quickNotes, timeNotes, locationNotes, currentContent;
-        //private bool selectMode;
+        private int selectMode; //if -1 => viewMode else => selectMode number of selected items
+        private Picker sortBy, sortType;
         private NoteViewList items;
         private Label empty;
         public SeeNote()
         {
             TestInit();
-            Debug.WriteLine("Heisenberg");
             Initialization();
-            Debug.WriteLine("Say my name");
             this.Padding = new Thickness(10, Device.OnPlatform(20, 0, 0), 10, 5);
             Title = "Note Lists";
             quickNoteS = GenerateButton("Quick Notes", Color.White, Color.Green);
@@ -220,22 +231,28 @@ namespace EPostIt
             currentContent = allNotes;
 
             back = GenerateButton("Back", Color.White, Color.Gray);
-            add = GenerateButton("Add Note", Color.White, Color.Green);
             toggleMode = GenerateButton("Select\nMode", Color.White, Color.Green);
-            reload = GenerateButton("Reload", Color.White, Color.Green);
+            activate = GenerateButton("Turn\nOn", Color.White, Color.Green);
+            delete= GenerateButton("Delete", Color.White, Color.Green);
+            selectAll= GenerateButton("Select\nAll", Color.White, Color.Green);
+            deselectAll= GenerateButton("Deselect\nAll", Color.White, Color.Green);
 
             buttonList = new Grid {
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 Padding=10,
             };
             buttonList.Children.Add(back,0,0);
-            //buttonList.Children.Add(reload, 1, 0);
-            //buttonList.Children.Add(add,2,0);
             buttonList.Children.Add(toggleMode, 3, 0);
-            
+            buttonList.Children.Add(selectAll, 3, 1);
+            buttonList.Children.Add(deselectAll, 2, 1);
+            buttonList.Children.Add(delete, 2, 0);
+            buttonList.Children.Add(activate, 1, 0);
+
             empty = GenerateLabel("\n\n\n\n\nEmpty\n\n\n\n\n", Color.White, 30, FontAttributes.None, TextAlignment.Center);
             empty.HorizontalOptions = LayoutOptions.FillAndExpand;
             empty.VerticalOptions = LayoutOptions.FillAndExpand;
+
+            InitPicker();
 
             content = new StackLayout
             {
@@ -245,6 +262,7 @@ namespace EPostIt
                 Children=
                 {
                     tabButtons,
+                    sorter,
                     currentContent,
                     buttonList
                 }
@@ -270,34 +288,60 @@ namespace EPostIt
         {
             content.Children.Remove(currentContent);
             currentContent = allNotes;
-            content.Children.Insert(1,currentContent);
+            content.Children.Insert(2,currentContent);
             currentButton = allNoteS;
             UpdateButton();
+            SetPickerAllNote();
         }
         void OpenQuick(object sender, EventArgs ea)
         {
             content.Children.Remove(currentContent);
             currentContent = quickNotes;
-            content.Children.Insert(1, currentContent);
+            content.Children.Insert(2, currentContent);
             currentButton = quickNoteS;
             UpdateButton();
+            SetPickerQuickNote();
         }
         void OpenTime(object sender, EventArgs ea)
         {
             content.Children.Remove(currentContent);
             currentContent = timeNotes;
-            content.Children.Insert(1, currentContent);
+            content.Children.Insert(2, currentContent);
             currentButton = timeNoteS;
             UpdateButton();
+            SetPickerTimeNote();
         }
         void OpenLocation(object sender, EventArgs ea)
         {
             content.Children.Remove(currentContent);
             currentContent = locationNotes;
-            content.Children.Insert(1, currentContent);
+            content.Children.Insert(2, currentContent);
             currentButton = locationNoteS;
             UpdateButton();
+            SetPickerLocationNote();
         }
+        void ToggleMode(object sender, EventArgs ea)
+        {
+            if (selectMode==-1)
+            {
+                selectMode = 0;
+                toggleMode.Text = "Select Mode";
+            }
+        }
+        void SelectNote(object sender, EventArgs ea)
+        {
+            var holder = sender as NoteView;
+            if (selectMode==-1)
+            {
+                //Display Pop-up
+            }
+            else
+            {
+                selectMode++;
+                holder.BackgroundColor = Color.Blue;
+            }
+        }
+
         void Initialization ()
         {
             items = new NoteViewList();
@@ -320,6 +364,84 @@ namespace EPostIt
             {
                 NoteManager.locationNotes.Add(new LocationNote("Wubba Lubba Dub Dub",LandmarkCollection.landmarks[1],1));
             }
+        }
+        void InitPicker()
+        {
+            Label sortByT = GenerateLabel("Sort By: ",Color.White,25,FontAttributes.Bold, TextAlignment.Start);
+            sortByT.HorizontalOptions = LayoutOptions.Center;
+            sortBy = new Picker
+            {
+                HorizontalOptions = LayoutOptions.FillAndExpand,
+                VerticalOptions= LayoutOptions.FillAndExpand,
+                Title="Sort By"
+            };
+            StackLayout sortByG = new StackLayout
+            {
+                HorizontalOptions = LayoutOptions.FillAndExpand,
+                VerticalOptions = LayoutOptions.FillAndExpand,
+                Orientation = StackOrientation.Horizontal,
+                Children = { sortByT, sortBy }
+            };
+
+            Label sortTypeT = GenerateLabel("Sort Type: ", Color.White, 25, FontAttributes.Bold, TextAlignment.End);
+            sortType = new Picker
+            {
+                HorizontalOptions = LayoutOptions.FillAndExpand,
+                VerticalOptions = LayoutOptions.FillAndExpand,
+                Title = "Sort Type",
+                Items=
+                {
+                    "Ascending",
+                    "Descending"
+                }
+            };
+            SetPickerAllNote();
+            sorter = new Grid
+            {
+                HorizontalOptions = LayoutOptions.FillAndExpand,
+                Padding = 10,
+            };
+            sorter.Children.Add(sortByG, 0, 0);
+            Grid.SetColumnSpan(sortByG, 2);
+            sorter.Children.Add(sortTypeT, 2, 0);
+            sorter.Children.Add(sortType, 3, 0);
+        }
+        void SetPickerAllNote()
+        {
+            Debug.WriteLine("1");
+            sortBy.Items.Clear();
+            Debug.WriteLine("2");
+            sortBy.Items.Add("Date Created");
+            sortBy.Items.Add("Type");
+            Debug.WriteLine("3");
+            sortBy.SelectedIndex = -1;
+            sortType.SelectedIndex = -1;
+            Debug.WriteLine("4");
+        }
+        void SetPickerQuickNote()
+        {
+            sortBy.Items.Clear();
+            sortBy.Items.Add("Date Created");
+            sortBy.SelectedIndex = -1;
+            sortType.SelectedIndex = -1;
+        }
+        void SetPickerTimeNote()
+        {
+            sortBy.Items.Clear();
+            sortBy.Items.Add("Date Created");
+            sortBy.Items.Add("Date Triggered");
+            sortBy.Items.Add("Status");
+            sortBy.SelectedIndex = -1;
+            sortType.SelectedIndex = -1;
+        }
+        void SetPickerLocationNote()
+        {
+            sortBy.Items.Clear();
+            sortBy.Items.Add("Date Created");
+            sortBy.Items.Add("Landmark Name");
+            sortBy.Items.Add("Status");
+            sortBy.SelectedIndex = -1;
+            sortType.SelectedIndex = -1;
         }
     }
 }
