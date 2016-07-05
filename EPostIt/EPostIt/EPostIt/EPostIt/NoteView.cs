@@ -24,20 +24,21 @@ namespace EPostIt
                 VerticalOptions = LayoutOptions.FillAndExpand,
             };
         }
-        private int code; // quick(0), time(1), location(2)
+        public int Code { get; set; } // quick(0), time(1), location(2)
         public Note note { get; set; }
-        public string shortText;
-        public string quickNText;
-        public string timeNText;
+        public string shortText { get; set; }
+        public string quickNText { get; set; }
+        public string timeNText { get; set; }
         public LocationNote noteL { get; set; }
         public TimeNote noteT { get; set; }
-        private string dateC;
+        public string dateC { get; set; }
+        public string Status { get; set; }
         private string noteType;
         //Location-based only
         double distance;
         public NoteView(Note n)
         {
-            this.code = 0;
+            this.Code = 0;
             note = n;
             HorizontalOptions = LayoutOptions.FillAndExpand;
             noteType = "Quick";
@@ -46,7 +47,7 @@ namespace EPostIt
         }
         public NoteView (TimeNote n)
         {
-            this.code = 1;
+            this.Code = 1;
             noteT = n;
             note = n;
             HorizontalOptions = LayoutOptions.FillAndExpand;
@@ -56,13 +57,24 @@ namespace EPostIt
         }
         public NoteView(LocationNote n)
         {
-            this.code = 2;
+            this.Code = 2;
             note = n;
             noteL = n;
             HorizontalOptions = LayoutOptions.FillAndExpand;
             noteType = "Location-based";
             CommonGenerate();
             GenerateLocationNote();
+        }
+        public string CalcDistance()
+        {
+            distance = ManagerLocation.CalcDistance(noteL.landmark.latitude, noteL.landmark.longitude);
+            if (distance>999)
+            {
+                return "+999 meters";
+            } else
+            {
+                return $"{Math.Round(distance, 1).ToString()} meter(s)";
+            }
         }
         void GenerateText()
         {
@@ -142,18 +154,17 @@ namespace EPostIt
         {
             Children.Clear();
             string dateT = noteT.dateCreated.ToString("MM/dd/yyyy");
-            string status;
             if (noteT.isTriggered)
             {
-                status = "On";
+                Status = "On";
             } else
             {
-                status = "Off";
+                Status = "Off";
             }
             Label name = GenerateLabel(shortText,Color.White,25,FontAttributes.None,TextAlignment.Center);
             Label dateCreated = GenerateLabel(dateC, Color.White, 25, FontAttributes.None, TextAlignment.Center);
             Label dateTriggered = GenerateLabel(dateT, Color.White, 25, FontAttributes.None, TextAlignment.Center);
-            Label statusT = GenerateLabel(status, Color.White, 25, FontAttributes.None, TextAlignment.Center);
+            Label statusT = GenerateLabel(Status, Color.White, 25, FontAttributes.None, TextAlignment.Center);
 
             Children.Add(name,0,0);
             Grid.SetColumnSpan(name,7);
@@ -169,17 +180,16 @@ namespace EPostIt
             Children.Clear();
             string landmarkN = noteL.landmark.name;
             distance = ManagerLocation.CalcDistance(noteL.landmark.latitude,noteL.landmark.longitude);
-            string status;
             if (noteL.isTriggered)
             {
-                status = "On";
+                Status = "On";
             }
             else
             {
-                status = "Off";
+                Status = "Off";
             }
             Label name = GenerateLabel(timeNText, Color.White, 25, FontAttributes.None, TextAlignment.Center);
-            Label statusT = GenerateLabel(status, Color.White, 25, FontAttributes.None, TextAlignment.Center);
+            Label statusT = GenerateLabel(Status, Color.White, 25, FontAttributes.None, TextAlignment.Center);
             Label dateCreated = GenerateLabel(dateC, Color.White, 25, FontAttributes.None, TextAlignment.Center);
             Label landmarkL = GenerateLabel(landmarkN, Color.White, 25, FontAttributes.None, TextAlignment.Center);
             Children.Add(name,0,0);
@@ -205,6 +215,14 @@ namespace EPostIt
         public NoteView GenerateAllNote()
         {
             NoteView grid= new NoteView(note);
+            grid.Code = Code;
+            if (Code==1)
+            {
+                grid.noteT = noteT;
+            } else if (Code==2)
+            {
+                grid.noteL = noteL;
+            }
             grid.Children.Clear();
             Label name = GenerateLabel(shortText, Color.White, 25, FontAttributes.None, TextAlignment.Center);
             Label dateCreated = GenerateLabel(dateC, Color.White, 25, FontAttributes.None, TextAlignment.Center);

@@ -31,7 +31,7 @@ namespace EPostIt
                 Padding = 10,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 VerticalOptions = LayoutOptions.FillAndExpand,
-                BackgroundColor = Color.FromHex("#13470A"),
+                BackgroundColor = DarkGreen,
                 Children = { a }
             };
             return holder;
@@ -194,14 +194,18 @@ namespace EPostIt
         private Button quickNoteS, timeNoteS, locationNoteS, allNoteS, currentButton, back, toggleMode, activate, delete, selectAll,deselectAll;
         private Grid tabButtons, buttonList, sorter;
         private StackLayout content, allNotes, quickNotes, timeNotes, locationNotes, currentContent;
-        private int selectMode; //if -1 => viewMode else => selectMode number of selected items
+        private int selectMode,tabID; //if -1 => viewMode else => selectMode number of selected items
+        //tabID: All(0), Quick(1), Time(2), Location(3)
         private Picker sortBy, sortType;
         private NoteViewList items;
         private Label empty;
+        Color DarkGreen = Color.FromHex("#13470A");
         public SeeNote()
         {
             TestInit();
             Initialization();
+            selectMode = -1;
+            tabID = 0;
             this.Padding = new Thickness(10, Device.OnPlatform(20, 0, 0), 10, 5);
             Title = "Note Lists";
             quickNoteS = GenerateButton("Quick Notes", Color.White, Color.Green);
@@ -231,11 +235,15 @@ namespace EPostIt
             currentContent = allNotes;
 
             back = GenerateButton("Back", Color.White, Color.Gray);
-            toggleMode = GenerateButton("Select\nMode", Color.White, Color.Green);
+            toggleMode = GenerateButton("View\nMode", Color.White, Color.Green);
             activate = GenerateButton("Turn\nOn", Color.White, Color.Green);
             delete= GenerateButton("Delete", Color.White, Color.Green);
             selectAll= GenerateButton("Select\nAll", Color.White, Color.Green);
             deselectAll= GenerateButton("Deselect\nAll", Color.White, Color.Green);
+
+            toggleMode.Clicked += ToggleMode;
+            selectAll.Clicked += SelectAll;
+            deselectAll.Clicked += DeselectAll;
 
             buttonList = new Grid {
                 HorizontalOptions = LayoutOptions.FillAndExpand,
@@ -243,10 +251,6 @@ namespace EPostIt
             };
             buttonList.Children.Add(back,0,0);
             buttonList.Children.Add(toggleMode, 3, 0);
-            buttonList.Children.Add(selectAll, 3, 1);
-            buttonList.Children.Add(deselectAll, 2, 1);
-            buttonList.Children.Add(delete, 2, 0);
-            buttonList.Children.Add(activate, 1, 0);
 
             empty = GenerateLabel("\n\n\n\n\nEmpty\n\n\n\n\n", Color.White, 30, FontAttributes.None, TextAlignment.Center);
             empty.HorizontalOptions = LayoutOptions.FillAndExpand;
@@ -275,7 +279,6 @@ namespace EPostIt
             };
             Content = wrapperScroll;
         }
-
         void UpdateButton ()
         {
             allNoteS.IsEnabled = true;
@@ -286,37 +289,49 @@ namespace EPostIt
         }
         void OpenAll(object sender, EventArgs ea)
         {
+            DeselectAll();
             content.Children.Remove(currentContent);
             currentContent = allNotes;
             content.Children.Insert(2,currentContent);
             currentButton = allNoteS;
+            tabID = 0;
+            InsertActiveBtn();
             UpdateButton();
             SetPickerAllNote();
         }
         void OpenQuick(object sender, EventArgs ea)
         {
+            DeselectAll();
             content.Children.Remove(currentContent);
             currentContent = quickNotes;
             content.Children.Insert(2, currentContent);
             currentButton = quickNoteS;
+            tabID = 1;
+            InsertActiveBtn();
             UpdateButton();
             SetPickerQuickNote();
         }
         void OpenTime(object sender, EventArgs ea)
         {
+            DeselectAll();
             content.Children.Remove(currentContent);
             currentContent = timeNotes;
             content.Children.Insert(2, currentContent);
             currentButton = timeNoteS;
+            tabID = 2;
+            InsertActiveBtn();
             UpdateButton();
             SetPickerTimeNote();
         }
         void OpenLocation(object sender, EventArgs ea)
         {
+            DeselectAll();
             content.Children.Remove(currentContent);
             currentContent = locationNotes;
             content.Children.Insert(2, currentContent);
             currentButton = locationNoteS;
+            tabID = 3;
+            InsertActiveBtn();
             UpdateButton();
             SetPickerLocationNote();
         }
@@ -325,23 +340,113 @@ namespace EPostIt
             if (selectMode==-1)
             {
                 selectMode = 0;
-                toggleMode.Text = "Select Mode";
+                toggleMode.Text = "Select\nMode";
+                SelectModeOn();
+            } else
+            {
+                SelectModeOff();
+                selectMode = -1;
+                toggleMode.Text = "View\nMode";
             }
         }
-        void SelectNote(object sender, EventArgs ea)
+        async void SelectNote(object sender, EventArgs ea)
         {
             var holder = sender as NoteView;
+            Debug.WriteLine($"Original: {holder.Code}");
             if (selectMode==-1)
             {
-                //Display Pop-up
+                await ShowNote(holder);
             }
             else
             {
-                selectMode++;
-                holder.BackgroundColor = Color.Blue;
+                if (holder.BackgroundColor==Color.Green)
+                {
+                    selectMode++;
+                    holder.BackgroundColor = Color.Blue;
+                    if (!delete.IsEnabled)
+                    {
+                        EnabelButton(delete);
+                        EnabelButton(activate);
+                    }
+                } else
+                {
+                    selectMode--;
+                    holder.BackgroundColor = Color.Green;
+                    if (selectMode==0 && delete.IsEnabled)
+                    {
+                        DisabelButton(delete);
+                        DisabelButton(activate);
+                    }
+                }
+                
             }
         }
-
+        void SelectAll(object sender, EventArgs ea)
+        {
+            SelectAll();
+        }
+        void SelectAll()
+        {
+            TurnAllBlue();
+            selectMode = currentContent.Children.Count - 1;
+            Debug.WriteLine(selectMode);
+            if (!delete.IsEnabled)
+            {
+                EnabelButton(delete);
+                EnabelButton(activate);
+            }
+        }
+        void DeselectAll(object sender, EventArgs ea)
+        {
+            DeselectAll();
+        }
+        void DeselectAll()
+        {
+            TurnAllGreen();
+            selectMode = 0;
+            if (delete.IsEnabled)
+            {
+                DisabelButton(delete);
+                DisabelButton(activate);
+            }
+        }
+        async Task ShowNote(NoteView holder)
+        {
+            bool deal;
+            Debug.WriteLine($"Next: {holder.Code}");
+            switch (holder.Code)
+            {
+                case 0:
+                    deal=await DisplayAlert("", $"Type: Quick Note\nContent:\n{holder.note.NoteContent}", "OK", "Edit");
+                    
+                    break;
+                case 1:
+                    deal = await DisplayAlert("", $"Type: Time-based Note\nTime Created: {holder.note.dateCreated}\nTime Triggered: {holder.noteT.DateTimeSet}\nContent:\n{holder.note.NoteContent}", "OK", "Edit");
+                    break;
+                case 2:
+                    deal = await DisplayAlert("", $"Type: Location-based Note\nTime Created: {holder.note.dateCreated}\nLandmark: {holder.noteL.landmark.name}\nDistance: {holder.CalcDistance()}\nTrigger Radius: {holder.noteL.maxDistance} meter(s)\nStatus: \nContent:\n{holder.note.NoteContent}", "OK", "Edit");
+                    break;
+                default:
+                    deal = await DisplayAlert("", $"Type: Quick Note\nContent:\n{holder.note.NoteContent}", "OK", "Edit");
+                    break;
+            }
+            if (!deal)
+            {
+                AppController.isEdit = true;
+                AppController.Holder = holder;
+                if (holder.Code==0)
+                {
+                    await Navigation.PushAsync(new AddNoteQ());
+                } else if (holder.Code==1)
+                {
+                    await Navigation.PushAsync(new AddNoteT());
+                }
+                else if (holder.Code == 2)
+                {
+                    await Navigation.PushAsync(new AddNoteL());
+                }
+            }
+        }
         void Initialization ()
         {
             items = new NoteViewList();
@@ -442,6 +547,57 @@ namespace EPostIt
             sortBy.Items.Add("Status");
             sortBy.SelectedIndex = -1;
             sortType.SelectedIndex = -1;
+        }
+        void DisabelButton(Button b)
+        {
+            b.BackgroundColor = DarkGreen;
+            b.IsEnabled = false;
+        }
+        void EnabelButton(Button b)
+        {
+            b.BackgroundColor = Color.Green;
+            b.IsEnabled = true;
+        }
+        void SelectModeOn()
+        {
+            DisabelButton(delete);
+            DisabelButton(activate);
+            buttonList.Children.Add(selectAll, 3, 1);
+            buttonList.Children.Add(deselectAll, 2, 1);
+            buttonList.Children.Add(delete, 2, 0);
+            InsertActiveBtn();
+        }
+        void SelectModeOff()
+        {
+            TurnAllGreen();
+            buttonList.Children.Remove(selectAll);
+            buttonList.Children.Remove(deselectAll);
+            buttonList.Children.Remove(delete);
+            buttonList.Children.Remove(activate);
+        }
+        void TurnAllGreen() //Deselect All
+        {
+            for (int i = 1; i < currentContent.Children.Count; i++)
+            {
+                currentContent.Children[i].BackgroundColor = Color.Green;
+            }
+        }
+        void TurnAllBlue() //Select All
+        {
+            for (int i = 1; i < currentContent.Children.Count; i++)
+            {
+                currentContent.Children[i].BackgroundColor = Color.Blue;
+            }
+        }
+        void InsertActiveBtn()
+        {
+            if (selectMode!=-1 && (tabID==2 || tabID==3))
+            {
+                buttonList.Children.Add(activate, 1, 0);
+            } else if (buttonList.Children.Contains(activate))
+            {
+                buttonList.Children.Remove(activate);
+            }
         }
     }
 }

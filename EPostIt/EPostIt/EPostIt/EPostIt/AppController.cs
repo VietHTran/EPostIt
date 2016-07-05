@@ -6,9 +6,12 @@ using System.Threading.Tasks;
 
 namespace EPostIt
 {
+     
     static class AppController
     {
-
+        public static bool isEdit=false;
+        public static NoteView Holder { get; set; }
+        
     }
     public interface ITapLock
     {
