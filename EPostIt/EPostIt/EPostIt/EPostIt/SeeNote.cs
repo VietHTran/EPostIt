@@ -200,6 +200,21 @@ namespace EPostIt
         private NoteViewList items;
         private Label empty;
         Color DarkGreen = Color.FromHex("#13470A");
+        private bool isUpdate;
+        public bool IsUpdate {
+            get { return isUpdate; }
+            set
+            {
+                if (isUpdate != value)
+                {
+                    isUpdate = value;
+                    if (isUpdate)
+                    {
+                        UpdateNote();
+                    }
+                }
+            }
+        }
         public SeeNote()
         {
             TestInit();
@@ -289,10 +304,21 @@ namespace EPostIt
         }
         void OpenAll(object sender, EventArgs ea)
         {
-            DeselectAll();
+            OpenAll();
+        }
+        void OpenAll()
+        {
+            if (selectMode != -1)
+            {
+                DeselectAll();
+            }
             content.Children.Remove(currentContent);
             currentContent = allNotes;
-            content.Children.Insert(2,currentContent);
+            for (int i=1; i<allNotes.Children.Count;i++)
+            {
+                Debug.WriteLine($"Info {(allNotes.Children[i] as NoteView).note.NoteContent}"); 
+            }
+            content.Children.Insert(2, currentContent);
             currentButton = allNoteS;
             tabID = 0;
             InsertActiveBtn();
@@ -301,7 +327,14 @@ namespace EPostIt
         }
         void OpenQuick(object sender, EventArgs ea)
         {
-            DeselectAll();
+            OpenQuick();
+        }
+        void OpenQuick()
+        {
+            if (selectMode!=-1)
+            {
+                DeselectAll();
+            }
             content.Children.Remove(currentContent);
             currentContent = quickNotes;
             content.Children.Insert(2, currentContent);
@@ -313,7 +346,14 @@ namespace EPostIt
         }
         void OpenTime(object sender, EventArgs ea)
         {
-            DeselectAll();
+            OpenTime();
+        }
+        void OpenTime()
+        {
+            if (selectMode != -1)
+            {
+                DeselectAll();
+            }
             content.Children.Remove(currentContent);
             currentContent = timeNotes;
             content.Children.Insert(2, currentContent);
@@ -325,7 +365,14 @@ namespace EPostIt
         }
         void OpenLocation(object sender, EventArgs ea)
         {
-            DeselectAll();
+            OpenLocation();
+        }
+        void OpenLocation()
+        {
+            if (selectMode != -1)
+            {
+                DeselectAll();
+            }
             content.Children.Remove(currentContent);
             currentContent = locationNotes;
             content.Children.Insert(2, currentContent);
@@ -352,7 +399,6 @@ namespace EPostIt
         async void SelectNote(object sender, EventArgs ea)
         {
             var holder = sender as NoteView;
-            Debug.WriteLine($"Original: {holder.Code}");
             if (selectMode==-1)
             {
                 await ShowNote(holder);
@@ -410,15 +456,24 @@ namespace EPostIt
                 DisabelButton(activate);
             }
         }
+        void UpdateNote()
+        {
+            IsUpdate = false;
+            /*
+             Step 1: Remove the note in the database match the holder (AddNoteQ)
+             Step 2: Add the editted note (AddNoteQ)
+             Step 3: Back at here
+             Step 4: Remove the saved item and its tied NoteView from the items and its containers (allNote-XNote)
+             Step 5: Add new NoteView created from the recently added Note to the items and its containers
+             */
+        }
         async Task ShowNote(NoteView holder)
         {
             bool deal;
-            Debug.WriteLine($"Next: {holder.Code}");
             switch (holder.Code)
             {
                 case 0:
                     deal=await DisplayAlert("", $"Type: Quick Note\nContent:\n{holder.note.NoteContent}", "OK", "Edit");
-                    
                     break;
                 case 1:
                     deal = await DisplayAlert("", $"Type: Time-based Note\nTime Created: {holder.note.dateCreated}\nTime Triggered: {holder.noteT.DateTimeSet}\nContent:\n{holder.note.NoteContent}", "OK", "Edit");
@@ -434,6 +489,7 @@ namespace EPostIt
             {
                 AppController.isEdit = true;
                 AppController.Holder = holder;
+                AppController.prevPage = this;
                 if (holder.Code==0)
                 {
                     await Navigation.PushAsync(new AddNoteQ());
@@ -513,15 +569,11 @@ namespace EPostIt
         }
         void SetPickerAllNote()
         {
-            Debug.WriteLine("1");
             sortBy.Items.Clear();
-            Debug.WriteLine("2");
             sortBy.Items.Add("Date Created");
             sortBy.Items.Add("Type");
-            Debug.WriteLine("3");
             sortBy.SelectedIndex = -1;
             sortType.SelectedIndex = -1;
-            Debug.WriteLine("4");
         }
         void SetPickerQuickNote()
         {

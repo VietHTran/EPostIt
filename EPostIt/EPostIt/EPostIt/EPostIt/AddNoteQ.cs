@@ -80,6 +80,14 @@ namespace EPostIt
                     Children= {cancel,save}
                 } }
             };
+            if (AppController.isEdit)
+            {
+                LoadEditContent();
+            }
+        }
+        void LoadEditContent()
+        {
+            textArea.Text = AppController.Holder.note.NoteContent;
         }
         async Task Save(object sender, EventArgs ea)
         {
@@ -95,16 +103,32 @@ namespace EPostIt
                 }
                 else
                 {
-                    NoteManager.quickNotes.Add(new Note(textArea.Text));
-                    bool backToMenu = await DisplayAlert("Note Saved", "Note successfully saved.", "Back To Menu", "Create New Note");
-                    if (backToMenu)
+                    if (AppController.isEdit)
                     {
-                        textArea.Text = "";
-                        await Navigation.PopToRootAsync();
+                        await DisplayAlert("Note Saved", "Note successfully saved.", "OK");
+                        int index = NoteManager.quickNotes.IndexOf(AppController.Holder.note);
+                        NoteManager.quickNotes[index].NoteContent = textArea.Text;
+                        NoteManager.quickNotes[index].dateCreated= DateTime.Now;
+                        AppController.Holder.note = NoteManager.quickNotes[index];
+                        AppController.Holder.Update();
+                        AppController.isEdit = false;
+                        AppController.prevPage.IsUpdate = true;
+                        await Navigation.PopAsync();
+                        return;
                     }
                     else
                     {
-                        await Navigation.PopAsync();
+                        NoteManager.quickNotes.Add(new Note(textArea.Text));
+                        bool backToMenu = await DisplayAlert("Note Saved", "Note successfully saved.", "Back To Menu", "Create New Note");
+                        if (backToMenu)
+                        {
+                            textArea.Text = "";
+                            await Navigation.PopToRootAsync();
+                        }
+                        else
+                        {
+                            await Navigation.PopAsync();
+                        }
                     }
                 }
                 this.ReleaseTapLock();
@@ -119,6 +143,13 @@ namespace EPostIt
              */
             if (this.AcquireTapLock())
             {
+                if (AppController.isEdit)
+                {
+                    AppController.isEdit = false;
+                    await Navigation.PopAsync();
+                    this.ReleaseTapLock();
+                    return;
+                }
                 if (textArea.Text == null)
                 {
                     await Navigation.PopAsync();

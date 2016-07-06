@@ -143,6 +143,25 @@ namespace EPostIt
             GenerateTextLimitTime(10);
             dateC = note.dateCreated.ToString("MM/dd/yyyy");
         }
+        public void Update()
+        {
+            GenerateText();
+            GenerateTextLimit(45);
+            GenerateTextLimitTime(10);
+            dateC = note.dateCreated.ToString("MM/dd/yyyy");
+            GenerateAllNote();
+            if (Code==0)
+            {
+                GenerateQuickNote();
+            } else if (Code==1)
+            {
+                GenerateTimeNote();
+            }
+            else if (Code == 2)
+            {
+                GenerateLocationNote();
+            }
+        }
         /*void SpecialGenerate()
         {
             if (code==1)
