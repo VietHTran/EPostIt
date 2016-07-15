@@ -79,88 +79,13 @@ namespace EPostIt
         }
         List<LandmarkView> MergeSortNoteSet(List<LandmarkView> h, int l, int r)
         {
-            if (r - l >= 1)
-            {
-                int mid = (l + r) / 2;
-                List<LandmarkView> a = MergeSortNoteSet(h, l, mid);
-                List<LandmarkView> b = MergeSortNoteSet(h, mid + 1, r);
-                List<LandmarkView> c = new List<LandmarkView>();
-                int ai = 0, bi = 0;
-                while (ai < a.Count && bi < b.Count)
-                {
-                    if (a[ai].landmark.assignedEvents > b[bi].landmark.assignedEvents)
-                    {
-                        c.Add(b[bi]);
-                        bi++;
-                    }
-                    else
-                    {
-                        c.Add(a[ai]);
-                        ai++;
-                    }
-                }
-                if (ai < a.Count)
-                {
-                    for (int i = ai; i < a.Count; i++)
-                    {
-                        c.Add(a[i]);
-                    }
-                }
-                else if (bi < b.Count)
-                {
-                    for (int i = bi; i < b.Count; i++)
-                    {
-                        c.Add(b[i]);
-                    }
-                }
-                return c;
-            }
-            List<LandmarkView> re = new List<LandmarkView>();
-            re.Add(h[l]);
-            return re;
+            var sorter = (from i in this orderby i.landmark.assignedEvents select i).ToList();
+            return sorter;
         }
         List<LandmarkView> MergeSortDistance(List<LandmarkView> h, int l, int r)
         {
-            if (r - l >= 1)
-            {
-                int mid = (l + r) / 2;
-                List<LandmarkView> a = MergeSortDistance(h, l, mid);
-                List<LandmarkView> b = MergeSortDistance(h, mid + 1, r);
-                List<LandmarkView> c = new List<LandmarkView>();
-                int ai = 0, bi = 0;
-                while (ai < a.Count && bi < b.Count)
-                {
-                    if (a[ai].distance > b[bi].distance)
-                    {
-                        c.Add(b[bi]);
-                        bi++;
-                    }
-                    else
-                    {
-                        c.Add(a[ai]);
-                        ai++;
-                    }
-                }
-                if (ai < a.Count)
-                {
-                    for (int i = ai; i < a.Count; i++)
-                    {
-                        c.Add(a[i]);
-                    }
-                }
-                else if (bi < b.Count)
-                {
-                    for (int i = bi; i < b.Count; i++)
-                    {
-                        c.Add(b[i]);
-                    }
-                }
-                return c;
-            }
-            List<LandmarkView> re = new List<LandmarkView>();
-            re.Add(h[l]);
-            return re;
+            var sorter = (from i in this orderby i.distance select i).ToList();
+            return sorter;
         }
-
     }
 }

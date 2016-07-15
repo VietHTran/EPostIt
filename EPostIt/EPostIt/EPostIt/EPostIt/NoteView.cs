@@ -162,6 +162,16 @@ namespace EPostIt
                 GenerateLocationNote();
             }
         }
+        public void UpdateAll()
+        {
+            CommonGenerate();
+            Label name = Children[0] as Label;
+            Label dateCreated = Children[2] as Label;
+            Label type = Children[1] as Label;
+            name.Text = shortText;
+            dateCreated.Text = dateC;
+            type.Text = noteType;
+        }
         /*void SpecialGenerate()
         {
             if (code==1)

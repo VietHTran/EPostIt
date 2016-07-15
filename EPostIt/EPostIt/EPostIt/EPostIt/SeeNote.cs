@@ -85,14 +85,16 @@ namespace EPostIt
             Grid.SetColumnSpan(typeH, 3);
             
             holder.Children.Add(heading);
+            allNotesView = GenerateSectionStack();
             foreach (var i in items.allNotes)
             {
                 var tgr = new TapGestureRecognizer();
                 tgr.Tapped += (s, e) => SelectNote(s, e);
                 i.GestureRecognizers.Add(tgr);
-                holder.Children.Add(i);
+                allNotesView.Children.Add(i);
             }
-            
+            holder.Children.Add(allNotesView);
+
             return holder;
         }
         private StackLayout GenerateQuickNoteS()
@@ -113,14 +115,16 @@ namespace EPostIt
             Grid.SetColumnSpan(dateH, 3);
 
             holder.Children.Add(heading);
+            quickNotesView = GenerateSectionStack();
             foreach (var i in items.quickNotes)
             {
                 var tgr = new TapGestureRecognizer();
                 tgr.Tapped += (s, e) => SelectNote(s, e);
                 i.GestureRecognizers.Add(tgr);
-                holder.Children.Add(i);
+                quickNotesView.Children.Add(i);
+                //holder.Children.Add(i);
             }
-
+            holder.Children.Add(quickNotesView);
             return holder;
         }
         private StackLayout GenerateTimeNoteS()
@@ -146,14 +150,16 @@ namespace EPostIt
             heading.Children.Add(statusH, 15, 0);
             Grid.SetColumnSpan(statusH, 3);
 
+            timeNotesView = GenerateSectionStack();
             holder.Children.Add(heading);
             foreach (var i in items.timeNotes)
             {
                 var tgr = new TapGestureRecognizer();
                 tgr.Tapped += (s, e) => SelectNote(s, e);
                 i.GestureRecognizers.Add(tgr);
-                holder.Children.Add(i);
+                timeNotesView.Children.Add(i);
             }
+            holder.Children.Add(timeNotesView);
 
             return holder;
         }
@@ -180,21 +186,25 @@ namespace EPostIt
             heading.Children.Add(statusH, 11, 0);
             Grid.SetColumnSpan(statusH, 2);
 
+            locationNotesView = GenerateSectionStack();
             holder.Children.Add(heading);
             foreach (var i in items.locationNotes)
             {
                 var tgr = new TapGestureRecognizer();
                 tgr.Tapped += (s, e) => SelectNote(s, e);
                 i.GestureRecognizers.Add(tgr);
-                holder.Children.Add(i);
+                locationNotesView.Children.Add(i);
             }
+            holder.Children.Add(locationNotesView);
 
             return holder;
         }
         private Button quickNoteS, timeNoteS, locationNoteS, allNoteS, currentButton, back, toggleMode, activate, delete, selectAll,deselectAll;
         private Grid tabButtons, buttonList, sorter;
         private StackLayout content, allNotes, quickNotes, timeNotes, locationNotes, currentContent;
-        private int selectMode,tabID; //if -1 => viewMode else => selectMode number of selected items
+        private StackLayout quickNotesView,timeNotesView,locationNotesView,allNotesView;
+        private int selectMode; //if -1 => viewMode else => selectMode number of selected items
+        public int tabID;
         //tabID: All(0), Quick(1), Time(2), Location(3)
         private Picker sortBy, sortType;
         private NoteViewList items;
@@ -314,10 +324,6 @@ namespace EPostIt
             }
             content.Children.Remove(currentContent);
             currentContent = allNotes;
-            for (int i=1; i<allNotes.Children.Count;i++)
-            {
-                Debug.WriteLine($"Info {(allNotes.Children[i] as NoteView).note.NoteContent}"); 
-            }
             content.Children.Insert(2, currentContent);
             currentButton = allNoteS;
             tabID = 0;
@@ -459,13 +465,7 @@ namespace EPostIt
         void UpdateNote()
         {
             IsUpdate = false;
-            /*
-             Step 1: Remove the note in the database match the holder (AddNoteQ)
-             Step 2: Add the editted note (AddNoteQ)
-             Step 3: Back at here
-             Step 4: Remove the saved item and its tied NoteView from the items and its containers (allNote-XNote)
-             Step 5: Add new NoteView created from the recently added Note to the items and its containers
-             */
+            
         }
         async Task ShowNote(NoteView holder)
         {
@@ -490,6 +490,40 @@ namespace EPostIt
                 AppController.isEdit = true;
                 AppController.Holder = holder;
                 AppController.prevPage = this;
+                if (tabID==0)
+                {
+                    if (holder.Code==0)
+                    {
+                        IEnumerable<View> quick = from e in (quickNotesView.Children) where (e as NoteView).note == AppController.Holder.note select e;
+                        foreach (var i in quick)
+                        {
+                            AppController.Holder1 = i as NoteView;
+                        }
+                    }
+                    else if (holder.Code == 1)
+                    {
+                        IEnumerable<View> time = from e in (timeNotesView.Children) where (e as NoteView).note == AppController.Holder.note select e;
+                        foreach (var i in time)
+                        {
+                            AppController.Holder1 = i as NoteView;
+                        }
+                    }
+                    else if (holder.Code == 2)
+                    {
+                        IEnumerable<View> location = from e in (locationNotesView.Children) where (e as NoteView).note == AppController.Holder.note select e;
+                        foreach (var i in location)
+                        {
+                            AppController.Holder1 = i as NoteView;
+                        }
+                    }
+                } else
+                {
+                    IEnumerable<View> all = from e in (allNotesView.Children) where (e as NoteView).note == AppController.Holder.note select e;
+                    foreach (var i in all)
+                    {
+                        AppController.Holder1 = i as NoteView;
+                    }
+                }
                 if (holder.Code==0)
                 {
                     await Navigation.PushAsync(new AddNoteQ());

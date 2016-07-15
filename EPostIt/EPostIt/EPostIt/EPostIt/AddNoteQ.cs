@@ -68,22 +68,23 @@ namespace EPostIt
             Button cancel = ButtonGenerator("Cancel");
             cancel.Clicked += async (sender, ea) => await Cancel(sender, ea);
             cancel.BackgroundColor = Color.Gray;
-            Content = new StackLayout
+            StackLayout content = new StackLayout
             {
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 VerticalOptions = LayoutOptions.FillAndExpand,
                 Spacing = 15,
-                Children = {quickSwitch,textArea, new StackLayout {
+                Children = {textArea, new StackLayout {
                     Orientation=StackOrientation.Horizontal,
                     HorizontalOptions=LayoutOptions.FillAndExpand,
                     Spacing=15,
                     Children= {cancel,save}
                 } }
             };
+            Content = content;
             if (AppController.isEdit)
-            {
                 LoadEditContent();
-            }
+            else
+                content.Children.Insert(0, quickSwitch);
         }
         void LoadEditContent()
         {
@@ -110,9 +111,19 @@ namespace EPostIt
                         NoteManager.quickNotes[index].NoteContent = textArea.Text;
                         NoteManager.quickNotes[index].dateCreated= DateTime.Now;
                         AppController.Holder.note = NoteManager.quickNotes[index];
-                        AppController.Holder.Update();
+                        AppController.Holder1.note = NoteManager.quickNotes[index];
+                        NoteView newNote = new NoteView(NoteManager.quickNotes[index]);
+                        if (AppController.prevPage.tabID==0)
+                        {
+                            AppController.Holder.UpdateAll();
+                            AppController.Holder1.Update();
+                        } else
+                        {
+                            AppController.Holder.Update();
+                            AppController.Holder1.UpdateAll();
+                        }
                         AppController.isEdit = false;
-                        AppController.prevPage.IsUpdate = true;
+                        //AppController.prevPage.IsUpdate = true;
                         await Navigation.PopAsync();
                         return;
                     }

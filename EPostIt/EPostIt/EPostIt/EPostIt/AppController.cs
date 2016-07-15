@@ -11,6 +11,7 @@ namespace EPostIt
     {
         public static bool isEdit=false;
         public static NoteView Holder { get; set; }
+        public static NoteView Holder1 { get; set; }
         public static SeeNote prevPage;
     }
     public interface ITapLock
