@@ -155,7 +155,9 @@ namespace EPostIt
                 GenerateQuickNote();
             } else if (Code==1)
             {
+                Debug.WriteLine("AAA");
                 GenerateTimeNote();
+                Debug.WriteLine("BBB");
             }
             else if (Code == 2)
             {
@@ -182,7 +184,7 @@ namespace EPostIt
         public void GenerateTimeNote()
         {
             Children.Clear();
-            string dateT = noteT.dateCreated.ToString("MM/dd/yyyy");
+            string dateT = noteT.DateTimeSet.ToString("MM/dd/yyyy");
             if (noteT.isTriggered)
             {
                 Status = "On";
@@ -244,7 +246,9 @@ namespace EPostIt
         public NoteView GenerateAllNote()
         {
             NoteView grid= new NoteView(note);
+            grid.noteType = noteType;
             grid.Code = Code;
+            grid.Status = Status;
             if (Code==1)
             {
                 grid.noteT = noteT;

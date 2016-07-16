@@ -112,7 +112,7 @@ namespace EPostIt
                         NoteManager.quickNotes[index].dateCreated= DateTime.Now;
                         AppController.Holder.note = NoteManager.quickNotes[index];
                         AppController.Holder1.note = NoteManager.quickNotes[index];
-                        NoteView newNote = new NoteView(NoteManager.quickNotes[index]);
+                        //NoteView newNote = new NoteView(NoteManager.quickNotes[index]);
                         if (AppController.prevPage.tabID==0)
                         {
                             AppController.Holder.UpdateAll();
@@ -125,7 +125,6 @@ namespace EPostIt
                         AppController.isEdit = false;
                         //AppController.prevPage.IsUpdate = true;
                         await Navigation.PopAsync();
-                        return;
                     }
                     else
                     {

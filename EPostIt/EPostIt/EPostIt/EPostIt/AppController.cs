@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 
 namespace EPostIt
 {
-     
     static class AppController
     {
         public static bool isEdit=false;
@@ -18,7 +17,6 @@ namespace EPostIt
     {
         TapLockVars TapLockVars { get; set; }
     }
-
     public struct TapLockVars
     {
         public bool Locked;

@@ -16,6 +16,5 @@ namespace EPostIt
             this.NoteContent = text;
             dateCreated = DateTime.Now;
         }
-
     }
 }

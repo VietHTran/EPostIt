@@ -144,26 +144,25 @@ namespace EPostIt
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 VerticalOptions = LayoutOptions.FillAndExpand,
                 Spacing = 15,
-                Children = {quickSwitch,textArea,loadLandmark,saveNewLandmark,new StackLayout {
+                Children = {textArea,loadLandmark,saveNewLandmark,new StackLayout {
                     Orientation=StackOrientation.Horizontal,
                     HorizontalOptions=LayoutOptions.FillAndExpand,
                     Spacing=15,
                     Children= {cancel,save}
                 } }
             };
-            Debug.WriteLine("Landmark Items: ");
-            foreach (var i in LandmarkCollection.landmarks)
-            {
-                Debug.WriteLine(i.name);
-            }
-            Debug.WriteLine("Landmark Names: ");
-            foreach (var i in LandmarkCollection.nameList)
-            {
-                Debug.WriteLine(i);
-            }
             Content = pageContent;
+            if (AppController.isEdit)
+                LoadEditContent();
+            else
+                pageContent.Children.Insert(0, quickSwitch);
         }
-
+        void LoadEditContent()
+        {
+            textArea.Text = AppController.Holder.note.NoteContent;
+            savedLandmarks.SelectedIndex = savedLandmarks.Items.IndexOf(AppController.Holder.noteL.landmark.name);
+            rangeP.SelectedIndex = rangeP.Items.IndexOf(AppController.Holder.noteL.maxDistance.ToString());
+        }
         void OnTexChanged(object sender, EventArgs ea)
         {
             if (savedLandmarks.SelectedIndex != 0)
@@ -201,8 +200,6 @@ namespace EPostIt
             else
             {
                 Task.Run(() => {
-                    Debug.WriteLine("Landmark name below:");
-                    Debug.WriteLine(savedLandmarks.Items[savedLandmarks.SelectedIndex]);
                     Landmark landmarkHolder = LandmarkCollection.SearchName(savedLandmarks.Items[savedLandmarks.SelectedIndex]);
                     lat = landmarkHolder.latitude;
                     lon = landmarkHolder.longitude;
@@ -236,35 +233,75 @@ namespace EPostIt
                     if (savedLandmarks.SelectedIndex == 0 && nameNewLandmark.Text.Equals(""))
                     {
                         await DisplayAlert("", "Please type in the landmark name.", "OK");
+                        this.ReleaseTapLock();
                         return;
                     }
                     int landmarkIndex = LandmarkCollection.nameList.IndexOf(nameNewLandmark.Text);
                     if (savedLandmarks.SelectedIndex == 0 && landmarkIndex != -1)
                     {
                         await DisplayAlert("", "Landmark name has already existed.", "OK");
+                        this.ReleaseTapLock();
                         return;
                     }
                     double triggerRadius = Double.Parse(rangeP.Items[rangeP.SelectedIndex]);
-                    if (savedLandmarks.SelectedIndex == 0)
+                    if (AppController.isEdit)
                     {
-                        LandmarkCollection.CreateLandmark(nameNewLandmark.Text, lat, lon);
-                        LandmarkCollection.landmarks[LandmarkCollection.landmarks.Count - 1].AssignEvent();
-                    }
-                    else
-                    {
-                        //Debug.WriteLine($"index {landmarkIndex}, name {LandmarkCollection.landmarks[landmarkIndex].name}");
-                        LandmarkCollection.landmarks[landmarkIndex].AssignEvent();
-                    }
-                    NoteManager.locationNotes.Add(new LocationNote(textArea.Text, LandmarkCollection.landmarks[LandmarkCollection.landmarks.Count - 1], triggerRadius));
-                    bool backToMenu = await DisplayAlert("Note Saved", "Note successfully saved.", "Back To Menu", "Create New Note");
-                    if (backToMenu)
-                    {
-                        textArea.Text = "";
-                        await Navigation.PopToRootAsync();
-                    }
-                    else
-                    {
+                        await DisplayAlert("Note Saved", "Note successfully saved.", "OK");
+                        int index = NoteManager.locationNotes.IndexOf(AppController.Holder.noteL);
+                        int savedIndex = LandmarkCollection.landmarks.IndexOf(AppController.Holder.noteL.landmark);
+                        if (savedLandmarks.SelectedIndex == 0)
+                        {
+                            LandmarkCollection.CreateLandmark(nameNewLandmark.Text, lat, lon);
+                            LandmarkCollection.landmarks[LandmarkCollection.landmarks.Count - 1].AssignEvent();
+                            LandmarkCollection.landmarks[savedIndex].UnassignEvent();
+                            NoteManager.locationNotes[index].landmark = LandmarkCollection.landmarks[LandmarkCollection.landmarks.Count - 1];
+                        } else if (savedIndex!=savedLandmarks.SelectedIndex)
+                        {
+                            LandmarkCollection.landmarks[savedLandmarks.SelectedIndex].AssignEvent();
+                            LandmarkCollection.landmarks[savedIndex].UnassignEvent();
+                            NoteManager.locationNotes[index].landmark = LandmarkCollection.landmarks[savedLandmarks.SelectedIndex];
+                        }
+                        NoteManager.locationNotes[index].NoteContent = textArea.Text;
+                        NoteManager.locationNotes[index].maxDistance = triggerRadius;
+                        NoteManager.locationNotes[index].dateCreated = DateTime.Now;
+                        AppController.Holder.noteL = NoteManager.locationNotes[index];
+                        AppController.Holder.note = NoteManager.locationNotes[index];
+                        AppController.Holder1.noteL = NoteManager.locationNotes[index];
+                        AppController.Holder1.note = NoteManager.locationNotes[index];
+                        if (AppController.prevPage.tabID == 0)
+                        {
+                            AppController.Holder.UpdateAll();
+                            AppController.Holder1.Update();
+                        }
+                        else
+                        {
+                            AppController.Holder.Update();
+                            AppController.Holder1.UpdateAll();
+                        }
+                        AppController.isEdit = false;
                         await Navigation.PopAsync();
+                    } else
+                    {
+                        if (savedLandmarks.SelectedIndex == 0)
+                        {
+                            LandmarkCollection.CreateLandmark(nameNewLandmark.Text, lat, lon);
+                            LandmarkCollection.landmarks[LandmarkCollection.landmarks.Count - 1].AssignEvent();
+                        }
+                        else
+                        {
+                            LandmarkCollection.landmarks[landmarkIndex].AssignEvent();
+                        }
+                        NoteManager.locationNotes.Add(new LocationNote(textArea.Text, LandmarkCollection.landmarks[LandmarkCollection.landmarks.Count - 1], triggerRadius));
+                        bool backToMenu = await DisplayAlert("Note Saved", "Note successfully saved.", "Back To Menu", "Create New Note");
+                        if (backToMenu)
+                        {
+                            textArea.Text = "";
+                            await Navigation.PopToRootAsync();
+                        }
+                        else
+                        {
+                            await Navigation.PopAsync();
+                        }
                     }
                 }
                 this.ReleaseTapLock();
@@ -274,6 +311,13 @@ namespace EPostIt
         {
             if (this.AcquireTapLock())
             {
+                if (AppController.isEdit)
+                {
+                    AppController.isEdit = false;
+                    await Navigation.PopAsync();
+                    this.ReleaseTapLock();
+                    return;
+                }
                 if (textArea.Text == null)
                 {
                     await Navigation.PopAsync();

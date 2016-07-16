@@ -269,6 +269,7 @@ namespace EPostIt
             toggleMode.Clicked += ToggleMode;
             selectAll.Clicked += SelectAll;
             deselectAll.Clicked += DeselectAll;
+            back.Clicked += Back;
 
             buttonList = new Grid {
                 HorizontalOptions = LayoutOptions.FillAndExpand,
@@ -311,6 +312,10 @@ namespace EPostIt
             timeNoteS.IsEnabled = true;
             locationNoteS.IsEnabled = true;
             currentButton.IsEnabled = false;
+        }
+        void Back(object sender, EventArgs ea)
+        {
+            Navigation.PopAsync();
         }
         void OpenAll(object sender, EventArgs ea)
         {
@@ -479,7 +484,7 @@ namespace EPostIt
                     deal = await DisplayAlert("", $"Type: Time-based Note\nTime Created: {holder.note.dateCreated}\nTime Triggered: {holder.noteT.DateTimeSet}\nContent:\n{holder.note.NoteContent}", "OK", "Edit");
                     break;
                 case 2:
-                    deal = await DisplayAlert("", $"Type: Location-based Note\nTime Created: {holder.note.dateCreated}\nLandmark: {holder.noteL.landmark.name}\nDistance: {holder.CalcDistance()}\nTrigger Radius: {holder.noteL.maxDistance} meter(s)\nStatus: \nContent:\n{holder.note.NoteContent}", "OK", "Edit");
+                    deal = await DisplayAlert("", $"Type: Location-based Note\nTime Created: {holder.note.dateCreated}\nLandmark: {holder.noteL.landmark.name}\nDistance: {holder.CalcDistance()}\nTrigger Radius: {holder.noteL.maxDistance} meter(s)\nStatus: {holder.Status}\nContent:\n{holder.note.NoteContent}", "OK", "Edit");
                     break;
                 default:
                     deal = await DisplayAlert("", $"Type: Quick Note\nContent:\n{holder.note.NoteContent}", "OK", "Edit");
@@ -540,25 +545,6 @@ namespace EPostIt
         void Initialization ()
         {
             items = new NoteViewList();
-        }
-        void TestInit ()
-        {
-            if (NoteManager.quickNotes.Count!=0)
-            {
-                return;
-            }
-            for (int i=0;i<5;i++)
-            {
-                NoteManager.quickNotes.Add(new Note("Go lorem ipsum yourself"));
-            }
-            for (int i = 0; i < 5; i++)
-            {
-                NoteManager.timeNotes.Add(new TimeNote("You disrespect me, you disrespect my family",DateTime.Now));
-            }
-            for (int i = 0; i < 5; i++)
-            {
-                NoteManager.locationNotes.Add(new LocationNote("Wubba Lubba Dub Dub",LandmarkCollection.landmarks[1],1));
-            }
         }
         void InitPicker()
         {
@@ -683,6 +669,25 @@ namespace EPostIt
             } else if (buttonList.Children.Contains(activate))
             {
                 buttonList.Children.Remove(activate);
+            }
+        }
+        void TestInit()
+        {
+            if (NoteManager.quickNotes.Count != 0)
+            {
+                return;
+            }
+            for (int i = 0; i < 5; i++)
+            {
+                NoteManager.quickNotes.Add(new Note("Go lorem ipsum yourself"));
+            }
+            for (int i = 0; i < 5; i++)
+            {
+                NoteManager.timeNotes.Add(new TimeNote("You disrespect me, you disrespect my family", DateTime.Now));
+            }
+            for (int i = 0; i < 5; i++)
+            {
+                NoteManager.locationNotes.Add(new LocationNote("Wubba Lubba Dub Dub", LandmarkCollection.landmarks[2], 0.5));
             }
         }
     }

@@ -91,27 +91,32 @@ namespace EPostIt
             Button cancel = ButtonGenerator("Cancel");
             cancel.Clicked += async (sender, ea) => await Cancel(sender, ea);
             cancel.BackgroundColor = Color.Gray;
-            Content = new StackLayout
+            StackLayout content= new StackLayout
             {
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 VerticalOptions = LayoutOptions.FillAndExpand,
                 Spacing = 15,
-                Children = {quickSwitch,textArea, dateTime,new StackLayout {
+                Children = {textArea, dateTime,new StackLayout {
                     Orientation=StackOrientation.Horizontal,
                     HorizontalOptions=LayoutOptions.FillAndExpand,
                     Spacing=15,
                     Children= {cancel,save}
                 } }
             };
+            Content = content;
+            if (AppController.isEdit)
+                LoadEditContent();
+            else
+                content.Children.Insert(0, quickSwitch);
+        }
+        void LoadEditContent()
+        {
+            textArea.Text = AppController.Holder.note.NoteContent;
+            date.Date = AppController.Holder.noteT.DateTimeSet;
+            time.Time = AppController.Holder.noteT.DateTimeSet.TimeOfDay;
         }
         async Task Save(object sender, EventArgs ea)
         {
-            /*
-            if (this.AcquireTapLock())
-            {
-                this.ReleaseTapLock();
-            }
-            */
             if (this.AcquireTapLock())
             {
                 if (textArea.Text == null)
@@ -124,24 +129,58 @@ namespace EPostIt
                 }
                 else
                 {
-                    //NoteManager.quickNotes.Add(new Note(textArea.Text));
-                    DateTime dateTimeHolder = date.Date.Add(time.Time);
-                    if (!TimeNote.compareDateTime(dateTimeHolder))
-                    {
-                        await DisplayAlert("Invalid date time", "It's already past the time set in note.", "OK");
-                        return;
-                    }
-                    NoteManager.timeNotes.Add(new TimeNote(textArea.Text, dateTimeHolder));
-                    bool backToMenu = await DisplayAlert("Note Saved", "Note successfully saved.", "Back To Menu", "Create New Note");
-                    if (backToMenu)
-                    {
+                    if (AppController.isEdit) {
+                        DateTime dateTimeHolder = date.Date.Add(time.Time);
+                        if (!TimeNote.compareDateTime(dateTimeHolder))
+                        {
+                            await DisplayAlert("Invalid date time", "It's already past the time set in note.", "OK");
+                            this.ReleaseTapLock();
+                            return;
+                        }
+                        await DisplayAlert("Note Saved", "Note successfully saved.", "OK");
+                        int index = NoteManager.timeNotes.IndexOf(AppController.Holder.noteT);
+                        NoteManager.timeNotes[index].NoteContent = textArea.Text;
                         textArea.Text = "";
-                        await Navigation.PopToRootAsync();
-                    }
-                    else
-                    {
+                        NoteManager.timeNotes[index].dateCreated = DateTime.Now;
+                        NoteManager.timeNotes[index].DateTimeSet = dateTimeHolder;
+                        AppController.Holder.noteT = NoteManager.timeNotes[index];
+                        AppController.Holder.note = NoteManager.timeNotes[index];
+                        AppController.Holder1.noteT = NoteManager.timeNotes[index];
+                        AppController.Holder1.note = NoteManager.timeNotes[index];
+                        if (AppController.prevPage.tabID == 0)
+                        {
+                            AppController.Holder.UpdateAll();
+                            AppController.Holder1.Update();
+                        }
+                        else
+                        {
+                            AppController.Holder.Update();
+                            AppController.Holder1.UpdateAll();
+                        }
+                        AppController.isEdit = false;
                         await Navigation.PopAsync();
+                    } else
+                    {
+                        DateTime dateTimeHolder = date.Date.Add(time.Time);
+                        if (!TimeNote.compareDateTime(dateTimeHolder))
+                        {
+                            await DisplayAlert("Invalid date time", "It's already past the time set in note.", "OK");
+                            this.ReleaseTapLock();
+                            return;
+                        }
+                        NoteManager.timeNotes.Add(new TimeNote(textArea.Text, dateTimeHolder));
+                        bool backToMenu = await DisplayAlert("Note Saved", "Note successfully saved.", "Back To Menu", "Create New Note");
+                        if (backToMenu)
+                        {
+                            textArea.Text = "";
+                            await Navigation.PopToRootAsync();
+                        }
+                        else
+                        {
+                            await Navigation.PopAsync();
+                        }
                     }
+                    
                 }
                 this.ReleaseTapLock();
             }
@@ -151,6 +190,13 @@ namespace EPostIt
         {
             if (this.AcquireTapLock())
             {
+                if (AppController.isEdit)
+                {
+                    AppController.isEdit = false;
+                    await Navigation.PopAsync();
+                    this.ReleaseTapLock();
+                    return;
+                }
                 if (textArea.Text == null)
                 {
                     await Navigation.PopAsync();
@@ -208,6 +254,5 @@ namespace EPostIt
                     break;
             }
         }
-
     }
 }
