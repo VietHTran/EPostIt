@@ -268,5 +268,21 @@ namespace EPostIt
             Grid.SetColumnSpan(dateCreated, 3);
             return grid;
         }
+        public void DeleteFromDatabase()
+        {
+            switch (Code)
+            {
+                case 0:
+                    NoteManager.quickNotes.Remove(note);
+                    break;
+                case 1:
+                    NoteManager.timeNotes.Remove(noteT);
+                    break;
+                case 2:
+                    LandmarkCollection.landmarks[LandmarkCollection.landmarks.IndexOf(noteL.landmark)].UnassignEvent();
+                    NoteManager.locationNotes.Remove(noteL);
+                    break;
+            }
+        }
     }
 }

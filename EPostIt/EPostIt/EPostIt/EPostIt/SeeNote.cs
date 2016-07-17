@@ -70,7 +70,6 @@ namespace EPostIt
             Grid heading = new Grid
             {
                 HorizontalOptions = LayoutOptions.FillAndExpand,
-                VerticalOptions=LayoutOptions.FillAndExpand,
             };
 
             StackLayout nameH = wrapperLabel(GenerateLabel("Note", Color.White, 25, FontAttributes.Bold, TextAlignment.Center));
@@ -86,6 +85,7 @@ namespace EPostIt
             
             holder.Children.Add(heading);
             allNotesView = GenerateSectionStack();
+            allNotesView.Padding = 0;
             foreach (var i in items.allNotes)
             {
                 var tgr = new TapGestureRecognizer();
@@ -103,7 +103,6 @@ namespace EPostIt
             Grid heading = new Grid
             {
                 HorizontalOptions = LayoutOptions.FillAndExpand,
-                VerticalOptions = LayoutOptions.FillAndExpand,
             };
 
             StackLayout nameH = wrapperLabel(GenerateLabel("Note", Color.White, 25, FontAttributes.Bold, TextAlignment.Center));
@@ -116,6 +115,7 @@ namespace EPostIt
 
             holder.Children.Add(heading);
             quickNotesView = GenerateSectionStack();
+            quickNotesView.Padding = 0;
             foreach (var i in items.quickNotes)
             {
                 var tgr = new TapGestureRecognizer();
@@ -133,7 +133,6 @@ namespace EPostIt
             Grid heading = new Grid
             {
                 HorizontalOptions = LayoutOptions.FillAndExpand,
-                VerticalOptions = LayoutOptions.FillAndExpand,
             };
 
             StackLayout nameH = wrapperLabel(GenerateLabel("Note", Color.White, 25, FontAttributes.Bold, TextAlignment.Center));
@@ -151,6 +150,7 @@ namespace EPostIt
             Grid.SetColumnSpan(statusH, 3);
 
             timeNotesView = GenerateSectionStack();
+            timeNotesView.Padding = 0;
             holder.Children.Add(heading);
             foreach (var i in items.timeNotes)
             {
@@ -169,7 +169,6 @@ namespace EPostIt
             Grid heading = new Grid
             {
                 HorizontalOptions = LayoutOptions.FillAndExpand,
-                VerticalOptions = LayoutOptions.FillAndExpand,
             };
 
             StackLayout nameH = wrapperLabel(GenerateLabel("Note", Color.White, 25, FontAttributes.Bold, TextAlignment.Center));
@@ -187,6 +186,7 @@ namespace EPostIt
             Grid.SetColumnSpan(statusH, 2);
 
             locationNotesView = GenerateSectionStack();
+            locationNotesView.Padding = 0;
             holder.Children.Add(heading);
             foreach (var i in items.locationNotes)
             {
@@ -202,7 +202,7 @@ namespace EPostIt
         private Button quickNoteS, timeNoteS, locationNoteS, allNoteS, currentButton, back, toggleMode, activate, delete, selectAll,deselectAll;
         private Grid tabButtons, buttonList, sorter;
         private StackLayout content, allNotes, quickNotes, timeNotes, locationNotes, currentContent;
-        private StackLayout quickNotesView,timeNotesView,locationNotesView,allNotesView;
+        private StackLayout quickNotesView,timeNotesView,locationNotesView,allNotesView,currentView;
         private int selectMode; //if -1 => viewMode else => selectMode number of selected items
         public int tabID;
         //tabID: All(0), Quick(1), Time(2), Location(3)
@@ -258,6 +258,7 @@ namespace EPostIt
             timeNotes = GenerateTimeNoteS();
             locationNotes = GenerateLocationNoteS();
             currentContent = allNotes;
+            currentView = allNotesView;
 
             back = GenerateButton("Back", Color.White, Color.Gray);
             toggleMode = GenerateButton("View\nMode", Color.White, Color.Green);
@@ -270,6 +271,7 @@ namespace EPostIt
             selectAll.Clicked += SelectAll;
             deselectAll.Clicked += DeselectAll;
             back.Clicked += Back;
+            delete.Clicked += async (sender, ea) => await Delete(sender, ea);
 
             buttonList = new Grid {
                 HorizontalOptions = LayoutOptions.FillAndExpand,
@@ -283,6 +285,7 @@ namespace EPostIt
             empty.VerticalOptions = LayoutOptions.FillAndExpand;
 
             InitPicker();
+            sortBy.SelectedIndexChanged += SortByChanged;
 
             content = new StackLayout
             {
@@ -329,6 +332,7 @@ namespace EPostIt
             }
             content.Children.Remove(currentContent);
             currentContent = allNotes;
+            currentView = allNotesView;
             content.Children.Insert(2, currentContent);
             currentButton = allNoteS;
             tabID = 0;
@@ -348,6 +352,7 @@ namespace EPostIt
             }
             content.Children.Remove(currentContent);
             currentContent = quickNotes;
+            currentView = quickNotesView;
             content.Children.Insert(2, currentContent);
             currentButton = quickNoteS;
             tabID = 1;
@@ -367,6 +372,7 @@ namespace EPostIt
             }
             content.Children.Remove(currentContent);
             currentContent = timeNotes;
+            currentView = timeNotesView;
             content.Children.Insert(2, currentContent);
             currentButton = timeNoteS;
             tabID = 2;
@@ -386,6 +392,7 @@ namespace EPostIt
             }
             content.Children.Remove(currentContent);
             currentContent = locationNotes;
+            currentView = locationNotesView;
             content.Children.Insert(2, currentContent);
             currentButton = locationNoteS;
             tabID = 3;
@@ -444,9 +451,12 @@ namespace EPostIt
         }
         void SelectAll()
         {
+            if (currentView.Children.Contains(empty))
+            {
+                return;
+            }
             TurnAllBlue();
-            selectMode = currentContent.Children.Count - 1;
-            Debug.WriteLine(selectMode);
+            selectMode = currentView.Children.Count;
             if (!delete.IsEnabled)
             {
                 EnabelButton(delete);
@@ -459,12 +469,150 @@ namespace EPostIt
         }
         void DeselectAll()
         {
+            if (currentView.Children.Contains(empty))
+            {
+                return;
+            }
             TurnAllGreen();
             selectMode = 0;
             if (delete.IsEnabled)
             {
                 DisabelButton(delete);
                 DisabelButton(activate);
+            }
+        }
+        async Task Delete(object sender, EventArgs ea)
+        {
+            if (!(await DisplayAlert("Delete Verification", "Do you want to delete the selected note(s)", "Yes", "No")))
+            {
+                return;
+            }
+            for (int i = currentView.Children.Count - 1; i >= 0; i--)
+            {
+                if (currentView.Children[i].BackgroundColor==Color.Blue)
+                {
+                    var e = currentView.Children[i] as NoteView;
+                    e.DeleteFromDatabase();
+                    switch (tabID)
+                    {
+                        case 0:
+                            allNotesView.Children.Remove(currentView.Children[i]);
+                            if (e.Code == 0)
+                            {
+                                IEnumerable<View> quick = from a in (quickNotesView.Children) where (a as NoteView).note == e.note select a;
+                                foreach (var j in quick.ToList())
+                                {
+                                    quickNotesView.Children.Remove(j);
+                                }
+                            } else if (e.Code==1) {
+                                IEnumerable<View> time = from a in (timeNotesView.Children) where (a as NoteView).noteT == e.noteT select a;
+                                foreach (var j in time.ToList())
+                                {
+                                    timeNotesView.Children.Remove(j);
+                                }
+                            }
+                            else if (e.Code == 2)
+                            {
+                                IEnumerable<View> location = from a in (locationNotesView.Children) where (a as NoteView).noteL == e.noteL select a;
+                                foreach (var j in location.ToList())
+                                {
+                                    locationNotesView.Children.Remove(j);
+                                }
+                            }
+                            break;
+                        case 1:
+                            IEnumerable<View> all;
+                            quickNotesView.Children.Remove(e);
+                            all = from a in (allNotesView.Children) where (a as NoteView).note == e.note select a;
+                            foreach (var j in all.ToList())
+                            {
+                                allNotesView.Children.Remove(j);
+                            }
+                            break;
+                        case 2:
+                            timeNotesView.Children.Remove(e);
+                            all = from a in (allNotesView.Children) where (a as NoteView).noteT == e.noteT select a;
+                            foreach (var j in all.ToList())
+                            {
+                                allNotesView.Children.Remove(j);
+                            }
+                            break;
+                        case 3:
+                            locationNotesView.Children.Remove(e);
+                            all = from a in (allNotesView.Children) where (a as NoteView).noteL == e.noteL select a;
+                            foreach (var j in all.ToList())
+                            {
+                                allNotesView.Children.Remove(j);
+                            }
+                            break;
+                    }
+                }
+            }
+            delete.IsEnabled = false;
+            delete.BackgroundColor = DarkGreen;
+            selectMode = 0;
+            CheckEmptyTab(allNotesView);
+            CheckEmptyTab(quickNotesView);
+            CheckEmptyTab(timeNotesView);
+            CheckEmptyTab(locationNotesView);
+        }
+        void CheckEmptyTab(StackLayout holder)
+        {
+            if (holder.Children.Count==0)
+            {
+                holder.Children.Add(empty);
+            }
+        }
+        void SortByChanged(object sender, EventArgs ea)
+        {
+            if (sortBy.SelectedIndex == -1 || currentView.Children.Contains(empty))
+            {
+                return;
+            }
+            if (sortType.SelectedIndex==-1)
+            {
+                sortType.SelectedIndex = 0;
+            }
+            List<View> sorter= new List<View>();
+            switch (sortBy.Items[sortBy.SelectedIndex])
+            {
+                case "Date Created":
+                    Debug.WriteLine("Here!");
+                    sorter = (from i in currentView.Children orderby (i as NoteView).note.dateCreated select i).ToList();
+                    break;
+                case "Type":
+                    sorter = (from i in currentView.Children orderby (i as NoteView).Code select i).ToList();
+                    break;
+                case "Date Triggered":
+                    sorter = (from i in currentView.Children orderby (i as NoteView).noteT.DateTimeSet select i).ToList();
+                    break;
+                case "Status":
+                    sorter = (from i in currentView.Children orderby (i as NoteView).Status select i).ToList();
+                    sorter.Reverse();
+                    break;
+                case "Landmark Name":
+                    sorter = (from i in currentView.Children orderby (i as NoteView).noteL.landmark.name select i).ToList();
+                    break;
+            }
+            if (sortType.SelectedIndex == 1)
+            {
+                sorter.Reverse();
+            }
+            currentView.Children.Clear();
+            foreach (var i in sorter)
+            {
+                currentView.Children.Add(i as NoteView);
+            }
+        }
+        void SortTypeChanged(object sender, EventArgs ea)
+        {
+            if (sortType.SelectedIndex == -1 || currentView.Children.Contains(empty))
+            {
+                return;
+            }
+            if (sortBy.SelectedIndex == -1)
+            {
+                sortBy.SelectedIndex = 0;
             }
         }
         void UpdateNote()
@@ -478,13 +626,13 @@ namespace EPostIt
             switch (holder.Code)
             {
                 case 0:
-                    deal=await DisplayAlert("", $"Type: Quick Note\nContent:\n{holder.note.NoteContent}", "OK", "Edit");
+                    deal=await DisplayAlert("", $"Type: Quick Note\nContent: {holder.note.NoteContent}", "OK", "Edit");
                     break;
                 case 1:
-                    deal = await DisplayAlert("", $"Type: Time-based Note\nTime Created: {holder.note.dateCreated}\nTime Triggered: {holder.noteT.DateTimeSet}\nContent:\n{holder.note.NoteContent}", "OK", "Edit");
+                    deal = await DisplayAlert("", $"Type: Time-based Note\nTime Created: {holder.note.dateCreated}\nTime Triggered: {holder.noteT.DateTimeSet}\nStatus: {holder.Status}\nContent: {holder.note.NoteContent}", "OK", "Edit");
                     break;
                 case 2:
-                    deal = await DisplayAlert("", $"Type: Location-based Note\nTime Created: {holder.note.dateCreated}\nLandmark: {holder.noteL.landmark.name}\nDistance: {holder.CalcDistance()}\nTrigger Radius: {holder.noteL.maxDistance} meter(s)\nStatus: {holder.Status}\nContent:\n{holder.note.NoteContent}", "OK", "Edit");
+                    deal = await DisplayAlert("", $"Type: Location-based Note\nTime Created: {holder.note.dateCreated}\nLandmark: {holder.noteL.landmark.name}\nDistance: {holder.CalcDistance()}\nTrigger Radius: {holder.noteL.maxDistance} meter(s)\nStatus: {holder.Status}\nContent: {holder.note.NoteContent}", "OK", "Edit");
                     break;
                 default:
                     deal = await DisplayAlert("", $"Type: Quick Note\nContent:\n{holder.note.NoteContent}", "OK", "Edit");
@@ -492,6 +640,8 @@ namespace EPostIt
             }
             if (!deal)
             {
+                sortBy.SelectedIndex = -1;
+                sortType.SelectedIndex = -1;
                 AppController.isEdit = true;
                 AppController.Holder = holder;
                 AppController.prevPage = this;
@@ -649,16 +799,24 @@ namespace EPostIt
         }
         void TurnAllGreen() //Deselect All
         {
-            for (int i = 1; i < currentContent.Children.Count; i++)
+            if (currentView.Children.Contains(empty))
             {
-                currentContent.Children[i].BackgroundColor = Color.Green;
+                return;
+            }
+            for (int i = 0; i < currentView.Children.Count; i++)
+            {
+                currentView.Children[i].BackgroundColor = Color.Green;
             }
         }
         void TurnAllBlue() //Select All
         {
-            for (int i = 1; i < currentContent.Children.Count; i++)
+            if (currentView.Children.Contains(empty))
             {
-                currentContent.Children[i].BackgroundColor = Color.Blue;
+                return;
+            }
+            for (int i = 0; i < currentView.Children.Count; i++)
+            {
+                currentView.Children[i].BackgroundColor = Color.Blue;
             }
         }
         void InsertActiveBtn()
