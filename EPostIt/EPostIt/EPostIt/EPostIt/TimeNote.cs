@@ -15,7 +15,7 @@ namespace EPostIt
         public TimeNote(string s, DateTime setter) : base (s)
         {
             this.DateTimeSet = setter;
-            this.isTriggered = false;
+            this.isTriggered = true;
         }
         public bool IsTime()
         {

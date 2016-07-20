@@ -155,9 +155,7 @@ namespace EPostIt
                 GenerateQuickNote();
             } else if (Code==1)
             {
-                Debug.WriteLine("AAA");
                 GenerateTimeNote();
-                Debug.WriteLine("BBB");
             }
             else if (Code == 2)
             {
@@ -174,13 +172,6 @@ namespace EPostIt
             dateCreated.Text = dateC;
             type.Text = noteType;
         }
-        /*void SpecialGenerate()
-        {
-            if (code==1)
-            {
-
-            }
-        }*/
         public void GenerateTimeNote()
         {
             Children.Clear();

@@ -93,6 +93,10 @@ namespace EPostIt
                 i.GestureRecognizers.Add(tgr);
                 allNotesView.Children.Add(i);
             }
+            if (items.allNotes.Count==0)
+            {
+                allNotesView.Children.Add(empty);
+            }
             holder.Children.Add(allNotesView);
 
             return holder;
@@ -123,6 +127,10 @@ namespace EPostIt
                 i.GestureRecognizers.Add(tgr);
                 quickNotesView.Children.Add(i);
                 //holder.Children.Add(i);
+            }
+            if (items.quickNotes.Count == 0)
+            {
+                quickNotesView.Children.Add(empty);
             }
             holder.Children.Add(quickNotesView);
             return holder;
@@ -159,6 +167,11 @@ namespace EPostIt
                 i.GestureRecognizers.Add(tgr);
                 timeNotesView.Children.Add(i);
             }
+            if (items.timeNotes.Count == 0)
+            {
+                timeNotesView.Children.Add(empty);
+            }
+
             holder.Children.Add(timeNotesView);
 
             return holder;
@@ -195,6 +208,10 @@ namespace EPostIt
                 i.GestureRecognizers.Add(tgr);
                 locationNotesView.Children.Add(i);
             }
+            if (items.locationNotes.Count == 0)
+            {
+                locationNotesView.Children.Add(empty);
+            }
             holder.Children.Add(locationNotesView);
 
             return holder;
@@ -210,6 +227,21 @@ namespace EPostIt
         private NoteViewList items;
         private Label empty;
         Color DarkGreen = Color.FromHex("#13470A");
+        private bool isOffSelect=false;
+        public bool IsOffSelect {
+            get { return isOffSelect; }
+            set
+            {
+                isOffSelect = value;
+                if (value)
+                {
+                    activate.Text = "Turn\nOn";
+                } else
+                {
+                    activate.Text = "Turn\nOff";
+                }
+            }
+        }
         private bool isUpdate;
         public bool IsUpdate {
             get { return isUpdate; }
@@ -227,7 +259,7 @@ namespace EPostIt
         }
         public SeeNote()
         {
-            TestInit();
+            //TestInit();
             Initialization();
             selectMode = -1;
             tabID = 0;
@@ -252,7 +284,11 @@ namespace EPostIt
             timeNoteS.Clicked += OpenTime;
             currentButton = allNoteS;
             UpdateButton();
-            
+
+            empty = GenerateLabel("\n\n\n\n\nEmpty\n\n\n\n\n", Color.White, 30, FontAttributes.None, TextAlignment.Center);
+            empty.HorizontalOptions = LayoutOptions.FillAndExpand;
+            empty.VerticalOptions = LayoutOptions.FillAndExpand;
+
             allNotes = GenerateAllNoteS();
             quickNotes = GenerateQuickNoteS();
             timeNotes = GenerateTimeNoteS();
@@ -270,8 +306,10 @@ namespace EPostIt
             toggleMode.Clicked += ToggleMode;
             selectAll.Clicked += SelectAll;
             deselectAll.Clicked += DeselectAll;
+            activate.Clicked += async (sender, ea) => await SwitchActivate(sender, ea);
             back.Clicked += Back;
             delete.Clicked += async (sender, ea) => await Delete(sender, ea);
+            IsOffSelect = false;
 
             buttonList = new Grid {
                 HorizontalOptions = LayoutOptions.FillAndExpand,
@@ -280,12 +318,9 @@ namespace EPostIt
             buttonList.Children.Add(back,0,0);
             buttonList.Children.Add(toggleMode, 3, 0);
 
-            empty = GenerateLabel("\n\n\n\n\nEmpty\n\n\n\n\n", Color.White, 30, FontAttributes.None, TextAlignment.Center);
-            empty.HorizontalOptions = LayoutOptions.FillAndExpand;
-            empty.VerticalOptions = LayoutOptions.FillAndExpand;
-
             InitPicker();
             sortBy.SelectedIndexChanged += SortByChanged;
+            sortType.SelectedIndexChanged += SortTypeChanged;
 
             content = new StackLayout
             {
@@ -412,6 +447,7 @@ namespace EPostIt
                 SelectModeOff();
                 selectMode = -1;
                 toggleMode.Text = "View\nMode";
+                IsOffSelect = false;
             }
         }
         async void SelectNote(object sender, EventArgs ea)
@@ -432,17 +468,25 @@ namespace EPostIt
                         EnabelButton(delete);
                         EnabelButton(activate);
                     }
+                    if (tabID==3&&!IsOffSelect && (sender as NoteView).Status.Equals("Off"))
+                    {
+                        IsOffSelect = true;
+                    }
                 } else
                 {
                     selectMode--;
                     holder.BackgroundColor = Color.Green;
                     if (selectMode==0 && delete.IsEnabled)
                     {
+                        IsOffSelect = false;
                         DisabelButton(delete);
                         DisabelButton(activate);
                     }
+                    if (tabID == 3 && selectMode!=0 && IsOffSelect && (sender as NoteView).Status.Equals("Off"))
+                    {
+                        CheckOffSelect();
+                    }
                 }
-                
             }
         }
         void SelectAll(object sender, EventArgs ea)
@@ -462,6 +506,10 @@ namespace EPostIt
                 EnabelButton(delete);
                 EnabelButton(activate);
             }
+            if (tabID==3)
+            {
+                CheckOffSelect();
+            }
         }
         void DeselectAll(object sender, EventArgs ea)
         {
@@ -480,6 +528,7 @@ namespace EPostIt
                 DisabelButton(delete);
                 DisabelButton(activate);
             }
+            IsOffSelect = false;
         }
         async Task Delete(object sender, EventArgs ea)
         {
@@ -573,36 +622,7 @@ namespace EPostIt
             {
                 sortType.SelectedIndex = 0;
             }
-            List<View> sorter= new List<View>();
-            switch (sortBy.Items[sortBy.SelectedIndex])
-            {
-                case "Date Created":
-                    Debug.WriteLine("Here!");
-                    sorter = (from i in currentView.Children orderby (i as NoteView).note.dateCreated select i).ToList();
-                    break;
-                case "Type":
-                    sorter = (from i in currentView.Children orderby (i as NoteView).Code select i).ToList();
-                    break;
-                case "Date Triggered":
-                    sorter = (from i in currentView.Children orderby (i as NoteView).noteT.DateTimeSet select i).ToList();
-                    break;
-                case "Status":
-                    sorter = (from i in currentView.Children orderby (i as NoteView).Status select i).ToList();
-                    sorter.Reverse();
-                    break;
-                case "Landmark Name":
-                    sorter = (from i in currentView.Children orderby (i as NoteView).noteL.landmark.name select i).ToList();
-                    break;
-            }
-            if (sortType.SelectedIndex == 1)
-            {
-                sorter.Reverse();
-            }
-            currentView.Children.Clear();
-            foreach (var i in sorter)
-            {
-                currentView.Children.Add(i as NoteView);
-            }
+            Sort();
         }
         void SortTypeChanged(object sender, EventArgs ea)
         {
@@ -614,6 +634,33 @@ namespace EPostIt
             {
                 sortBy.SelectedIndex = 0;
             }
+            Sort();
+        }
+        async Task SwitchActivate(object sender, EventArgs ea)
+        {
+            bool val;
+            if (activate.Text.Equals("Turn\nOn"))
+                val = true;
+            else
+                val = false;
+            string s = val ? "On" : "Off";
+            if (!(await DisplayAlert($"Turn {s} notification","Do you want to turn on notification for the selected notes","Yes","No")))
+            {
+                return;
+            }
+            foreach (var i in currentView.Children)
+            {
+                if (i.BackgroundColor==Color.Blue)
+                {
+                    NoteView holder = i as NoteView;
+                    int index = NoteManager.locationNotes.IndexOf(holder.noteL);
+                    NoteManager.locationNotes[index].isTriggered = val;
+                    holder.Status = s;
+                    holder.noteL.isTriggered = val;
+                    holder.GenerateLocationNote();
+                }
+            }
+            DeselectAll();
         }
         void UpdateNote()
         {
@@ -691,6 +738,50 @@ namespace EPostIt
                     await Navigation.PushAsync(new AddNoteL());
                 }
             }
+        }
+        void Sort()
+        {
+            List<View> sorter = new List<View>();
+            switch (sortBy.Items[sortBy.SelectedIndex])
+            {
+                case "Date Created":
+                    sorter = (from i in currentView.Children orderby (i as NoteView).note.dateCreated select i).ToList();
+                    break;
+                case "Type":
+                    sorter = (from i in currentView.Children orderby (i as NoteView).Code select i).ToList();
+                    break;
+                case "Date Triggered":
+                    sorter = (from i in currentView.Children orderby (i as NoteView).noteT.DateTimeSet select i).ToList();
+                    break;
+                case "Status":
+                    sorter = (from i in currentView.Children orderby (i as NoteView).Status select i).ToList();
+                    sorter.Reverse();
+                    break;
+                case "Landmark Name":
+                    sorter = (from i in currentView.Children orderby (i as NoteView).noteL.landmark.name select i).ToList();
+                    break;
+            }
+            if (sortType.SelectedIndex == 1)
+            {
+                sorter.Reverse();
+            }
+            currentView.Children.Clear();
+            foreach (var i in sorter)
+            {
+                currentView.Children.Add(i as NoteView);
+            }
+        }
+        void CheckOffSelect()
+        {
+            foreach (var i in currentView.Children)
+            {
+                if ((i as NoteView).BackgroundColor == Color.Blue && (i as NoteView).Status.Equals("Off"))
+                {
+                    IsOffSelect = true;
+                    return;
+                }
+            }
+            IsOffSelect = false;
         }
         void Initialization ()
         {
@@ -821,7 +912,7 @@ namespace EPostIt
         }
         void InsertActiveBtn()
         {
-            if (selectMode!=-1 && (tabID==2 || tabID==3))
+            if (selectMode!=-1 && tabID==3)
             {
                 buttonList.Children.Add(activate, 1, 0);
             } else if (buttonList.Children.Contains(activate))

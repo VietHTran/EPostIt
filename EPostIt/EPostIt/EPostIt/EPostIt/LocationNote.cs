@@ -13,7 +13,7 @@ namespace EPostIt
         public double longitude { get; set; }
         public Landmark landmark { get; set; }
         public double maxDistance { get; set; }
-        public bool isTriggered { get; }
+        public bool isTriggered { get; set; }
         public LocationNote (string s, double lat, double lon, double md) : base (s)
         {
             this.latitude = lat;
