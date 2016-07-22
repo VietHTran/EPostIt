@@ -38,7 +38,7 @@ namespace EPostIt.Droid
             locationManager = (LocationManager)GetSystemService(LocationService);
             Criteria criteria = new Criteria
             {
-                Accuracy = Accuracy.Fine,
+                Accuracy = Accuracy.High,
             };
             IList<String> providers = locationManager.GetProviders(criteria, true);
             if (providers.Any())
@@ -53,7 +53,6 @@ namespace EPostIt.Droid
 
         protected override void OnPause()
         {
-            System.Diagnostics.Debug.Print("Hey! Update!");
             base.OnPause();
             if (locationManager != null)
             {

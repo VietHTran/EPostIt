@@ -67,6 +67,10 @@ namespace EPostIt
         }
         public string CalcDistance()
         {
+            if (ManagerLocation.latitude==0 && ManagerLocation.longitude==0)
+            {
+                return "Not yet to determine location";
+            }
             distance = ManagerLocation.CalcDistance(noteL.landmark.latitude, noteL.landmark.longitude);
             if (distance>999)
             {
@@ -201,7 +205,6 @@ namespace EPostIt
         {
             Children.Clear();
             string landmarkN = noteL.landmark.name;
-            distance = ManagerLocation.CalcDistance(noteL.landmark.latitude,noteL.landmark.longitude);
             if (noteL.isTriggered)
             {
                 Status = "On";
