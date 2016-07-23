@@ -38,7 +38,7 @@ namespace EPostIt.Droid
             locationManager = (LocationManager)GetSystemService(LocationService);
             Criteria criteria = new Criteria
             {
-                Accuracy = Accuracy.High,
+                Accuracy = Accuracy.Fine,
             };
             IList<String> providers = locationManager.GetProviders(criteria, true);
             if (providers.Any())
