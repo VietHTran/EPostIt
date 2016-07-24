@@ -111,15 +111,11 @@ namespace EPostIt
                         int index = NoteManager.quickNotes.IndexOf(AppController.Holder.note);
                         NoteManager.quickNotes[index].NoteContent = textArea.Text;
                         NoteManager.quickNotes[index].dateCreated= DateTime.Now;
-                        //App.AddQuickNote(NoteManager.quickNotes[index]);
-                        //App.mainDatabase.Delete<QuickNoteDB>(NoteManager.quickNotes[index].Id);
-                        //NoteManager.quickNotes[index].Id = App.mainDatabase.Table<QuickNoteDB>().Last().Id;
+                        Debug.WriteLine("Edit1");
                         App.EditQuickNote(NoteManager.quickNotes[index]);
-                        //App.mainDatabase.Query<QuickNoteDB>($"UPDATE [QN] SET [Content]='{textArea.Text}',[DateCreated]=CURRENT_TIMESTAMP WHERE [_id]={NoteManager.quickNotes[index].Id}");
-                        Debug.WriteLine($"Date2: {App.mainDatabase.Get<QuickNoteDB>(NoteManager.quickNotes[index].Id).DateCreated}");
+                        Debug.WriteLine("Edit2");
                         AppController.Holder.note = NoteManager.quickNotes[index];
                         AppController.Holder1.note = NoteManager.quickNotes[index];
-                        //NoteView newNote = new NoteView(NoteManager.quickNotes[index]);
                         if (AppController.prevPage.tabID==0)
                         {
                             AppController.Holder.UpdateAll();

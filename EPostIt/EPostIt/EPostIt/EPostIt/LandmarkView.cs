@@ -54,7 +54,6 @@ namespace EPostIt
             Grid.SetColumnSpan(distanceL, 2);
             BackgroundColor = Color.Blue;
         }
-
         private Label GenerateLabel(string text, Color colorText, int size, FontAttributes attr, TextAlignment al)
         {
             return new Label
@@ -71,6 +70,7 @@ namespace EPostIt
         }
         public void DeleteFromMainData()
         {
+            App.mainDatabase.Delete<LandmarkDB>(landmark.name);
             LandmarkCollection.nameList.Remove(landmark.name);
             LandmarkCollection.landmarks.Remove(landmark);
         }

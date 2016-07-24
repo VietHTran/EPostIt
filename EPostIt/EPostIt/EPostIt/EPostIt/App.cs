@@ -21,16 +21,16 @@ namespace EPostIt
     [Table("Landmark")]
     public class LandmarkDB
     {
-        [Column("Name")]
+        [PrimaryKey,Column("Name")]
         public string name { get; set; }
         [Column("Latitude")]
         public double latitude { get; set; }
         [Column("Longitude")]
         public double longitude { get; set; }
         [Column("AssignedTime")]
-        public double assignedTime { get; set; }
+        public DateTime assignedTime { get; set; }
         [Column("AssignedEvents")]
-        public double assignedEvents { get; set; }
+        public int assignedEvents { get; set; }
     }
     public class App : Application
     {
@@ -54,10 +54,15 @@ namespace EPostIt
         }
         public static void EditQuickNote(Note n)
         {
+            Debug.WriteLine("1");
             AddQuickNote(n);
+            Debug.WriteLine("2");
             mainDatabase.Delete<QuickNoteDB>(n.Id);
+            Debug.WriteLine("3");
             n.Id = nextID;
+            Debug.WriteLine("4");
             nextID++;
+            Debug.WriteLine("5");
         }
         void LoadDatabase()
         {
@@ -70,6 +75,17 @@ namespace EPostIt
                 foreach (var i in table)
                 {
                     NoteManager.quickNotes.Add(new Note(i.content,i.DateCreated,i.Id));
+                }
+            }
+            mainDatabase.Query<LandmarkDB>("DELETE FROM [Landmark]");
+            if (mainDatabase.Table<LandmarkDB>().Count() == 0)
+                return;
+            else
+            {
+                var table = mainDatabase.Table<LandmarkDB>();
+                foreach (var i in table)
+                {
+                    LandmarkCollection.CreateLandmark(i.name, i.latitude, i.longitude, i.assignedTime, i.assignedEvents);
                 }
             }
         }

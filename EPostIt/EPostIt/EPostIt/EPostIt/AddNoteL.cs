@@ -229,7 +229,6 @@ namespace EPostIt
                 }
                 else
                 {
-                    //NoteManager.quickNotes.Add(new Note(textArea.Text));
                     if (savedLandmarks.SelectedIndex == 0 && nameNewLandmark.Text.Equals(""))
                     {
                         await DisplayAlert("", "Please type in the landmark name.", "OK");

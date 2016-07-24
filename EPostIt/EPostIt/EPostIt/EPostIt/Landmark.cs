@@ -20,14 +20,35 @@ namespace EPostIt
             this.longitude = lon;
             this.assignedTime = DateTime.Now;
             this.assignedEvents = 0;
+            AddLandmarkToDB();
+        }
+        public Landmark (string n, double lat, double lon, DateTime dC, int aE)
+        {
+            name = n;
+            latitude = lat;
+            longitude = lon;
+            assignedTime = dC;
+            assignedEvents = aE;
         }
         public void AssignEvent()
         {
             this.assignedEvents++;
+            App.mainDatabase.Query<LandmarkDB>($"UPDATE [Landmark] SET [AssignedEvents]={assignedEvents} WHERE [Name]='{name}'");
         }
         public void UnassignEvent()
         {
             this.assignedEvents--;
+            App.mainDatabase.Query<LandmarkDB>($"UPDATE [Landmark] SET [AssignedEvents]={assignedEvents} WHERE [Name]='{name}'");
+        }
+        public void AddLandmarkToDB()
+        {
+            LandmarkDB holder = new LandmarkDB();
+            holder.name = name;
+            holder.latitude = latitude;
+            holder.longitude = longitude;
+            holder.assignedTime = assignedTime;
+            holder.assignedEvents = assignedEvents;
+            App.mainDatabase.Insert(holder);
         }
     }
 }
