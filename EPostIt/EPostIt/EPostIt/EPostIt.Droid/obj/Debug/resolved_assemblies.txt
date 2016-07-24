@@ -28,8 +28,8 @@ C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\GitHub\EPostIt\EPostIt\EPostIt\
 C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\GitHub\EPostIt\EPostIt\EPostIt\EPostIt\EPostIt.Droid\obj\Debug\android\assets\System.Diagnostics.Debug.dll
 C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\GitHub\EPostIt\EPostIt\EPostIt\EPostIt\EPostIt.Droid\obj\Debug\android\assets\System.Collections.dll
 C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\GitHub\EPostIt\EPostIt\EPostIt\EPostIt\EPostIt.Droid\obj\Debug\android\assets\System.Threading.Tasks.dll
-C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\GitHub\EPostIt\EPostIt\EPostIt\EPostIt\EPostIt.Droid\obj\Debug\android\assets\System.Runtime.Extensions.dll
 C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\GitHub\EPostIt\EPostIt\EPostIt\EPostIt\EPostIt.Droid\obj\Debug\android\assets\System.Linq.dll
+C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\GitHub\EPostIt\EPostIt\EPostIt\EPostIt\EPostIt.Droid\obj\Debug\android\assets\System.Runtime.Extensions.dll
 C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\GitHub\EPostIt\EPostIt\EPostIt\EPostIt\EPostIt.Droid\obj\Debug\android\assets\System.Reflection.dll
 C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\GitHub\EPostIt\EPostIt\EPostIt\EPostIt\EPostIt.Droid\obj\Debug\android\assets\System.Linq.Expressions.dll
 C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\GitHub\EPostIt\EPostIt\EPostIt\EPostIt\EPostIt.Droid\obj\Debug\android\assets\System.Threading.dll

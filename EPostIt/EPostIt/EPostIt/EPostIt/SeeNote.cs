@@ -673,13 +673,13 @@ namespace EPostIt
             switch (holder.Code)
             {
                 case 0:
-                    deal=await DisplayAlert("", $"Type: Quick Note\nContent: {holder.note.NoteContent}", "OK", "Edit");
+                    deal=await DisplayAlert("", $"Type: Quick Note\nDate Created: {holder.note.dateCreated}\nContent: {holder.note.NoteContent}", "OK", "Edit");
                     break;
                 case 1:
-                    deal = await DisplayAlert("", $"Type: Time-based Note\nTime Created: {holder.note.dateCreated}\nTime Triggered: {holder.noteT.DateTimeSet}\nStatus: {holder.Status}\nContent: {holder.note.NoteContent}", "OK", "Edit");
+                    deal = await DisplayAlert("", $"Type: Time-based Note\nDate Created: {holder.note.dateCreated}\nTime Triggered: {holder.noteT.DateTimeSet}\nStatus: {holder.Status}\nContent: {holder.note.NoteContent}", "OK", "Edit");
                     break;
                 case 2:
-                    deal = await DisplayAlert("", $"Type: Location-based Note\nTime Created: {holder.note.dateCreated}\nLandmark: {holder.noteL.landmark.name}\nDistance: {holder.CalcDistance()}\nTrigger Radius: {holder.noteL.maxDistance} meter(s)\nStatus: {holder.Status}\nContent: {holder.note.NoteContent}", "OK", "Edit");
+                    deal = await DisplayAlert("", $"Type: Location-based Note\nDate Created: {holder.note.dateCreated}\nLandmark: {holder.noteL.landmark.name}\nDistance: {holder.CalcDistance()}\nTrigger Radius: {holder.noteL.maxDistance} meter(s)\nStatus: {holder.Status}\nContent: {holder.note.NoteContent}", "OK", "Edit");
                     break;
                 default:
                     deal = await DisplayAlert("", $"Type: Quick Note\nContent:\n{holder.note.NoteContent}", "OK", "Edit");

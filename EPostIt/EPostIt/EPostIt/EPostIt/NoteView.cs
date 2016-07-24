@@ -267,6 +267,7 @@ namespace EPostIt
             switch (Code)
             {
                 case 0:
+                    App.mainDatabase.Delete<QuickNoteDB>(note.Id);
                     NoteManager.quickNotes.Remove(note);
                     break;
                 case 1:

@@ -5,8 +5,9 @@ using Xamarin.Forms;
 using SQLite;
 using EPostIt;
 using System.IO;
+using EPostIt.iOS;
 
-//[assembly: Dependency(typeof(SQLite_iOS))]
+[assembly: Dependency(typeof(SQLite_iOS))]
 namespace EPostIt.iOS
 {
     public class SQLite_iOS : ISQLite

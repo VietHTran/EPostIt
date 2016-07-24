@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Diagnostics;
 using Xamarin.Forms;
 
 namespace EPostIt
@@ -110,6 +111,12 @@ namespace EPostIt
                         int index = NoteManager.quickNotes.IndexOf(AppController.Holder.note);
                         NoteManager.quickNotes[index].NoteContent = textArea.Text;
                         NoteManager.quickNotes[index].dateCreated= DateTime.Now;
+                        //App.AddQuickNote(NoteManager.quickNotes[index]);
+                        //App.mainDatabase.Delete<QuickNoteDB>(NoteManager.quickNotes[index].Id);
+                        //NoteManager.quickNotes[index].Id = App.mainDatabase.Table<QuickNoteDB>().Last().Id;
+                        App.EditQuickNote(NoteManager.quickNotes[index]);
+                        //App.mainDatabase.Query<QuickNoteDB>($"UPDATE [QN] SET [Content]='{textArea.Text}',[DateCreated]=CURRENT_TIMESTAMP WHERE [_id]={NoteManager.quickNotes[index].Id}");
+                        Debug.WriteLine($"Date2: {App.mainDatabase.Get<QuickNoteDB>(NoteManager.quickNotes[index].Id).DateCreated}");
                         AppController.Holder.note = NoteManager.quickNotes[index];
                         AppController.Holder1.note = NoteManager.quickNotes[index];
                         //NoteView newNote = new NoteView(NoteManager.quickNotes[index]);
@@ -128,7 +135,9 @@ namespace EPostIt
                     }
                     else
                     {
-                        NoteManager.quickNotes.Add(new Note(textArea.Text));
+                        Note holder = new Note(textArea.Text);
+                        NoteManager.quickNotes.Add(holder);
+                        App.AddQuickNote(holder);
                         bool backToMenu = await DisplayAlert("Note Saved", "Note successfully saved.", "Back To Menu", "Create New Note");
                         if (backToMenu)
                         {
