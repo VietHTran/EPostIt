@@ -14,12 +14,14 @@ namespace EPostIt
         public Landmark landmark { get; set; }
         public double maxDistance { get; set; }
         public bool isTriggered { get; set; }
+        public bool isNotified { get; set; }
         public LocationNote (string s, double lat, double lon, double md) : base (s)
         {
             this.latitude = lat;
             this.longitude = lon;
             this.isTriggered = false;
             this.maxDistance = md;
+            this.isNotified = false;
         }
         public LocationNote(string s, Landmark l, double md) : base(s)
         {
@@ -28,6 +30,7 @@ namespace EPostIt
             this.landmark = l;
             this.latitude = l.latitude;
             this.longitude = l.longitude;
+            this.isNotified = false;
         }
         public bool IsPlace()
         {

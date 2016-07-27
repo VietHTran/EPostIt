@@ -12,6 +12,8 @@ namespace EPostIt
         public static NoteView Holder { get; set; }
         public static NoteView Holder1 { get; set; }
         public static SeeNote prevPage;
+        public static bool TimeNotification { get; set; }
+        public static bool LocationNotification { get; set; }
     }
     public interface ITapLock
     {

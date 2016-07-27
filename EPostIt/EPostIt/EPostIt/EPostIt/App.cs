@@ -77,7 +77,7 @@ namespace EPostIt
                     NoteManager.quickNotes.Add(new Note(i.content,i.DateCreated,i.Id));
                 }
             }
-            mainDatabase.Query<LandmarkDB>("DELETE FROM [Landmark]");
+            //mainDatabase.Query<LandmarkDB>("DELETE FROM [Landmark]");
             if (mainDatabase.Table<LandmarkDB>().Count() == 0)
                 return;
             else
@@ -95,6 +95,8 @@ namespace EPostIt
             {
                 LandmarkCollection.CreateLandmark("None", 0, 0);
             }
+            AppController.LocationNotification = true;
+            AppController.TimeNotification = false;
         }
         protected override void OnSleep()
         {

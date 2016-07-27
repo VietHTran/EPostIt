@@ -353,7 +353,11 @@ namespace EPostIt
         }
         void Back(object sender, EventArgs ea)
         {
-            Navigation.PopAsync();
+            if (this.AcquireTapLock())
+            {
+                Navigation.PopAsync();
+                this.ReleaseTapLock();
+            }
         }
         void OpenAll(object sender, EventArgs ea)
         {

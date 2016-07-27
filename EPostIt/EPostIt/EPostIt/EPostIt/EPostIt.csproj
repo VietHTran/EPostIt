@@ -57,6 +57,7 @@
     <Compile Include="NoteView.cs" />
     <Compile Include="NoteViewList.cs" />
     <Compile Include="NotifiedNote.cs" />
+    <Compile Include="NotifiedNoteTime.cs" />
     <Compile Include="NotifiedView.cs" />
     <Compile Include="PageManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

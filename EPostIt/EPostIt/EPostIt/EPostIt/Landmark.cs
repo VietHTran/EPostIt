@@ -20,7 +20,8 @@ namespace EPostIt
             this.longitude = lon;
             this.assignedTime = DateTime.Now;
             this.assignedEvents = 0;
-            AddLandmarkToDB();
+            if (!n.Equals("None"))
+                AddLandmarkToDB();
         }
         public Landmark (string n, double lat, double lon, DateTime dC, int aE)
         {

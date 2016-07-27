@@ -29,12 +29,16 @@ namespace EPostIt
         private Label shortText;
         private Label extraInfo;
         private int code; //time note (0), location note (1)
-
+        private Color yellow = Color.FromHex("DED700");
+        public string noteContent { get; set; }
+        public string timeTrigger { get; set; }
+        public string landmarkName { get; set; }
         public NotifiedView(TimeNote nT)
         {
             code = 0;
             noteT = nT;
             note = nT;
+            timeTrigger = noteT.DateTimeSet.ToString("MM/dd/yyyy HH:mm");
             CommonGenerate();
         }
         public NotifiedView(LocationNote nL)
@@ -42,33 +46,35 @@ namespace EPostIt
             code = 1;
             noteL = nL;
             note = nL;
+            landmarkName = nL.landmark.name;
             CommonGenerate();
         }
         void CommonGenerate()
         {
-            Padding = 0;
+            Padding = 10;
             HeightRequest = 70;
-            BackgroundColor = Color.Yellow;
+            BackgroundColor = yellow;
             HorizontalOptions = LayoutOptions.FillAndExpand;
+            noteContent = note.NoteContent;
             GenerateShortText();
             GenerateExtraInfo();
 
-            Children.Add(shortText);
+            Children.Add(shortText,0,0);
             Grid.SetColumnSpan(shortText,5);
-            Children.Add(extraInfo);
+            Children.Add(extraInfo,5,0);
             Grid.SetColumnSpan(extraInfo, 3);
         }
         void GenerateShortText()
         {
-            shortText = GenerateLabel(note.NoteContent,Color.White,25,FontAttributes.None,TextAlignment.Start);
+            shortText = GenerateLabel(note.NoteContent,Color.White,25,FontAttributes.None,TextAlignment.Center);
             shortText.LineBreakMode = LineBreakMode.TailTruncation;
         }
         void GenerateExtraInfo()
         {
             if (code==0)
-                extraInfo = GenerateLabel(noteT.DateTimeSet.ToString("MM/dd/yyyy HH:mm"),Color.White,25,FontAttributes.None,TextAlignment.End);
+                extraInfo = GenerateLabel(timeTrigger,Color.White,25,FontAttributes.None,TextAlignment.Center);
             else
-                extraInfo = GenerateLabel(noteL.landmark.name, Color.White, 25, FontAttributes.None, TextAlignment.End);
+                extraInfo = GenerateLabel(landmarkName, Color.White, 25, FontAttributes.None, TextAlignment.Center);
         }
     }
 }

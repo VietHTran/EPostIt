@@ -139,7 +139,7 @@ namespace EPostIt
         }
         void CommonGenerate()
         {
-            Padding = 0;
+            Padding = 10;
             HeightRequest = 70;
             BackgroundColor = Color.Green;
             GenerateText();
