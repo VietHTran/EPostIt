@@ -23,9 +23,9 @@ namespace EPostIt
             check.Clicked += SeeNote;
             Button list = new Button { Text = "Landmark List", BackgroundColor = Color.Blue, FontSize = 32, VerticalOptions = LayoutOptions.FillAndExpand, HorizontalOptions = LayoutOptions.FillAndExpand, TextColor = Color.White, FontAttributes = FontAttributes.Bold };
             list.Clicked += LandmarkList;
-            Button exit = new Button
+            Button notifiedNote = new Button
             {
-                Text = "Exit   ",
+                Text = "Notified Notes",
                 BackgroundColor = Color.Yellow,
                 FontSize = 32,
                 VerticalOptions = LayoutOptions.FillAndExpand,
@@ -33,7 +33,7 @@ namespace EPostIt
                 TextColor = Color.White,
                 FontAttributes = FontAttributes.Bold,
             };
-            exit.Clicked += async (sender, ea) => await Exit(sender, ea);
+            notifiedNote.Clicked += NotifiedNote;
             /*
             this.Content = new StackLayout {
                 Orientation = StackOrientation.Vertical,
@@ -67,7 +67,7 @@ namespace EPostIt
             grid.Children.Add(add, 0, 0);
             grid.Children.Add(check, 1, 0);
             grid.Children.Add(list, 0, 1);
-            grid.Children.Add(exit, 1, 1);
+            grid.Children.Add(notifiedNote, 1, 1);
             Content = grid;
         }
         async void AddNote(object sender, EventArgs ea)
@@ -107,6 +107,14 @@ namespace EPostIt
             if (this.AcquireTapLock())
             {
                 await Navigation.PushAsync(new SeeNote());
+                this.ReleaseTapLock();
+            }
+        }
+        async void NotifiedNote(object sender, EventArgs ea)
+        {
+            if (this.AcquireTapLock())
+            {
+                await Navigation.PushAsync(new NotifiedNote());
                 this.ReleaseTapLock();
             }
         }
