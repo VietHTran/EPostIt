@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Diagnostics;
 using Xamarin.Forms;
+using System.Diagnostics;
 
 namespace EPostIt
 {
-    class NotifiedNoteTime : CarouselPage, ITapLock
+    class NotifiedNoteLocation : CarouselPage, ITapLock
     {
         public TapLockVars TapLockVars { get; set; }
         private Button GenerateButton(string text, Color textColor, Color backgroundColor)
@@ -35,11 +35,11 @@ namespace EPostIt
             };
             return holder;
         }
-        private Label GenerateLabel(string text,Color colorText, int size, FontAttributes attr, TextAlignment al)
+        private Label GenerateLabel(string text, Color colorText, int size, FontAttributes attr, TextAlignment al)
         {
             return new Label
             {
-                Text=text,
+                Text = text,
                 FontSize = size,
                 TextColor = colorText,
                 FontAttributes = attr,
@@ -59,22 +59,22 @@ namespace EPostIt
         }
         private Color DarkYellow = Color.FromHex("B7BC06");
         private Color Yellow = Color.FromHex("DED700");
-        public NotifiedNoteTime(List<NotifiedView> timeNotes)
+        public NotifiedNoteLocation(List<NotifiedView> locationNotes)
         {
-            for (int i=0;i<timeNotes.Count;i++)
+            for (int i = 0; i < locationNotes.Count; i++)
             {
-                var timeNotify = wrapperLabel(GenerateLabel($"Time Trigger: {timeNotes[i].timeTrigger}",Color.Black, 25, FontAttributes.None, TextAlignment.Start));
-                var noteContent = GenerateLabel(timeNotes[i].noteContent,Color.Black, 32, FontAttributes.None, TextAlignment.Center);
+                var landmark = wrapperLabel(GenerateLabel($"Landmark: {locationNotes[i].landmarkName}", Color.Black, 25, FontAttributes.None, TextAlignment.Start));
+                var noteContent = GenerateLabel(locationNotes[i].noteContent, Color.Black, 32, FontAttributes.None, TextAlignment.Center);
                 noteContent.BackgroundColor = Yellow;
-                timeNotify.BackgroundColor = DarkYellow;
-                timeNotify.VerticalOptions = LayoutOptions.Center;
-                var content= new ContentPage
+                landmark.BackgroundColor = DarkYellow;
+                landmark.VerticalOptions = LayoutOptions.Center;
+                var content = new ContentPage
                 {
                     Padding = new Thickness(0, Device.OnPlatform(40, 40, 0), 0, 0),
                     Content = new StackLayout
                     {
                         Children = {
-                            timeNotify,
+                            landmark,
                             noteContent
                         }
                     }

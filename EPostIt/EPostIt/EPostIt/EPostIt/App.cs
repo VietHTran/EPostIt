@@ -95,8 +95,9 @@ namespace EPostIt
             {
                 LandmarkCollection.CreateLandmark("None", 0, 0);
             }
+            //Later will need to extract from DB
             AppController.LocationNotification = true;
-            AppController.TimeNotification = false;
+            AppController.TimeNotification = true;
         }
         protected override void OnSleep()
         {

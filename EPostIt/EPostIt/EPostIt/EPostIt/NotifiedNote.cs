@@ -114,6 +114,9 @@ namespace EPostIt
         private Label empty;
         private List<NotifiedView> timeNList, locationNList;
         private int tabID;
+        private NotifiedNoteTime carouselT;
+        private NotifiedNoteLocation carouselL;
+        private Task generateCarousel;
         public NotifiedNote()
         {
             TestInit();
@@ -153,6 +156,7 @@ namespace EPostIt
             currentView = timeNotesView;
             currentHeading = timeHeading;
             notiCurrentSect = notiTimeSect;
+            DisableButton(timeNotes);
 
             content = new StackLayout {
                 HorizontalOptions = LayoutOptions.FillAndExpand,
@@ -199,15 +203,47 @@ namespace EPostIt
         {
             AppController.LocationNotification = isNotiLocation.IsToggled;
         }
-        
+        void OpenTimeCarousel(object sender, EventArgs ea)
+        {
+            if (this.AcquireTapLock())
+            {
+                NotifiedView holder = sender as NotifiedView;
+                generateCarousel.Wait();
+                //carouselT.GotoPage(timeNList.IndexOf(holder));
+                carouselT.CurrentPage = carouselT.Children[timeNList.IndexOf(holder)];
+                Navigation.PushAsync(carouselT);
+                this.ReleaseTapLock();
+            }
+        }
+        void OpenLocationCarousel(object sender, EventArgs ea)
+        {
+            if (this.AcquireTapLock())
+            {
+                NotifiedView holder = sender as NotifiedView;
+                generateCarousel.Wait();
+                carouselL.CurrentPage = carouselL.Children[locationNList.IndexOf(holder)];
+                Navigation.PushAsync(carouselL);
+                this.ReleaseTapLock();
+            }
+        }
+        void DisableButton(Button b)
+        {
+            b.IsEnabled = false;
+            b.BackgroundColor = DarkYellow;
+        }
+        void EnableButton(Button b)
+        {
+            b.IsEnabled = true;
+            b.BackgroundColor = yellow;
+        }
         void OpenLocationTab()
         {
             RemoveContent();
             notiCurrentSect = notiLocationSect;
             currentHeading = locationHeading;
             currentView = locationNotesView;
-            locationNotes.IsEnabled = false;
-            timeNotes.IsEnabled = true;
+            DisableButton(locationNotes);
+            EnableButton(timeNotes);
             tabID = 1;
             InsertContent();
         }
@@ -217,8 +253,8 @@ namespace EPostIt
             notiCurrentSect = notiTimeSect;
             currentHeading = timeHeading;
             currentView = timeNotesView;
-            timeNotes.IsEnabled = false;
-            locationNotes.IsEnabled = true;
+            DisableButton(timeNotes);
+            EnableButton(locationNotes);
             tabID = 0;
             InsertContent();
         }
@@ -247,6 +283,9 @@ namespace EPostIt
                 if (DateTime.Now.CompareTo(NoteManager.timeNotes[i].DateTimeSet)>0 && NoteManager.timeNotes[i].isTriggered)
                 {
                     timeNList.Add(new NotifiedView(NoteManager.timeNotes[i]));
+                    var tgr = new TapGestureRecognizer();
+                    tgr.Tapped += (s, e) => OpenTimeCarousel(s, e);
+                    timeNList.Last().GestureRecognizers.Add(tgr);
                     timeNotesView.Children.Add(timeNList.Last());
                 }
             }
@@ -255,9 +294,17 @@ namespace EPostIt
                 if (NoteManager.locationNotes[i].isNotified)
                 {
                     locationNList.Add(new NotifiedView(NoteManager.locationNotes[i]));
+                    var tgr = new TapGestureRecognizer();
+                    tgr.Tapped += (s, e) => OpenLocationCarousel(s, e);
+                    locationNList.Last().GestureRecognizers.Add(tgr);
                     locationNotesView.Children.Add(locationNList.Last());
                 }
             }
+            generateCarousel = Task.Run(() =>
+            {
+                carouselT = new NotifiedNoteTime(timeNList);
+                carouselL = new NotifiedNoteLocation(locationNList);
+            });
             if (timeNotesView.Children.Count == 0)
                 timeNotesView.Children.Add(empty);
             if (locationNotesView.Children.Count == 0)
