@@ -78,6 +78,14 @@ namespace EPostIt
             locationHeading.Children.Add(landmark, 5, 0);
             Grid.SetColumnSpan(landmark, 3);
         }
+        void GenerateCarousel()
+        {
+            generateCarousel = Task.Run(() =>
+            {
+                carouselT = new NotifiedNoteTime(timeNList);
+                carouselL = new NotifiedNoteLocation(locationNList);
+            });
+        }
         private void GenerateSwitch()
         {
             Label titleT = GenerateLabel("Notify notes: ",Color.White,25,FontAttributes.Bold,TextAlignment.End);
@@ -106,20 +114,22 @@ namespace EPostIt
         }
         private Color DarkYellow = Color.FromHex("B7BC06");
         private Color yellow = Color.FromHex("DED700");
-        private Button back,timeNotes,locationNotes;
+        private Button back,timeNotes,locationNotes,toggleMode,selectAll,deselectAll,delete,reset;
         private StackLayout content,notiTimeSect,notiLocationSect,notiCurrentSect;
         private Switch isNotiTime, isNotiLocation;
-        private Grid timeHeading, locationHeading, currentHeading;
+        private Grid timeHeading, locationHeading, currentHeading, buttonList;
         private StackLayout timeNotesView, locationNotesView,currentView;
         private Label empty;
         private List<NotifiedView> timeNList, locationNList;
+        private int selectItem;
         private int tabID;
         private NotifiedNoteTime carouselT;
         private NotifiedNoteLocation carouselL;
         private Task generateCarousel;
+        private bool openTimesT, openTimesL,isChanged;
         public NotifiedNote()
         {
-            TestInit();
+            //TestInit();
             empty = GenerateLabel("\n\n\n\n\nNo notes notified\n\n\n\n\n", Color.White, 30, FontAttributes.None, TextAlignment.Center);
             empty.HorizontalOptions = LayoutOptions.FillAndExpand;
             empty.VerticalOptions = LayoutOptions.FillAndExpand;
@@ -144,13 +154,28 @@ namespace EPostIt
             GenerateSwitch();
 
             back = GenerateButton("Back",Color.White,Color.Gray);
+            toggleMode = GenerateButton("View\nMode",Color.White,yellow);
+            selectAll= GenerateButton("Select\nAll", Color.White, yellow);
+            deselectAll = GenerateButton("Deselect\nAll", Color.White, yellow);
+            delete = GenerateButton("Delete\nNote", Color.White, yellow);
+            reset = GenerateButton("Reset\nNotification", Color.White, yellow);
+
             back.Clicked += Back;
-            Grid buttonList = new Grid
+            toggleMode.Clicked += ToggleMode;
+            selectAll.Clicked += SelectAll;
+            deselectAll.Clicked += DeselectAll;
+            delete.Clicked += DeleteNotes;
+            reset.Clicked += ResetNotes;
+
+            buttonList = new Grid
             {
                 HorizontalOptions = LayoutOptions.Start,
                 Padding = 10,
             };
             buttonList.Children.Add(back, 0, 0);
+            buttonList.Children.Add(toggleMode, 3,0);
+            selectItem = -1;
+            isChanged = false;
 
             tabID = 0;
             currentView = timeNotesView;
@@ -203,27 +228,240 @@ namespace EPostIt
         {
             AppController.LocationNotification = isNotiLocation.IsToggled;
         }
-        void OpenTimeCarousel(object sender, EventArgs ea)
+        void ToggleMode(object sender, EventArgs ea)
+        {
+            if (selectItem == -1)
+                OpenSelectMode();
+            else
+                OpenViewMode();
+        }
+        void SelectAll(object sender, EventArgs ea)
+        {
+            SelectAll();
+        }
+        void DeselectAll(object sender, EventArgs ea)
+        {
+            DeselectAll();
+        }
+        async void SelectTime(object sender, EventArgs ea)
         {
             if (this.AcquireTapLock())
             {
-                NotifiedView holder = sender as NotifiedView;
-                generateCarousel.Wait();
-                //carouselT.GotoPage(timeNList.IndexOf(holder));
-                carouselT.CurrentPage = carouselT.Children[timeNList.IndexOf(holder)];
-                Navigation.PushAsync(carouselT);
+                if (selectItem==-1)
+                {
+                    NotifiedView holder = sender as NotifiedView;
+                    generateCarousel.Wait();
+                    if (!openTimesT)
+                    {
+                        openTimesT = true;
+                        await Navigation.PushAsync(carouselT);
+                        await Task.Delay(200);
+                        carouselT.GotoPage(timeNList.IndexOf(holder));
+                    }
+                    else
+                    {
+                        carouselT.GotoPage(timeNList.IndexOf(holder));
+                        await Navigation.PushAsync(carouselT);
+                    }
+                } else
+                {
+                    NotifiedView holder = sender as NotifiedView;
+                    SelectNote(holder);
+                }
                 this.ReleaseTapLock();
             }
         }
-        void OpenLocationCarousel(object sender, EventArgs ea)
+        async void SelectLocation(object sender, EventArgs ea)
         {
             if (this.AcquireTapLock())
             {
-                NotifiedView holder = sender as NotifiedView;
-                generateCarousel.Wait();
-                carouselL.CurrentPage = carouselL.Children[locationNList.IndexOf(holder)];
-                Navigation.PushAsync(carouselL);
+                if (selectItem == -1)
+                {
+                    NotifiedView holder = sender as NotifiedView;
+                    generateCarousel.Wait();
+                    if (!openTimesL)
+                    {
+                        openTimesL = true;
+                        await Navigation.PushAsync(carouselL);
+                        await Task.Delay(200);
+                        carouselL.GotoPage(locationNList.IndexOf(holder));
+                    }
+                    else
+                    {
+                        carouselL.GotoPage(locationNList.IndexOf(holder));
+                        await Navigation.PushAsync(carouselL);
+                    }
+                } else
+                {
+                    NotifiedView holder = sender as NotifiedView;
+                    SelectNote(holder);
+                }
                 this.ReleaseTapLock();
+            }
+        }
+        async void DeleteNotes(object sender, EventArgs ea)
+        {
+            if (this.AcquireTapLock())
+            {
+                bool confirm = await DisplayAlert("Delete Confirmation", "Are you sure you want to delete the selected notes", "Yes", "No");
+                if (confirm)
+                {
+                    isChanged = true;
+                    for (int i=currentView.Children.Count-1; i>=0;i--)
+                    {
+                        if (currentView.Children[i].BackgroundColor==Color.Purple)
+                        {
+                            NotifiedView holder = currentView.Children[i] as NotifiedView;
+                            holder.DeleteFromDatabase();
+                            currentView.Children.Remove(holder);
+                            if (tabID == 0)
+                            {
+                                timeNotesView.Children.Remove(holder);
+                                timeNList.Remove(holder);
+                            } else
+                            {
+                                locationNotesView.Children.Remove(holder);
+                                locationNList.Remove(holder);
+                            }
+                        }
+                    }
+                    if (currentView.Children.Count==0)
+                    {
+                        currentView.Children.Add(empty);
+                        if (tabID == 0)
+                            timeNotesView.Children.Add(empty);
+                        else
+                            locationNotesView.Children.Add(empty);
+                    }
+                    DeselectAll();
+                }
+                this.ReleaseTapLock();
+            }
+        }
+        async void ResetNotes(object sender, EventArgs ea)
+        {
+            if (this.AcquireTapLock())
+            {
+                bool confirm = await DisplayAlert("Reset Confirmation", "Are you sure you want to reset notification for the notes", "Yes", "No");
+                if (confirm)
+                {
+                    isChanged = true;
+                    for (int i= currentView.Children.Count-1; i>=0;i--)
+                    if (currentView.Children[i].BackgroundColor == Color.Purple)
+                        {
+                            NotifiedView holder = currentView.Children[i] as NotifiedView;
+                            holder.ResetNotification();
+                            currentView.Children.Remove(holder);
+                            locationNotesView.Children.Remove(holder);
+                            locationNList.Remove(holder);
+                        }
+                    if (currentView.Children.Count == 0)
+                    {
+                        currentView.Children.Add(empty);
+                        if (tabID == 0)
+                            timeNotesView.Children.Add(empty);
+                        else
+                            locationNotesView.Children.Add(empty);
+                    }
+                    DeselectAll();
+                }
+                this.ReleaseTapLock();
+            }
+        }
+        void SelectNote(NotifiedView holder)
+        {
+            if (holder.BackgroundColor == yellow)
+            {
+                selectItem++;
+                holder.BackgroundColor = Color.Purple;
+                if (!delete.IsEnabled)
+                {
+                    EnableButton(delete);
+                    EnableButton(reset);
+                }
+            }
+            else
+            {
+                selectItem--;
+                holder.BackgroundColor = yellow;
+                if (selectItem == 0 && delete.IsEnabled)
+                {
+                    DisableButton(delete);
+                    DisableButton(reset);
+                }
+            }
+        }
+        void OpenViewMode()
+        {
+            DeselectAll();
+            selectItem = -1;
+            buttonList.Children.Remove(delete);
+            buttonList.Children.Remove(selectAll);
+            buttonList.Children.Remove(deselectAll);
+            if (buttonList.Children.Contains(reset))
+                buttonList.Children.Remove(reset);
+            toggleMode.Text = "View\nMode";
+            if (isChanged)
+            {
+                isChanged = false;
+                GenerateCarousel();
+            }
+        }
+        void OpenSelectMode()
+        {
+            DeselectAll();
+            buttonList.Children.Add(delete,3,1);
+            buttonList.Children.Add(selectAll,2,0);
+            buttonList.Children.Add(deselectAll,1,0);
+            CheckResetButton();
+            toggleMode.Text = "Select\nMode";
+        }
+        void CheckResetButton()
+        {
+            if (selectItem!=-1&&tabID==1)
+                buttonList.Children.Add(reset, 2, 1);
+            else if (buttonList.Children.Contains(reset))
+                buttonList.Children.Remove(reset);
+        }
+        void SelectAll()
+        {
+            if (currentView.Children.Contains(empty))
+                return;
+            selectItem = currentView.Children.Count;
+            SetAllPurple();
+            if (!delete.IsEnabled)
+            {
+                EnableButton(delete);
+                EnableButton(reset);
+            }
+
+        }
+        void DeselectAll()
+        {
+            selectItem = 0;
+            SetAllYellow();
+            if (delete.IsEnabled)
+            {
+                DisableButton(delete);
+                DisableButton(reset);
+            }
+        }
+        void SetAllPurple()
+        {
+            if (currentView.Children.Contains(empty))
+                return;
+            for (int i=0;i<currentView.Children.Count;i++)
+            {
+                currentView.Children[i].BackgroundColor = Color.Purple;
+            }
+        }
+        void SetAllYellow()
+        {
+            if (currentView.Children.Contains(empty))
+                return;
+            for (int i = 0; i < currentView.Children.Count; i++)
+            {
+                currentView.Children[i].BackgroundColor = yellow;
             }
         }
         void DisableButton(Button b)
@@ -238,6 +476,8 @@ namespace EPostIt
         }
         void OpenLocationTab()
         {
+            if (selectItem != -1)
+                DeselectAll();
             RemoveContent();
             notiCurrentSect = notiLocationSect;
             currentHeading = locationHeading;
@@ -245,10 +485,13 @@ namespace EPostIt
             DisableButton(locationNotes);
             EnableButton(timeNotes);
             tabID = 1;
+            CheckResetButton();
             InsertContent();
         }
         void OpenTimeTab()
         {
+            if (selectItem != -1)
+                DeselectAll();
             RemoveContent();
             notiCurrentSect = notiTimeSect;
             currentHeading = timeHeading;
@@ -256,6 +499,7 @@ namespace EPostIt
             DisableButton(timeNotes);
             EnableButton(locationNotes);
             tabID = 0;
+            CheckResetButton();
             InsertContent();
         }
         void RemoveContent()
@@ -272,6 +516,8 @@ namespace EPostIt
         }
         void Initialization()
         {
+            openTimesT = false;
+            openTimesL = false;
             timeNList = new List<NotifiedView>();
             locationNList = new List<NotifiedView>();
             timeNotesView = GenerateSectionStack();
@@ -284,7 +530,7 @@ namespace EPostIt
                 {
                     timeNList.Add(new NotifiedView(NoteManager.timeNotes[i]));
                     var tgr = new TapGestureRecognizer();
-                    tgr.Tapped += (s, e) => OpenTimeCarousel(s, e);
+                    tgr.Tapped += (s, e) => SelectTime(s, e);
                     timeNList.Last().GestureRecognizers.Add(tgr);
                     timeNotesView.Children.Add(timeNList.Last());
                 }
@@ -295,16 +541,12 @@ namespace EPostIt
                 {
                     locationNList.Add(new NotifiedView(NoteManager.locationNotes[i]));
                     var tgr = new TapGestureRecognizer();
-                    tgr.Tapped += (s, e) => OpenLocationCarousel(s, e);
+                    tgr.Tapped += (s, e) => SelectLocation(s, e);
                     locationNList.Last().GestureRecognizers.Add(tgr);
                     locationNotesView.Children.Add(locationNList.Last());
                 }
             }
-            generateCarousel = Task.Run(() =>
-            {
-                carouselT = new NotifiedNoteTime(timeNList);
-                carouselL = new NotifiedNoteLocation(locationNList);
-            });
+            GenerateCarousel();
             if (timeNotesView.Children.Count == 0)
                 timeNotesView.Children.Add(empty);
             if (locationNotesView.Children.Count == 0)

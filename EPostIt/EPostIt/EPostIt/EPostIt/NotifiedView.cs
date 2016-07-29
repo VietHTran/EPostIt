@@ -49,6 +49,20 @@ namespace EPostIt
             landmarkName = nL.landmark.name;
             CommonGenerate();
         }
+        public void DeleteFromDatabase()
+        {
+            if (code == 0)
+                NoteManager.timeNotes.Remove(noteT);
+            else
+            {
+                LandmarkCollection.landmarks[LandmarkCollection.landmarks.IndexOf(noteL.landmark)].UnassignEvent();
+                NoteManager.locationNotes.Remove(noteL);
+            }
+        }
+        public void ResetNotification()
+        {
+            NoteManager.locationNotes[NoteManager.locationNotes.IndexOf(noteL)].isNotified = false;
+        }
         void CommonGenerate()
         {
             Padding = 10;

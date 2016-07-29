@@ -139,6 +139,7 @@ namespace EPostIt
                         }
                         await DisplayAlert("Note Saved", "Note successfully saved.", "OK");
                         int index = NoteManager.timeNotes.IndexOf(AppController.Holder.noteT);
+                        //Set alarm here
                         NoteManager.timeNotes[index].NoteContent = textArea.Text;
                         textArea.Text = "";
                         NoteManager.timeNotes[index].dateCreated = DateTime.Now;
