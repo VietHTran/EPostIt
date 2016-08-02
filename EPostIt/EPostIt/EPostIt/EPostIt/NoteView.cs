@@ -180,7 +180,7 @@ namespace EPostIt
         {
             Children.Clear();
             string dateT = noteT.DateTimeSet.ToString("MM/dd/yyyy");
-            if (noteT.isTriggered)
+            if (noteT.IsTime())
             {
                 Status = "On";
             } else
@@ -205,7 +205,7 @@ namespace EPostIt
         {
             Children.Clear();
             string landmarkN = noteL.landmark.name;
-            if (noteL.isTriggered)
+            if (noteL.isNotified)
             {
                 Status = "On";
             }
@@ -271,6 +271,7 @@ namespace EPostIt
                     NoteManager.quickNotes.Remove(note);
                     break;
                 case 1:
+                    noteT.Alarm.Cancel();
                     NoteManager.timeNotes.Remove(noteT);
                     break;
                 case 2:

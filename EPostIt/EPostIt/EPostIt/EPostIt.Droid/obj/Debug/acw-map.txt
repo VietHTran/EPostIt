@@ -1,3 +1,7 @@
+EPostIt.Droid.AlarmReceiver_Android, EPostIt.Droid;md5f63f212845837f4133f6eb78bf3490e8.AlarmReceiver_Android
+EPostIt.Droid.AlarmReceiver_Android, EPostIt.Droid, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null;md5f63f212845837f4133f6eb78bf3490e8.AlarmReceiver_Android
+EPostIt.Droid.AlarmReceiver_Android;md5f63f212845837f4133f6eb78bf3490e8.AlarmReceiver_Android
+epostit.droid.AlarmReceiver_Android;md5f63f212845837f4133f6eb78bf3490e8.AlarmReceiver_Android
 EPostIt.Droid.MainActivity, EPostIt.Droid;md5f63f212845837f4133f6eb78bf3490e8.MainActivity
 EPostIt.Droid.MainActivity, EPostIt.Droid, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null;md5f63f212845837f4133f6eb78bf3490e8.MainActivity
 EPostIt.Droid.MainActivity;md5f63f212845837f4133f6eb78bf3490e8.MainActivity

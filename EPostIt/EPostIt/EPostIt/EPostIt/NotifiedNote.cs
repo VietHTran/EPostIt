@@ -8,7 +8,7 @@ using System.Diagnostics;
 
 namespace EPostIt
 {
-    class NotifiedNote: ContentPage, ITapLock
+    public class NotifiedNote: ContentPage, ITapLock
     {
         public TapLockVars TapLockVars
         { get; set; }
@@ -526,7 +526,7 @@ namespace EPostIt
             locationNotesView.Padding = 10;
             for (int i=0;i<NoteManager.timeNotes.Count;i++)
             {
-                if (DateTime.Now.CompareTo(NoteManager.timeNotes[i].DateTimeSet)>0 && NoteManager.timeNotes[i].isTriggered)
+                if (NoteManager.timeNotes[i].IsTime())
                 {
                     timeNList.Add(new NotifiedView(NoteManager.timeNotes[i]));
                     var tgr = new TapGestureRecognizer();
@@ -537,7 +537,7 @@ namespace EPostIt
             }
             for (int i = 0; i < NoteManager.locationNotes.Count; i++)
             {
-                if (NoteManager.locationNotes[i].isNotified)
+                if (NoteManager.locationNotes[i].isNotified && NoteManager.locationNotes[i].isTriggered)
                 {
                     locationNList.Add(new NotifiedView(NoteManager.locationNotes[i]));
                     var tgr = new TapGestureRecognizer();

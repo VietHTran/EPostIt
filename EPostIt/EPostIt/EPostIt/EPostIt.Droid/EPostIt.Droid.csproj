@@ -114,8 +114,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AlarmReceiver_Android.cs" />
     <Compile Include="ExitAndroid.cs" />
     <Compile Include="MainActivity.cs" />
+    <Compile Include="NoteTimer_Android.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SQLite_Android.cs" />

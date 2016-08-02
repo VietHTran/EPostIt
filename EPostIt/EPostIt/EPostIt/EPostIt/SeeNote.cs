@@ -375,7 +375,7 @@ namespace EPostIt
             content.Children.Insert(2, currentContent);
             currentButton = allNoteS;
             tabID = 0;
-            InsertActiveBtn();
+            //InsertActiveBtn();
             UpdateButton();
             SetPickerAllNote();
         }
@@ -395,7 +395,7 @@ namespace EPostIt
             content.Children.Insert(2, currentContent);
             currentButton = quickNoteS;
             tabID = 1;
-            InsertActiveBtn();
+            //InsertActiveBtn();
             UpdateButton();
             SetPickerQuickNote();
         }
@@ -415,7 +415,7 @@ namespace EPostIt
             content.Children.Insert(2, currentContent);
             currentButton = timeNoteS;
             tabID = 2;
-            InsertActiveBtn();
+            //InsertActiveBtn();
             UpdateButton();
             SetPickerTimeNote();
         }
@@ -435,7 +435,7 @@ namespace EPostIt
             content.Children.Insert(2, currentContent);
             currentButton = locationNoteS;
             tabID = 3;
-            InsertActiveBtn();
+            //InsertActiveBtn();
             UpdateButton();
             SetPickerLocationNote();
         }
@@ -882,7 +882,7 @@ namespace EPostIt
             buttonList.Children.Add(selectAll, 3, 1);
             buttonList.Children.Add(deselectAll, 2, 1);
             buttonList.Children.Add(delete, 2, 0);
-            InsertActiveBtn();
+            //InsertActiveBtn();
         }
         void SelectModeOff()
         {

@@ -7,7 +7,7 @@ using Xamarin.Forms;
 
 namespace EPostIt
 {
-    class LocationNote : Note
+    public class LocationNote : Note
     {
         public double latitude { get; set; }
         public double longitude { get; set; }

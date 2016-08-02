@@ -7,7 +7,7 @@ using Xamarin.Forms;
 
 namespace EPostIt
 {
-    class NotifiedView : Grid
+    public class NotifiedView : Grid
     {
         private Label GenerateLabel(string text, Color colorText, int size, FontAttributes attr, TextAlignment al)
         {
@@ -52,7 +52,10 @@ namespace EPostIt
         public void DeleteFromDatabase()
         {
             if (code == 0)
+            { 
+                noteT.Alarm.Cancel();
                 NoteManager.timeNotes.Remove(noteT);
+            }
             else
             {
                 LandmarkCollection.landmarks[LandmarkCollection.landmarks.IndexOf(noteL.landmark)].UnassignEvent();

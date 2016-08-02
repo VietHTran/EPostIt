@@ -142,12 +142,15 @@ namespace EPostIt
                         //Set alarm here
                         NoteManager.timeNotes[index].NoteContent = textArea.Text;
                         textArea.Text = "";
+                        NoteManager.timeNotes[index].Alarm.Cancel();
                         NoteManager.timeNotes[index].dateCreated = DateTime.Now;
                         NoteManager.timeNotes[index].DateTimeSet = dateTimeHolder;
                         AppController.Holder.noteT = NoteManager.timeNotes[index];
                         AppController.Holder.note = NoteManager.timeNotes[index];
                         AppController.Holder1.noteT = NoteManager.timeNotes[index];
                         AppController.Holder1.note = NoteManager.timeNotes[index];
+                        AppController.Holder1.Status = "Off";
+                        AppController.Holder1.Status = "Off";
                         if (AppController.prevPage.tabID == 0)
                         {
                             AppController.Holder.UpdateAll();
@@ -158,6 +161,7 @@ namespace EPostIt
                             AppController.Holder.Update();
                             AppController.Holder1.UpdateAll();
                         }
+                        NoteManager.timeNotes[index].Alarm.Remind(dateTimeHolder,"Did you forget something?", NoteManager.timeNotes[index].NoteContent);
                         AppController.isEdit = false;
                         await Navigation.PopAsync();
                     } else
