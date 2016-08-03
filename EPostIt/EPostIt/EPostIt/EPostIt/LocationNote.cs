@@ -15,7 +15,7 @@ namespace EPostIt
         public double maxDistance { get; set; }
         public bool isTriggered { get; set; }
         public bool isNotified { get; set; }
-        public LocationNote (string s, double lat, double lon, double md) : base (s)
+        public LocationNote (string s, double lat, double lon, double md) : base (s,true)
         {
             this.latitude = lat;
             this.longitude = lon;
@@ -23,7 +23,7 @@ namespace EPostIt
             this.maxDistance = md;
             this.isNotified = false;
         }
-        public LocationNote(string s, Landmark l, double md) : base(s)
+        public LocationNote(string s, Landmark l, double md) : base(s,true)
         {
             this.isTriggered = false;
             this.maxDistance = md;

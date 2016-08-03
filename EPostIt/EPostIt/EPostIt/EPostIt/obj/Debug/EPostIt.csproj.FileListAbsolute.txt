@@ -44,5 +44,8 @@ C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\GitHub\EPostIt\EPostIt\EPostIt\
 C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\GitHub\EPostIt\EPostIt\EPostIt\EPostIt\EPostIt\bin\Debug\SQLitePCL.batteries.dll
 C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\GitHub\EPostIt\EPostIt\EPostIt\EPostIt\EPostIt\bin\Debug\SQLitePCL.raw.dll
 C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\GitHub\EPostIt\EPostIt\EPostIt\EPostIt\EPostIt\bin\Debug\SQLite-net.xml
+C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\GitHub\EPostIt\EPostIt\EPostIt\EPostIt\EPostIt\obj\Debug\EPostIt.csprojResolveAssemblyReference.cache
+C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\GitHub\EPostIt\EPostIt\EPostIt\EPostIt\EPostIt\obj\Debug\EPostIt.dll.mdb
+C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\GitHub\EPostIt\EPostIt\EPostIt\EPostIt\EPostIt\bin\Debug\EPostIt.dll.mdb
 C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\GitHub\EPostIt\EPostIt\EPostIt\EPostIt\EPostIt\obj\Debug\EPostIt.dll.mdb
 C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\GitHub\EPostIt\EPostIt\EPostIt\EPostIt\EPostIt\bin\Debug\EPostIt.dll.mdb

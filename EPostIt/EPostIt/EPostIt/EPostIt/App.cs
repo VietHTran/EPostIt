@@ -18,6 +18,20 @@ namespace EPostIt
         [Column("DateCreated")]
         public DateTime DateCreated { get; set; }
     }
+    [Table("TN")]
+    public class TimeNoteDB
+    {
+        [PrimaryKey, AutoIncrement, Column("_idt")]
+        public int Idt { get; set; }
+        [Column("ContentT")]
+        public string content { get; set; }
+        [Column("DateCreatedT")]
+        public DateTime DateCreated { get; set; }
+        [Column("DateTriggered")]
+        public DateTime DateTriggered { get; set; }
+        [Column("IsTriggered")]
+        public bool IsTriggered { get; set; }
+    }
     [Table("Landmark")]
     public class LandmarkDB
     {
@@ -32,9 +46,26 @@ namespace EPostIt
         [Column("AssignedEvents")]
         public int assignedEvents { get; set; }
     }
+    [Table("Trivia")]
+    public class ExtraInformationDB
+    {
+        public bool TimeNotification { get; set; }
+        public bool LocationNotification { get; set; }
+        public int pendingID { get; set; } //use for Android Alarm
+    }
     public class App : Application
     {
         public static SQLiteConnection mainDatabase;
+        private static int nextPendingID;
+        public static int NextPendingID {
+            get { return nextPendingID; }
+            set
+            {
+                nextPendingID = value;
+                if (mainDatabase.Table<ExtraInformationDB>().Count() != 0)
+                    mainDatabase.Query<ExtraInformationDB>($"UPDATE [Trivia] SET [pendingID]={value - 1}");
+            }
+        }
         public static int nextID;
         public App()
         {
@@ -42,11 +73,11 @@ namespace EPostIt
             mainDatabase = DependencyService.Get<ISQLite>().GetConnection();
             mainDatabase.CreateTable<QuickNoteDB>();
             mainDatabase.CreateTable<LandmarkDB>();
+            mainDatabase.CreateTable<TimeNoteDB>();
+            mainDatabase.CreateTable<ExtraInformationDB>();
             LoadDatabase();
+            Debug.WriteLine($"Pending: {NextPendingID}");
             MainPage = new NavigationPage(new MainPage());
-            //Later will need to extract from DB
-            AppController.LocationNotification = true;
-            AppController.TimeNotification = true;
         }
         public static void AddQuickNote(Note n)
         {
@@ -54,42 +85,61 @@ namespace EPostIt
             holder.content = n.NoteContent;
             holder.DateCreated = n.dateCreated;
             mainDatabase.Insert(holder);
+            if (n.Id!=mainDatabase.Table<QuickNoteDB>().Last().Id)
+            {
+                n.Id = mainDatabase.Table<QuickNoteDB>().Last().Id;
+                nextID = n.Id + 1;
+            }
         }
         public static void EditQuickNote(Note n)
         {
-            Debug.WriteLine("1");
             AddQuickNote(n);
-            Debug.WriteLine("2");
             mainDatabase.Delete<QuickNoteDB>(n.Id);
-            Debug.WriteLine("3");
             n.Id = nextID;
-            Debug.WriteLine("4");
             nextID++;
-            Debug.WriteLine("5");
         }
         void LoadDatabase()
         {
-            if (mainDatabase.Table<QuickNoteDB>().Count() == 0)
-                return;
-            else
+            if (mainDatabase.Table<ExtraInformationDB>().Count() !=0)
+            {
+                var holder = mainDatabase.Table<ExtraInformationDB>().First();
+                AppController.TimeNotification = holder.TimeNotification;
+                AppController.LocationNotification = holder.LocationNotification;
+                if (holder.pendingID == 1000000)
+                    NextPendingID = 0;
+                else
+                    NextPendingID = holder.pendingID + 1;
+            } else
+            {
+                ExtraInformationDB holder = new ExtraInformationDB();
+                holder.TimeNotification = true;
+                holder.LocationNotification = true;
+                holder.pendingID = 0;
+                NextPendingID = 0;
+                mainDatabase.Insert(holder);
+                AppController.TimeNotification = true;
+                AppController.LocationNotification = true;
+            }
+            if (mainDatabase.Table<QuickNoteDB>().Count() != 0)
             {
                 var table = mainDatabase.Table<QuickNoteDB>();
                 nextID = mainDatabase.Table<QuickNoteDB>().Last().Id+1;
                 foreach (var i in table)
-                {
-                    NoteManager.quickNotes.Add(new Note(i.content,i.DateCreated,i.Id));
-                }
+                    NoteManager.quickNotes.Add(new Note(i.content, i.DateCreated, i.Id));
+            }
+            if (mainDatabase.Table<TimeNoteDB>().Count() != 0)
+            {
+                var table = mainDatabase.Table<TimeNoteDB>();
+                TimeNote.NextID = mainDatabase.Table<TimeNoteDB>().Last().Idt + 1;
+                foreach (var i in table)
+                    NoteManager.timeNotes.Add(new TimeNote(i.content, i.DateTriggered, i.DateCreated, i.Idt,i.IsTriggered));
             }
             //mainDatabase.Query<LandmarkDB>("DELETE FROM [Landmark]");
-            if (mainDatabase.Table<LandmarkDB>().Count() == 0)
-                return;
-            else
+            if (mainDatabase.Table<LandmarkDB>().Count() != 0)
             {
                 var table = mainDatabase.Table<LandmarkDB>();
                 foreach (var i in table)
-                {
                     LandmarkCollection.CreateLandmark(i.name, i.latitude, i.longitude, i.assignedTime, i.assignedEvents);
-                }
             }
         }
         protected override void OnStart()

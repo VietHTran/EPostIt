@@ -52,8 +52,8 @@ namespace EPostIt
         public void DeleteFromDatabase()
         {
             if (code == 0)
-            { 
-                noteT.Alarm.Cancel();
+            {
+                App.mainDatabase.Delete<TimeNoteDB>(noteT.Id);
                 NoteManager.timeNotes.Remove(noteT);
             }
             else

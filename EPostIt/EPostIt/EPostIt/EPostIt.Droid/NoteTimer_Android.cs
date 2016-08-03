@@ -20,11 +20,13 @@ namespace EPostIt.Droid
 {
     class NoteTimer_Android : INoteTimer
     {
-        static int pendingIntentID = 0;
+        static int pendingIntentID;
         AlarmManager alarmManager;
         PendingIntent pendingIntent;
         public void Remind(DateTime dateTime, string title, string message)
         {
+            pendingIntentID = App.NextPendingID;
+            App.NextPendingID++;
             Intent alarmIntent = new Intent(Forms.Context, typeof(AlarmReceiver_Android));
             alarmIntent.PutExtra("message", message);
             alarmIntent.PutExtra("title", title);

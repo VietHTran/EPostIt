@@ -12,6 +12,11 @@ namespace EPostIt
         public string NoteContent { get; set; }
         public DateTime dateCreated { get; set; }
         public int Id { get; set; }
+        public Note(string text,bool isInherit)
+        {
+            this.NoteContent = text;
+            dateCreated = DateTime.Now;
+        }
         public Note(string text)
         {
             this.NoteContent = text;

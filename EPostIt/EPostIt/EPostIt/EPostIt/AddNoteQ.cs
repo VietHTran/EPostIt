@@ -111,9 +111,7 @@ namespace EPostIt
                         int index = NoteManager.quickNotes.IndexOf(AppController.Holder.note);
                         NoteManager.quickNotes[index].NoteContent = textArea.Text;
                         NoteManager.quickNotes[index].dateCreated= DateTime.Now;
-                        Debug.WriteLine("Edit1");
                         App.EditQuickNote(NoteManager.quickNotes[index]);
-                        Debug.WriteLine("Edit2");
                         AppController.Holder.note = NoteManager.quickNotes[index];
                         AppController.Holder1.note = NoteManager.quickNotes[index];
                         if (AppController.prevPage.tabID==0)

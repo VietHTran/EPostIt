@@ -16,10 +16,13 @@ namespace EPostIt.Droid
     [BroadcastReceiver]
     public class AlarmReceiver_Android : BroadcastReceiver
     {
-        static int notificationId = 0;
-        static int pendingIntentId = 0;
+        static int notificationId;
+        static int pendingIntentId;
         public override void OnReceive(Context context, Intent intent)
         {
+            notificationId = App.NextPendingID;
+            pendingIntentId = App.NextPendingID;
+            App.NextPendingID++;
             var message = intent.GetStringExtra("message");
             var title = intent.GetStringExtra("title");
             Intent secondIntent = new Intent(context, typeof(MainActivity));

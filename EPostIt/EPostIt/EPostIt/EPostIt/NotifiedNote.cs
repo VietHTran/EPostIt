@@ -374,7 +374,6 @@ namespace EPostIt
         void Reload(object sender, EventArgs ea)
         {
             Initialization();
-            Debug.WriteLine("Reload Complete!1");
             content.Children.Remove(currentView);
             if (tabID == 0)
                 currentView = timeNotesView;
@@ -541,8 +540,7 @@ namespace EPostIt
             locationNotesView.Padding = 10;
             for (int i=0;i<NoteManager.timeNotes.Count;i++)
             {
-                if (AppController.TimeNotification)
-                if (NoteManager.timeNotes[i].IsTime())
+                if (NoteManager.timeNotes[i].IsTime() && NoteManager.timeNotes[i].IsTriggered)
                 {
                     timeNList.Add(new NotifiedView(NoteManager.timeNotes[i]));
                     var tgr = new TapGestureRecognizer();
@@ -553,7 +551,6 @@ namespace EPostIt
             }
             for (int i = 0; i < NoteManager.locationNotes.Count; i++)
             {
-                if (AppController.LocationNotification)
                 if (NoteManager.locationNotes[i].isNotified && NoteManager.locationNotes[i].isTriggered)
                 {
                     locationNList.Add(new NotifiedView(NoteManager.locationNotes[i]));
@@ -578,7 +575,7 @@ namespace EPostIt
             for (int i = 0; i < 5; i++)
             {
                 NoteManager.timeNotes.Add(new TimeNote("You disrespect me, you disrespect my family", DateTime.Now));
-                NoteManager.timeNotes.Last().isTriggered = true;
+                NoteManager.timeNotes.Last().IsTriggered = true;
             }
             for (int i = 0; i < 5; i++)
             {

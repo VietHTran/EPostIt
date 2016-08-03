@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace EPostIt
 {
@@ -13,7 +14,6 @@ namespace EPostIt
         public static NoteView Holder1 { get; set; }
         public static SeeNote prevPage;
         private static bool timeNotification;
-        //public static bool TimeNotification { get; set; }
         public static bool TimeNotification
         {
             get
@@ -23,19 +23,43 @@ namespace EPostIt
             set
             {
                 timeNotification = value;
+                int val = value ? 1 : 0;
+                App.mainDatabase.Query<ExtraInformationDB>($"UPDATE [Trivia] SET [TimeNotification]={val}");
                 if (!timeNotification)
                 {
                     for (int i = 0; i < NoteManager.timeNotes.Count; i++)
-                        NoteManager.timeNotes[i].Alarm.Cancel();
+                        if (!NoteManager.timeNotes[i].IsTime() && NoteManager.timeNotes[i].IsTriggered)
+                        {
+                            Debug.WriteLine($"content turn on {NoteManager.timeNotes[i].NoteContent}");
+                            NoteManager.timeNotes[i].Alarm.Cancel();
+                            NoteManager.timeNotes[i].IsTriggered=false;
+                        }
                 }
                 else
                 {
                     for (int i = 0; i < NoteManager.timeNotes.Count; i++)
-                        NoteManager.timeNotes[i].SetAlarm();
+                        if (!NoteManager.timeNotes[i].IsTriggered)
+                        {
+                            Debug.WriteLine($"content turn off {NoteManager.timeNotes[i].NoteContent}");
+                            NoteManager.timeNotes[i].SetAlarm();
+                            NoteManager.timeNotes[i].IsTriggered = true;
+                        }
                 }
             }
         }
-        public static bool LocationNotification { get; set; }
+        private static bool locationNotification;
+        public static bool LocationNotification {
+            get
+            {
+                return locationNotification;
+            }
+            set
+            {
+                locationNotification = value;
+                int val = value ? 1 : 0;
+                App.mainDatabase.Query<ExtraInformationDB>($"UPDATE [Trivia] SET [LocationNotification]={val}");
+            }
+        }
     }
     public interface ITapLock
     {

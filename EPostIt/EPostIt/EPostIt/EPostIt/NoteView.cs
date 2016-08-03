@@ -180,7 +180,7 @@ namespace EPostIt
         {
             Children.Clear();
             string dateT = noteT.DateTimeSet.ToString("MM/dd/yyyy");
-            if (noteT.IsTime() && AppController.TimeNotification)
+            if (noteT.IsTime() && noteT.IsTriggered)
             {
                 Status = "On";
             } else
@@ -271,7 +271,9 @@ namespace EPostIt
                     NoteManager.quickNotes.Remove(note);
                     break;
                 case 1:
-                    noteT.Alarm.Cancel();
+                    if (!noteT.IsTime() && noteT.IsTriggered)
+                        noteT.Alarm.Cancel();
+                    App.mainDatabase.Delete<TimeNoteDB>(noteT.Id);
                     NoteManager.timeNotes.Remove(noteT);
                     break;
                 case 2:
