@@ -12,7 +12,29 @@ namespace EPostIt
         public static NoteView Holder { get; set; }
         public static NoteView Holder1 { get; set; }
         public static SeeNote prevPage;
-        public static bool TimeNotification { get; set; }
+        private static bool timeNotification;
+        //public static bool TimeNotification { get; set; }
+        public static bool TimeNotification
+        {
+            get
+            {
+                return timeNotification;
+            }
+            set
+            {
+                timeNotification = value;
+                if (!timeNotification)
+                {
+                    for (int i = 0; i < NoteManager.timeNotes.Count; i++)
+                        NoteManager.timeNotes[i].Alarm.Cancel();
+                }
+                else
+                {
+                    for (int i = 0; i < NoteManager.timeNotes.Count; i++)
+                        NoteManager.timeNotes[i].SetAlarm();
+                }
+            }
+        }
         public static bool LocationNotification { get; set; }
     }
     public interface ITapLock

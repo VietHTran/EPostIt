@@ -44,6 +44,9 @@ namespace EPostIt
             mainDatabase.CreateTable<LandmarkDB>();
             LoadDatabase();
             MainPage = new NavigationPage(new MainPage());
+            //Later will need to extract from DB
+            AppController.LocationNotification = true;
+            AppController.TimeNotification = true;
         }
         public static void AddQuickNote(Note n)
         {
@@ -95,9 +98,6 @@ namespace EPostIt
             {
                 LandmarkCollection.CreateLandmark("None", 0, 0);
             }
-            //Later will need to extract from DB
-            AppController.LocationNotification = true;
-            AppController.TimeNotification = true;
         }
         protected override void OnSleep()
         {

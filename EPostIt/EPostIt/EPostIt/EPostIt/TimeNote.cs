@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Diagnostics;
 using Xamarin.Forms;
 
 namespace EPostIt
@@ -15,10 +16,11 @@ namespace EPostIt
         public bool isTriggered { get; set; }
         public TimeNote(string s, DateTime setter) : base (s)
         {
+            Debug.WriteLine("CCCO");
             this.DateTimeSet = setter;
             this.isTriggered = false;
-            Alarm = DependencyService.Get<INoteTimer>();
-            Alarm.Remind(DateTimeSet,"Did you forget something?",NoteContent);
+            if (AppController.TimeNotification)
+                SetAlarm();
         }
         public bool IsTime()
         {
@@ -29,6 +31,11 @@ namespace EPostIt
             {
                 return false;
             }
+        }
+        public void SetAlarm()
+        {
+            Alarm = DependencyService.Get<INoteTimer>();
+            Alarm.Remind(DateTimeSet, "Did you forget something?", NoteContent);
         }
         public static bool compareDateTime(DateTime d)
         {

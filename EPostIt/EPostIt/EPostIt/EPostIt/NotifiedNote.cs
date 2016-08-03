@@ -114,7 +114,7 @@ namespace EPostIt
         }
         private Color DarkYellow = Color.FromHex("B7BC06");
         private Color yellow = Color.FromHex("DED700");
-        private Button back,timeNotes,locationNotes,toggleMode,selectAll,deselectAll,delete,reset;
+        private Button back,timeNotes,locationNotes,toggleMode,selectAll,deselectAll,delete,reset,reload;
         private StackLayout content,notiTimeSect,notiLocationSect,notiCurrentSect;
         private Switch isNotiTime, isNotiLocation;
         private Grid timeHeading, locationHeading, currentHeading, buttonList;
@@ -159,6 +159,7 @@ namespace EPostIt
             deselectAll = GenerateButton("Deselect\nAll", Color.White, yellow);
             delete = GenerateButton("Delete\nNote", Color.White, yellow);
             reset = GenerateButton("Reset\nNotification", Color.White, yellow);
+            reload = GenerateButton("Reload\nList",Color.White,yellow);
 
             back.Clicked += Back;
             toggleMode.Clicked += ToggleMode;
@@ -166,6 +167,7 @@ namespace EPostIt
             deselectAll.Clicked += DeselectAll;
             delete.Clicked += DeleteNotes;
             reset.Clicked += ResetNotes;
+            reload.Clicked += Reload;
 
             buttonList = new Grid
             {
@@ -174,6 +176,7 @@ namespace EPostIt
             };
             buttonList.Children.Add(back, 0, 0);
             buttonList.Children.Add(toggleMode, 3,0);
+            buttonList.Children.Add(reload, 2, 0);
             selectItem = -1;
             isChanged = false;
 
@@ -368,6 +371,18 @@ namespace EPostIt
                 this.ReleaseTapLock();
             }
         }
+        void Reload(object sender, EventArgs ea)
+        {
+            Initialization();
+            Debug.WriteLine("Reload Complete!1");
+            content.Children.Remove(currentView);
+            if (tabID == 0)
+                currentView = timeNotesView;
+            else
+                currentView = locationNotesView;
+            content.Children.Insert(3,currentView);
+
+        }
         void SelectNote(NotifiedView holder)
         {
             if (holder.BackgroundColor == yellow)
@@ -411,15 +426,15 @@ namespace EPostIt
         {
             DeselectAll();
             buttonList.Children.Add(delete,3,1);
-            buttonList.Children.Add(selectAll,2,0);
-            buttonList.Children.Add(deselectAll,1,0);
+            buttonList.Children.Add(selectAll,2,1);
+            buttonList.Children.Add(deselectAll,1,1);
             CheckResetButton();
             toggleMode.Text = "Select\nMode";
         }
         void CheckResetButton()
         {
             if (selectItem!=-1&&tabID==1)
-                buttonList.Children.Add(reset, 2, 1);
+                buttonList.Children.Add(reset, 1, 0);
             else if (buttonList.Children.Contains(reset))
                 buttonList.Children.Remove(reset);
         }
@@ -526,6 +541,7 @@ namespace EPostIt
             locationNotesView.Padding = 10;
             for (int i=0;i<NoteManager.timeNotes.Count;i++)
             {
+                if (AppController.TimeNotification)
                 if (NoteManager.timeNotes[i].IsTime())
                 {
                     timeNList.Add(new NotifiedView(NoteManager.timeNotes[i]));
@@ -537,6 +553,7 @@ namespace EPostIt
             }
             for (int i = 0; i < NoteManager.locationNotes.Count; i++)
             {
+                if (AppController.LocationNotification)
                 if (NoteManager.locationNotes[i].isNotified && NoteManager.locationNotes[i].isTriggered)
                 {
                     locationNList.Add(new NotifiedView(NoteManager.locationNotes[i]));

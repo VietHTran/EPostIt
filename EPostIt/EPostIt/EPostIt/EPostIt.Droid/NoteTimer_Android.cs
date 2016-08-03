@@ -31,16 +31,12 @@ namespace EPostIt.Droid
             pendingIntent = PendingIntent.GetBroadcast(Forms.Context, pendingIntentID, alarmIntent, PendingIntentFlags.UpdateCurrent);
             pendingIntentID++;
             alarmManager = (AlarmManager)Forms.Context.GetSystemService(Context.AlarmService);
-
             DateTime dtBasis = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-            dateTime = DateTime.Now.AddMinutes(1);
-
             alarmManager.Set(AlarmType.RtcWakeup, (long)dateTime.ToUniversalTime().Subtract(dtBasis).TotalMilliseconds, pendingIntent);
         }
         public void Cancel()
         {
             alarmManager.Cancel(pendingIntent);
         }
-
     }
 }

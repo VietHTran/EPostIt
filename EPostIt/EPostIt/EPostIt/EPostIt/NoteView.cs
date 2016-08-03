@@ -180,7 +180,7 @@ namespace EPostIt
         {
             Children.Clear();
             string dateT = noteT.DateTimeSet.ToString("MM/dd/yyyy");
-            if (noteT.IsTime())
+            if (noteT.IsTime() && AppController.TimeNotification)
             {
                 Status = "On";
             } else

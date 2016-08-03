@@ -124,7 +124,6 @@ C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\GitHub\EPostIt\EPostIt\EPostIt\
 C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\GitHub\EPostIt\EPostIt\EPostIt\EPostIt\EPostIt.Droid\bin\Debug\Xamarin.Forms.Platform.dll
 C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\GitHub\EPostIt\EPostIt\EPostIt\EPostIt\EPostIt.Droid\bin\Debug\Xamarin.Forms.Xaml.dll
 C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\GitHub\EPostIt\EPostIt\EPostIt\EPostIt\EPostIt.Droid\bin\Debug\EPostIt.pdb
-C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\GitHub\EPostIt\EPostIt\EPostIt\EPostIt\EPostIt.Droid\bin\Debug\EPostIt.dll.mdb
 C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\GitHub\EPostIt\EPostIt\EPostIt\EPostIt\EPostIt.Droid\bin\Debug\Xamarin.Forms.Core.xml
 C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\GitHub\EPostIt\EPostIt\EPostIt\EPostIt\EPostIt.Droid\bin\Debug\Xamarin.Forms.Xaml.xml
 C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\GitHub\EPostIt\EPostIt\EPostIt\EPostIt\EPostIt.Droid\obj\Debug\EPostIt.Droid.csprojResolveAssemblyReference.cache
@@ -137,7 +136,14 @@ C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\GitHub\EPostIt\EPostIt\EPostIt\
 C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\GitHub\EPostIt\EPostIt\EPostIt\EPostIt\EPostIt.Droid\obj\Debug\res\drawable-xxhdpi\icon.png
 C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\GitHub\EPostIt\EPostIt\EPostIt\EPostIt\EPostIt.Droid\obj\Debug\R.cs.flag
 C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\GitHub\EPostIt\EPostIt\EPostIt\EPostIt\EPostIt.Droid\obj\Debug\uploadflags.txt
+C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\GitHub\EPostIt\EPostIt\EPostIt\EPostIt\EPostIt.Droid\bin\Debug\SQLite-net.dll
+C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\GitHub\EPostIt\EPostIt\EPostIt\EPostIt\EPostIt.Droid\bin\Debug\SQLitePCL.batteries.dll
+C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\GitHub\EPostIt\EPostIt\EPostIt\EPostIt\EPostIt.Droid\bin\Debug\SQLitePCL.raw.dll
+C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\GitHub\EPostIt\EPostIt\EPostIt\EPostIt\EPostIt.Droid\bin\Debug\SQLitePCLPlugin_esqlite3.dll
+C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\GitHub\EPostIt\EPostIt\EPostIt\EPostIt\EPostIt.Droid\bin\Debug\SQLite-net.xml
+C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\GitHub\EPostIt\EPostIt\EPostIt\EPostIt\EPostIt.Droid\bin\Debug\SQLite-net.dll.mdb
 C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\GitHub\EPostIt\EPostIt\EPostIt\EPostIt\EPostIt.Droid\bin\Debug\EPostIt.Droid.dll.mdb
+C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\GitHub\EPostIt\EPostIt\EPostIt\EPostIt\EPostIt.Droid\bin\Debug\EPostIt.dll.mdb
 C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\GitHub\EPostIt\EPostIt\EPostIt\EPostIt\EPostIt.Droid\bin\Debug\Java.Interop.dll.mdb
 C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\GitHub\EPostIt\EPostIt\EPostIt\EPostIt\EPostIt.Droid\bin\Debug\Mono.Android.dll.mdb
 C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\GitHub\EPostIt\EPostIt\EPostIt\EPostIt\EPostIt.Droid\bin\Debug\mscorlib.dll.mdb
@@ -154,6 +160,7 @@ C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\GitHub\EPostIt\EPostIt\EPostIt\
 C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\GitHub\EPostIt\EPostIt\EPostIt\EPostIt\EPostIt.Droid\obj\Debug\android\assets\Java.Interop.dll.mdb
 C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\GitHub\EPostIt\EPostIt\EPostIt\EPostIt\EPostIt.Droid\obj\Debug\android\assets\Mono.Android.dll.mdb
 C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\GitHub\EPostIt\EPostIt\EPostIt\EPostIt\EPostIt.Droid\obj\Debug\android\assets\mscorlib.dll.mdb
+C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\GitHub\EPostIt\EPostIt\EPostIt\EPostIt\EPostIt.Droid\obj\Debug\android\assets\SQLite-net.dll.mdb
 C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\GitHub\EPostIt\EPostIt\EPostIt\EPostIt\EPostIt.Droid\obj\Debug\android\assets\System.ComponentModel.Composition.dll.mdb
 C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\GitHub\EPostIt\EPostIt\EPostIt\EPostIt\EPostIt.Droid\obj\Debug\android\assets\System.Core.dll.mdb
 C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\GitHub\EPostIt\EPostIt\EPostIt\EPostIt\EPostIt.Droid\obj\Debug\android\assets\System.dll.mdb
@@ -162,12 +169,5 @@ C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\GitHub\EPostIt\EPostIt\EPostIt\
 C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\GitHub\EPostIt\EPostIt\EPostIt\EPostIt\EPostIt.Droid\obj\Debug\android\assets\System.ServiceModel.Internals.dll.mdb
 C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\GitHub\EPostIt\EPostIt\EPostIt\EPostIt\EPostIt.Droid\obj\Debug\android\assets\System.Xml.dll.mdb
 C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\GitHub\EPostIt\EPostIt\EPostIt\EPostIt\EPostIt.Droid\obj\Debug\android\assets\System.Xml.Linq.dll.mdb
-C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\GitHub\EPostIt\EPostIt\EPostIt\EPostIt\EPostIt.Droid\bin\Debug\SQLite-net.dll
-C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\GitHub\EPostIt\EPostIt\EPostIt\EPostIt\EPostIt.Droid\bin\Debug\SQLitePCL.batteries.dll
-C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\GitHub\EPostIt\EPostIt\EPostIt\EPostIt\EPostIt.Droid\bin\Debug\SQLitePCL.raw.dll
-C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\GitHub\EPostIt\EPostIt\EPostIt\EPostIt\EPostIt.Droid\bin\Debug\SQLitePCLPlugin_esqlite3.dll
-C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\GitHub\EPostIt\EPostIt\EPostIt\EPostIt\EPostIt.Droid\bin\Debug\SQLite-net.xml
-C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\GitHub\EPostIt\EPostIt\EPostIt\EPostIt\EPostIt.Droid\bin\Debug\SQLite-net.dll.mdb
-C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\GitHub\EPostIt\EPostIt\EPostIt\EPostIt\EPostIt.Droid\obj\Debug\android\assets\SQLite-net.dll.mdb
 C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\GitHub\EPostIt\EPostIt\EPostIt\EPostIt\EPostIt.Droid\obj\Debug\EPostIt.Droid.dll.mdb
 C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\GitHub\EPostIt\EPostIt\EPostIt\EPostIt\EPostIt.Droid\bin\Debug\EPostIt.Droid.dll.mdb
