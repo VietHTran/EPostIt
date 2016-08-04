@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
+using System.Diagnostics;
 
 namespace EPostIt
 {
@@ -143,9 +144,14 @@ namespace EPostIt
                         NoteManager.timeNotes[index].NoteContent = textArea.Text;
                         textArea.Text = "";
                         if (NoteManager.timeNotes[index].IsTriggered && !NoteManager.timeNotes[index].IsTime())
-                            NoteManager.timeNotes[index].Alarm.Cancel();
+                            NoteManager.timeNotes[index].Alarm.Cancel(NoteManager.timeNotes[index].Id);
                         NoteManager.timeNotes[index].dateCreated = DateTime.Now;
                         NoteManager.timeNotes[index].DateTimeSet = dateTimeHolder;
+                        if (AppController.TimeNotification)
+                            NoteManager.timeNotes[index].IsTriggered = true;
+                        else
+                            NoteManager.timeNotes[index].IsTriggered = false;
+                        NoteManager.timeNotes[index].UpdateDB();
                         AppController.Holder.noteT = NoteManager.timeNotes[index];
                         AppController.Holder.note = NoteManager.timeNotes[index];
                         AppController.Holder1.noteT = NoteManager.timeNotes[index];
@@ -162,8 +168,6 @@ namespace EPostIt
                             AppController.Holder.Update();
                             AppController.Holder1.UpdateAll();
                         }
-                        if (NoteManager.timeNotes[index].IsTriggered)
-                            NoteManager.timeNotes[index].Alarm.Remind(dateTimeHolder, "Did you forget something?", NoteManager.timeNotes[index].NoteContent);
                         AppController.isEdit = false;
                         await Navigation.PopAsync();
                     } else

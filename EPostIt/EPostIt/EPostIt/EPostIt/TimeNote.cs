@@ -31,7 +31,6 @@ namespace EPostIt
         {
             this.DateTimeSet = setter;
             Id = NextID;
-            Debug.WriteLine($"Self set up ID: {Id}");
             NextID++;
             AddToDB();
             if (AppController.TimeNotification)
@@ -46,7 +45,9 @@ namespace EPostIt
         {
             DateTimeSet = setter;
             IsTriggered = isTrig;
+            Alarm = DependencyService.Get<INoteTimer>();
         }
+        private bool isUpdate = false;
         public bool IsTime()
         {
             if (DateTimeSet.CompareTo(DateTime.Now)<=0)
@@ -60,7 +61,7 @@ namespace EPostIt
         public void SetAlarm()
         {
             Alarm = DependencyService.Get<INoteTimer>();
-            Alarm.Remind(DateTimeSet, "Reminder", NoteContent);
+            Alarm.Remind(DateTimeSet, "E-Post-it Reminder", NoteContent,Id);
         }
         public static bool compareDateTime(DateTime d)
         {
@@ -80,6 +81,11 @@ namespace EPostIt
             holder.DateTriggered = DateTimeSet;
             holder.IsTriggered = IsTriggered;
             App.mainDatabase.Insert(holder);
+            if (isUpdate)
+            {
+                App.mainDatabase.Delete<TimeNoteDB>(Id);
+                Debug.WriteLine($"Delete {NoteContent}, ID: {Id}");
+            }
             if (Id != App.mainDatabase.Table<TimeNoteDB>().Last().Idt)
             {
                 Id = App.mainDatabase.Table<TimeNoteDB>().Last().Idt;
@@ -88,10 +94,11 @@ namespace EPostIt
         }
         public void UpdateDB()
         {
+            isUpdate = true;
             AddToDB();
-            App.mainDatabase.Delete<QuickNoteDB>(Id);
-            Id = NextID;
-            NextID++;
+            isUpdate = false;
+            if (isTriggered)
+                SetAlarm();
         }
     }
 }

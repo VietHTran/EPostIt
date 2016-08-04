@@ -20,9 +20,8 @@ namespace EPostIt.Droid
         static int pendingIntentId;
         public override void OnReceive(Context context, Intent intent)
         {
-            notificationId = App.NextPendingID;
-            pendingIntentId = App.NextPendingID;
-            App.NextPendingID++;
+            notificationId = intent.GetIntExtra("ID", 0);
+            pendingIntentId = notificationId;
             var message = intent.GetStringExtra("message");
             var title = intent.GetStringExtra("title");
             Intent secondIntent = new Intent(context, typeof(MainActivity));

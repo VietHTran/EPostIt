@@ -51,21 +51,11 @@ namespace EPostIt
     {
         public bool TimeNotification { get; set; }
         public bool LocationNotification { get; set; }
-        public int pendingID { get; set; } //use for Android Alarm
+        //public int pendingID { get; set; } use for Android Alarm
     }
     public class App : Application
     {
         public static SQLiteConnection mainDatabase;
-        private static int nextPendingID;
-        public static int NextPendingID {
-            get { return nextPendingID; }
-            set
-            {
-                nextPendingID = value;
-                if (mainDatabase.Table<ExtraInformationDB>().Count() != 0)
-                    mainDatabase.Query<ExtraInformationDB>($"UPDATE [Trivia] SET [pendingID]={value - 1}");
-            }
-        }
         public static int nextID;
         public App()
         {
@@ -76,7 +66,7 @@ namespace EPostIt
             mainDatabase.CreateTable<TimeNoteDB>();
             mainDatabase.CreateTable<ExtraInformationDB>();
             LoadDatabase();
-            Debug.WriteLine($"Pending: {NextPendingID}");
+            Debug.WriteLine($"update latest2");
             MainPage = new NavigationPage(new MainPage());
         }
         public static void AddQuickNote(Note n)
@@ -105,17 +95,11 @@ namespace EPostIt
                 var holder = mainDatabase.Table<ExtraInformationDB>().First();
                 AppController.TimeNotification = holder.TimeNotification;
                 AppController.LocationNotification = holder.LocationNotification;
-                if (holder.pendingID == 1000000)
-                    NextPendingID = 0;
-                else
-                    NextPendingID = holder.pendingID + 1;
             } else
             {
                 ExtraInformationDB holder = new ExtraInformationDB();
                 holder.TimeNotification = true;
                 holder.LocationNotification = true;
-                holder.pendingID = 0;
-                NextPendingID = 0;
                 mainDatabase.Insert(holder);
                 AppController.TimeNotification = true;
                 AppController.LocationNotification = true;

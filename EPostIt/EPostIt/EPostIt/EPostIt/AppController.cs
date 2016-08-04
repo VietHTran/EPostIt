@@ -31,7 +31,7 @@ namespace EPostIt
                         if (!NoteManager.timeNotes[i].IsTime() && NoteManager.timeNotes[i].IsTriggered)
                         {
                             Debug.WriteLine($"content turn on {NoteManager.timeNotes[i].NoteContent}");
-                            NoteManager.timeNotes[i].Alarm.Cancel();
+                            NoteManager.timeNotes[i].Alarm.Cancel(NoteManager.timeNotes[i].Id);
                             NoteManager.timeNotes[i].IsTriggered=false;
                         }
                 }

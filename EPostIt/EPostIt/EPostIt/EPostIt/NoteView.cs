@@ -272,7 +272,7 @@ namespace EPostIt
                     break;
                 case 1:
                     if (!noteT.IsTime() && noteT.IsTriggered)
-                        noteT.Alarm.Cancel();
+                        noteT.Alarm.Cancel(noteT.Id);
                     App.mainDatabase.Delete<TimeNoteDB>(noteT.Id);
                     NoteManager.timeNotes.Remove(noteT);
                     break;
