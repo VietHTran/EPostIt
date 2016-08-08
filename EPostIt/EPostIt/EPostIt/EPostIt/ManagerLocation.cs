@@ -25,17 +25,16 @@ namespace EPostIt
                     Task.Run(() => {
                         for (int i = 0; i < NoteManager.locationNotes.Count; i++)
                         {
-                            if (!NoteManager.locationNotes[i].isNotified && 
+                            if (!NoteManager.locationNotes[i].IsNotified && 
                             !NoteManager.locationNotes[i].isFirst && 
                             CalcDistance(NoteManager.locationNotes[i].latitude, NoteManager.locationNotes[i].longitude) <= NoteManager.locationNotes[i].maxDistance)
                             {
-                                NoteManager.locationNotes[i].isNotified = true;
+                                NoteManager.locationNotes[i].IsNotified = true;
                                 ILocationNotification holder = DependencyService.Get<ILocationNotification>();
-                                //remember to get ID
-                                holder.Remind(NoteManager.locationNotes[i].landmark.name, NoteManager.locationNotes[i].NoteContent, 0);
+                                holder.Remind(NoteManager.locationNotes[i].landmark.name, NoteManager.locationNotes[i].NoteContent, NoteManager.locationNotes[i].Id);
                             }
                             else if (NoteManager.locationNotes[i].isFirst &&
-                            !NoteManager.locationNotes[i].isNotified &&
+                            !NoteManager.locationNotes[i].IsNotified &&
                             CalcDistance(NoteManager.locationNotes[i].latitude, NoteManager.locationNotes[i].longitude) > NoteManager.locationNotes[i].maxDistance)
                             {
                                 NoteManager.locationNotes[i].isFirst = false;

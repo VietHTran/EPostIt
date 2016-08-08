@@ -59,12 +59,14 @@ namespace EPostIt
             else
             {
                 LandmarkCollection.landmarks[LandmarkCollection.landmarks.IndexOf(noteL.landmark)].UnassignEvent();
+                System.Diagnostics.Debug.WriteLine($"Delete ID {noteL.Id}");
+                App.mainDatabase.Delete<LocationNoteDB>(noteL.Id);
                 NoteManager.locationNotes.Remove(noteL);
             }
         }
         public void ResetNotification()
         {
-            NoteManager.locationNotes[NoteManager.locationNotes.IndexOf(noteL)].isNotified = false;
+            NoteManager.locationNotes[NoteManager.locationNotes.IndexOf(noteL)].IsNotified = false;
         }
         void CommonGenerate()
         {

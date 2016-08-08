@@ -205,7 +205,7 @@ namespace EPostIt
         {
             Children.Clear();
             string landmarkN = noteL.landmark.name;
-            if (noteL.isNotified)
+            if (noteL.IsNotified)
             {
                 Status = "On";
             }
@@ -278,6 +278,7 @@ namespace EPostIt
                     break;
                 case 2:
                     LandmarkCollection.landmarks[LandmarkCollection.landmarks.IndexOf(noteL.landmark)].UnassignEvent();
+                    App.mainDatabase.Delete<LocationNoteDB>(noteL.Id);
                     NoteManager.locationNotes.Remove(noteL);
                     break;
             }

@@ -551,7 +551,7 @@ namespace EPostIt
             }
             for (int i = 0; i < NoteManager.locationNotes.Count; i++)
             {
-                if (NoteManager.locationNotes[i].isNotified)
+                if (NoteManager.locationNotes[i].IsNotified)
                 {
                     locationNList.Add(new NotifiedView(NoteManager.locationNotes[i]));
                     var tgr = new TapGestureRecognizer();
@@ -581,7 +581,7 @@ namespace EPostIt
             {
                 NoteManager.locationNotes.Add(new LocationNote("Wubba Lubba Dub Dub", LandmarkCollection.landmarks[1], 0.5,false));
                 NoteManager.locationNotes.Last().isTriggered = true;
-                NoteManager.locationNotes.Last().isNotified = true;
+                NoteManager.locationNotes.Last().IsNotified = true;
             }
         }
     }

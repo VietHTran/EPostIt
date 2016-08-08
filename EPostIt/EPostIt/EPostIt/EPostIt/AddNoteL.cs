@@ -236,6 +236,7 @@ namespace EPostIt
                         return;
                     }
                     int landmarkIndex = LandmarkCollection.nameList.IndexOf(nameNewLandmark.Text);
+                    Debug.WriteLine($"Landmark Index: {landmarkIndex}");
                     if (savedLandmarks.SelectedIndex == 0 && landmarkIndex != -1)
                     {
                         await DisplayAlert("", "Landmark name has already existed.", "OK");
@@ -254,15 +255,18 @@ namespace EPostIt
                             LandmarkCollection.landmarks[LandmarkCollection.landmarks.Count - 1].AssignEvent();
                             LandmarkCollection.landmarks[savedIndex].UnassignEvent();
                             NoteManager.locationNotes[index].landmark = LandmarkCollection.landmarks[LandmarkCollection.landmarks.Count - 1];
+                            NoteManager.locationNotes[index].isFirst = true;
                         } else if (savedIndex!=savedLandmarks.SelectedIndex)
                         {
                             LandmarkCollection.landmarks[savedLandmarks.SelectedIndex].AssignEvent();
                             LandmarkCollection.landmarks[savedIndex].UnassignEvent();
                             NoteManager.locationNotes[index].landmark = LandmarkCollection.landmarks[savedLandmarks.SelectedIndex];
+                            NoteManager.locationNotes[index].isFirst = false;
                         }
                         NoteManager.locationNotes[index].NoteContent = textArea.Text;
                         NoteManager.locationNotes[index].maxDistance = triggerRadius;
                         NoteManager.locationNotes[index].dateCreated = DateTime.Now;
+                        NoteManager.locationNotes[index].UpdateDB();
                         AppController.Holder.noteL = NoteManager.locationNotes[index];
                         AppController.Holder.note = NoteManager.locationNotes[index];
                         AppController.Holder1.noteL = NoteManager.locationNotes[index];
@@ -286,6 +290,7 @@ namespace EPostIt
                         {
                             LandmarkCollection.CreateLandmark(nameNewLandmark.Text, lat, lon);
                             LandmarkCollection.landmarks[LandmarkCollection.landmarks.Count - 1].AssignEvent();
+                            landmarkIndex = LandmarkCollection.landmarks.Count - 1;
                             isFirst = true;
                         }
                         else
@@ -293,7 +298,7 @@ namespace EPostIt
                             LandmarkCollection.landmarks[landmarkIndex].AssignEvent();
                             isFirst = false;
                         }
-                        NoteManager.locationNotes.Add(new LocationNote(textArea.Text, LandmarkCollection.landmarks[LandmarkCollection.landmarks.Count - 1], triggerRadius,isFirst));
+                        NoteManager.locationNotes.Add(new LocationNote(textArea.Text, LandmarkCollection.landmarks[landmarkIndex], triggerRadius,isFirst));
                         bool backToMenu = await DisplayAlert("Note Saved", "Note successfully saved.", "Back To Menu", "Create New Note");
                         if (backToMenu)
                         {

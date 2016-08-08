@@ -120,7 +120,7 @@ namespace EPostIt
         #endregion
         public LandmarkList()
         {
-
+            Title = "Landmark List";
             selectMode = true;
             selectDelete = 0;
             Label a = new Label { };

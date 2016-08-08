@@ -32,6 +32,26 @@ namespace EPostIt
         [Column("IsTriggered")]
         public bool IsTriggered { get; set; }
     }
+    [Table("LN")]
+    public class LocationNoteDB
+    {
+        [PrimaryKey, AutoIncrement, Column("_idl")]
+        public int Idl { get; set; }
+        [Column("ContentL")]
+        public string content { get; set; }
+        [Column("Landmark")]
+        public string landmark { get; set; }
+        [Column("MaxDistance")]
+        public double maxDistance { get; set; }
+        [Column("DateCreatedL")]
+        public DateTime DateCreated { get; set; }
+        [Column("IsTriggeredL")]
+        public bool IsTriggered { get; set; }
+        [Column("IsNotified")]
+        public bool isNotified { get; set; }
+        [Column("IsFirst")]
+        public bool isFirst { get; set; }
+    }
     [Table("Landmark")]
     public class LandmarkDB
     {
@@ -65,9 +85,9 @@ namespace EPostIt
             mainDatabase.CreateTable<LandmarkDB>();
             mainDatabase.CreateTable<TimeNoteDB>();
             mainDatabase.CreateTable<ExtraInformationDB>();
+            mainDatabase.CreateTable<LocationNoteDB>();
             LandmarkCollection.CreateLandmark("None", 0, 0);
             LoadDatabase();
-            Debug.WriteLine($"update latest3");
             MainPage = new NavigationPage(new MainPage());
         }
         public static void AddQuickNote(Note n)
@@ -120,11 +140,18 @@ namespace EPostIt
                     NoteManager.timeNotes.Add(new TimeNote(i.content, i.DateTriggered, i.DateCreated, i.Idt,i.IsTriggered));
             }
             //mainDatabase.Query<LandmarkDB>("DELETE FROM [Landmark]");
+            //mainDatabase.Query<LocationNoteDB>("DELETE FROM [LN]");
             if (mainDatabase.Table<LandmarkDB>().Count() != 0)
             {
                 var table = mainDatabase.Table<LandmarkDB>();
                 foreach (var i in table)
                     LandmarkCollection.CreateLandmark(i.name, i.latitude, i.longitude, i.assignedTime, i.assignedEvents);
+            }
+            if (mainDatabase.Table<LocationNoteDB>().Count() != 0)
+            {
+                var table = mainDatabase.Table<LocationNoteDB>();
+                foreach (var i in table)
+                    NoteManager.locationNotes.Add(new LocationNote(i.content,i.landmark,i.maxDistance,i.isFirst,i.DateCreated,i.IsTriggered,i.isNotified,i.Idl));
             }
         }
         protected override void OnStart()

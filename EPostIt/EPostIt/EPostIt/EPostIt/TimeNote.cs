@@ -82,10 +82,7 @@ namespace EPostIt
             holder.IsTriggered = IsTriggered;
             App.mainDatabase.Insert(holder);
             if (isUpdate)
-            {
                 App.mainDatabase.Delete<TimeNoteDB>(Id);
-                Debug.WriteLine($"Delete {NoteContent}, ID: {Id}");
-            }
             if (Id != App.mainDatabase.Table<TimeNoteDB>().Last().Idt)
             {
                 Id = App.mainDatabase.Table<TimeNoteDB>().Last().Idt;
