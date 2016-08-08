@@ -16,8 +16,8 @@ namespace EPostIt.Droid
     [BroadcastReceiver]
     public class AlarmReceiver_Android : BroadcastReceiver
     {
-        static int notificationId;
-        static int pendingIntentId;
+        int notificationId;
+        int pendingIntentId;
         public override void OnReceive(Context context, Intent intent)
         {
             notificationId = intent.GetIntExtra("ID", 0);
@@ -45,8 +45,6 @@ namespace EPostIt.Droid
                             .SetAutoCancel(true);
             var notification = builder.Build();
             notificationManager.Notify(notificationId, notification);
-            notificationId++;
-            pendingIntentId++;
         }
     }
 }

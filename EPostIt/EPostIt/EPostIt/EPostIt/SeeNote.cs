@@ -940,7 +940,7 @@ namespace EPostIt
             }
             for (int i = 0; i < 5; i++)
             {
-                NoteManager.locationNotes.Add(new LocationNote("Wubba Lubba Dub Dub", LandmarkCollection.landmarks[2], 0.5));
+                NoteManager.locationNotes.Add(new LocationNote("Wubba Lubba Dub Dub", LandmarkCollection.landmarks[2], 0.5,false));
             }
         }
     }

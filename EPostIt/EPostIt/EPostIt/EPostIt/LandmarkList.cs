@@ -497,7 +497,7 @@ namespace EPostIt
                 return;
             } else
             {
-                LandmarkCollection.CreateLandmark(name.Text,ManagerLocation.latitude,ManagerLocation.longitude);
+                LandmarkCollection.CreateLandmark(name.Text,ManagerLocation.Latitude,ManagerLocation.Longitude);
                 landmarkContainer.Children.Remove(createNew);
                 items.Add(new LandmarkView(LandmarkCollection.landmarks[LandmarkCollection.landmarks.Count-1]));
                 if (items.Count==2)

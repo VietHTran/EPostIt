@@ -72,7 +72,7 @@ namespace EPostIt
         {
             if (this.AcquireTapLock())
             {
-                if (ManagerLocation.latitude == 0 && ManagerLocation.longitude == 0)
+                if (ManagerLocation.Latitude == 0 && ManagerLocation.Longitude == 0)
                 {
                     await DisplayAlert("Location Unknown", "The app has yet to find the location of the device. Please come back in a few minutes", "OK");
                 }

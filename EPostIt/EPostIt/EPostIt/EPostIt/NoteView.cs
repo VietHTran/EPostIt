@@ -67,7 +67,7 @@ namespace EPostIt
         }
         public string CalcDistance()
         {
-            if (ManagerLocation.latitude==0 && ManagerLocation.longitude==0)
+            if (ManagerLocation.Latitude==0 && ManagerLocation.Longitude==0)
             {
                 return "Not yet to determine location";
             }

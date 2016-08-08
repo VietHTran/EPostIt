@@ -116,6 +116,8 @@
   <ItemGroup>
     <Compile Include="AlarmReceiver_Android.cs" />
     <Compile Include="ExitAndroid.cs" />
+    <Compile Include="LocationNotification_Android.cs" />
+    <Compile Include="LocationReceiver_Android.cs" />
     <Compile Include="MainActivity.cs" />
     <Compile Include="NoteTimer_Android.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />

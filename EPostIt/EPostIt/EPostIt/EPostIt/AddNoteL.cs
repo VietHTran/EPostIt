@@ -40,8 +40,8 @@ namespace EPostIt
         private Picker currentType;
         public AddNoteL()
         {
-            lat = ManagerLocation.latitude;
-            lon = ManagerLocation.longitude;
+            lat = ManagerLocation.Latitude;
+            lon = ManagerLocation.Longitude;
             this.Padding = 20;
             //Trigger Range
             Label rangeT = new Label { FontSize = 25, Text = "Trigger Range (meters)", FontAttributes = FontAttributes.Bold, TextColor = Color.White, VerticalOptions = LayoutOptions.Center };
@@ -180,13 +180,13 @@ namespace EPostIt
             if (savedLandmarks.SelectedIndex == 0)
             {
                 Task.Run(() => {
-                    while (ManagerLocation.latitude == 0)
+                    while (ManagerLocation.Latitude == 0)
                     {
-                        lat = ManagerLocation.latitude;
-                        lon = ManagerLocation.longitude;
+                        lat = ManagerLocation.Latitude;
+                        lon = ManagerLocation.Longitude;
                     }
-                    lat = ManagerLocation.latitude;
-                    lon = ManagerLocation.longitude;
+                    lat = ManagerLocation.Latitude;
+                    lon = ManagerLocation.Longitude;
                 });
                 if (!eventSwitch)
                 {
@@ -281,16 +281,19 @@ namespace EPostIt
                         await Navigation.PopAsync();
                     } else
                     {
+                        bool isFirst;
                         if (savedLandmarks.SelectedIndex == 0)
                         {
                             LandmarkCollection.CreateLandmark(nameNewLandmark.Text, lat, lon);
                             LandmarkCollection.landmarks[LandmarkCollection.landmarks.Count - 1].AssignEvent();
+                            isFirst = true;
                         }
                         else
                         {
                             LandmarkCollection.landmarks[landmarkIndex].AssignEvent();
+                            isFirst = false;
                         }
-                        NoteManager.locationNotes.Add(new LocationNote(textArea.Text, LandmarkCollection.landmarks[LandmarkCollection.landmarks.Count - 1], triggerRadius));
+                        NoteManager.locationNotes.Add(new LocationNote(textArea.Text, LandmarkCollection.landmarks[LandmarkCollection.landmarks.Count - 1], triggerRadius,isFirst));
                         bool backToMenu = await DisplayAlert("Note Saved", "Note successfully saved.", "Back To Menu", "Create New Note");
                         if (backToMenu)
                         {

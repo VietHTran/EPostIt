@@ -65,8 +65,9 @@ namespace EPostIt
             mainDatabase.CreateTable<LandmarkDB>();
             mainDatabase.CreateTable<TimeNoteDB>();
             mainDatabase.CreateTable<ExtraInformationDB>();
+            LandmarkCollection.CreateLandmark("None", 0, 0);
             LoadDatabase();
-            Debug.WriteLine($"update latest2");
+            Debug.WriteLine($"update latest3");
             MainPage = new NavigationPage(new MainPage());
         }
         public static void AddQuickNote(Note n)
@@ -128,10 +129,6 @@ namespace EPostIt
         }
         protected override void OnStart()
         {
-            if (LandmarkCollection.landmarks==null)
-            {
-                LandmarkCollection.CreateLandmark("None", 0, 0);
-            }
         }
         protected override void OnSleep()
         {

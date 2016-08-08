@@ -207,7 +207,7 @@ namespace EPostIt
                     Navigation.PushAsync(new AddNoteT());
                     break;
                 case 2:
-                    if (ManagerLocation.latitude == 0 && ManagerLocation.longitude == 0)
+                    if (ManagerLocation.Latitude == 0 && ManagerLocation.Longitude == 0)
                     {
                         DisplayAlert("Location Unknown", "The app has yet to find the location of the device. Please come back in a few minutes", "OK");
                         currentType.SelectedIndex = 0;

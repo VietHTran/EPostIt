@@ -30,7 +30,6 @@ namespace EPostIt
                     for (int i = 0; i < NoteManager.timeNotes.Count; i++)
                         if (!NoteManager.timeNotes[i].IsTime() && NoteManager.timeNotes[i].IsTriggered)
                         {
-                            Debug.WriteLine($"content turn on {NoteManager.timeNotes[i].NoteContent}");
                             NoteManager.timeNotes[i].Alarm.Cancel(NoteManager.timeNotes[i].Id);
                             NoteManager.timeNotes[i].IsTriggered=false;
                         }
@@ -40,7 +39,6 @@ namespace EPostIt
                     for (int i = 0; i < NoteManager.timeNotes.Count; i++)
                         if (!NoteManager.timeNotes[i].IsTriggered)
                         {
-                            Debug.WriteLine($"content turn off {NoteManager.timeNotes[i].NoteContent}");
                             NoteManager.timeNotes[i].SetAlarm();
                             NoteManager.timeNotes[i].IsTriggered = true;
                         }

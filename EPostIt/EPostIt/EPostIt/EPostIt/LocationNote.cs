@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
+using System.Diagnostics;
 
 namespace EPostIt
 {
@@ -15,15 +16,8 @@ namespace EPostIt
         public double maxDistance { get; set; }
         public bool isTriggered { get; set; }
         public bool isNotified { get; set; }
-        public LocationNote (string s, double lat, double lon, double md) : base (s,true)
-        {
-            this.latitude = lat;
-            this.longitude = lon;
-            this.isTriggered = false;
-            this.maxDistance = md;
-            this.isNotified = false;
-        }
-        public LocationNote(string s, Landmark l, double md) : base(s,true)
+        public bool isFirst { get; set; } //In case the landmark have just been created
+        public LocationNote(string s, Landmark l, double md, bool isFirst ) : base(s,true)
         {
             this.isTriggered = false;
             this.maxDistance = md;
@@ -31,6 +25,8 @@ namespace EPostIt
             this.latitude = l.latitude;
             this.longitude = l.longitude;
             this.isNotified = false;
+            this.isFirst = isFirst;
+            Debug.WriteLine($"Is First new: {isFirst}");
         }
         public bool IsPlace()
         {

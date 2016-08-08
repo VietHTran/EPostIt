@@ -54,10 +54,12 @@ namespace EPostIt.Droid
         protected override void OnPause()
         {
             base.OnPause();
+            /*
             if (locationManager != null)
             {
                 locationManager.RemoveUpdates(this);
             }
+            */
         }
 
         protected override void OnResume()
@@ -67,7 +69,6 @@ namespace EPostIt.Droid
             {
                 locationManager.RequestLocationUpdates(provider, 0, 0, this);
             }
-
         }
         /*
         public void OnLocationChanged(Location location)
@@ -91,9 +92,8 @@ namespace EPostIt.Droid
                 {
                     return;
                 }
-                ManagerLocation.latitude = currentLocation.Latitude;
-                ManagerLocation.longitude = currentLocation.Longitude;
-                //Check for nearby events
+                ManagerLocation.Latitude = currentLocation.Latitude;
+                ManagerLocation.Longitude = currentLocation.Longitude;
             }
         }
         public void OnProviderDisabled(string p)
