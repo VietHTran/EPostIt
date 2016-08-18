@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
-using System.Diagnostics;
 
 namespace EPostIt
 {
@@ -129,7 +127,6 @@ namespace EPostIt
         private bool openTimesT, openTimesL,isChanged;
         public NotifiedNote()
         {
-            //TestInit();
             empty = GenerateLabel("\n\n\n\n\nNo notes notified\n\n\n\n\n", Color.White, 30, FontAttributes.None, TextAlignment.Center);
             empty.HorizontalOptions = LayoutOptions.FillAndExpand;
             empty.VerticalOptions = LayoutOptions.FillAndExpand;
@@ -565,24 +562,6 @@ namespace EPostIt
                 timeNotesView.Children.Add(empty);
             if (locationNotesView.Children.Count == 0)
                 locationNotesView.Children.Add(empty);
-        }
-        void TestInit()
-        {
-            if (NoteManager.timeNotes.Count != 0)
-            {
-                return;
-            }
-            for (int i = 0; i < 5; i++)
-            {
-                NoteManager.timeNotes.Add(new TimeNote("You disrespect me, you disrespect my family", DateTime.Now));
-                NoteManager.timeNotes.Last().IsTriggered = true;
-            }
-            for (int i = 0; i < 5; i++)
-            {
-                NoteManager.locationNotes.Add(new LocationNote("Wubba Lubba Dub Dub", LandmarkCollection.landmarks[1], 0.5,false));
-                NoteManager.locationNotes.Last().isTriggered = true;
-                NoteManager.locationNotes.Last().IsNotified = true;
-            }
         }
     }
 }

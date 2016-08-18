@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
-using System.Diagnostics;
 
 namespace EPostIt
 {
@@ -922,25 +920,6 @@ namespace EPostIt
             } else if (buttonList.Children.Contains(activate))
             {
                 buttonList.Children.Remove(activate);
-            }
-        }
-        void TestInit()
-        {
-            if (NoteManager.quickNotes.Count != 0)
-            {
-                return;
-            }
-            for (int i = 0; i < 5; i++)
-            {
-                NoteManager.quickNotes.Add(new Note("Go lorem ipsum yourself"));
-            }
-            for (int i = 0; i < 5; i++)
-            {
-                NoteManager.timeNotes.Add(new TimeNote("You disrespect me, you disrespect my family", DateTime.Now));
-            }
-            for (int i = 0; i < 5; i++)
-            {
-                NoteManager.locationNotes.Add(new LocationNote("Wubba Lubba Dub Dub", LandmarkCollection.landmarks[2], 0.5,false));
             }
         }
     }

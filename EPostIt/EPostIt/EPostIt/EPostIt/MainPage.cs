@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using System.Threading;
 using Xamarin.Forms;
-using System.Diagnostics;
 
 namespace EPostIt
 {
@@ -34,35 +29,12 @@ namespace EPostIt
                 FontAttributes = FontAttributes.Bold,
             };
             notifiedNote.Clicked += NotifiedNote;
-            /*
-            this.Content = new StackLayout {
-                Orientation = StackOrientation.Vertical,
-                VerticalOptions = LayoutOptions.FillAndExpand,
-                HorizontalOptions = LayoutOptions.FillAndExpand,
-                Spacing = 15,
-                Children = { new StackLayout {
-                        Orientation = StackOrientation.Horizontal,
-                        VerticalOptions = LayoutOptions.FillAndExpand,
-                        HorizontalOptions = LayoutOptions.FillAndExpand,
-                        Spacing=15,
-                        Children= {add,check}
-                    }, new StackLayout {
-                        Orientation = StackOrientation.Horizontal,
-                        VerticalOptions = LayoutOptions.FillAndExpand,
-                        HorizontalOptions = LayoutOptions.FillAndExpand,
-                        Spacing=15,
-                        Children= {help,exit}
-                    }
-                }
-            };
-            */
             var grid = new Grid
             {
                 ColumnSpacing = 15,
                 RowSpacing = 15,
                 VerticalOptions = LayoutOptions.FillAndExpand,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
-                //Children= {add,check,help,exit}
             };
             grid.Children.Add(add, 0, 0);
             grid.Children.Add(check, 1, 0);

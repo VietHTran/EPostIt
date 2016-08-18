@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using System.Diagnostics;
 using Xamarin.Forms;
 
 namespace EPostIt
@@ -236,7 +233,6 @@ namespace EPostIt
                         return;
                     }
                     int landmarkIndex = LandmarkCollection.nameList.IndexOf(nameNewLandmark.Text);
-                    Debug.WriteLine($"Landmark Index: {landmarkIndex}");
                     if (savedLandmarks.SelectedIndex == 0 && landmarkIndex != -1)
                     {
                         await DisplayAlert("", "Landmark name has already existed.", "OK");

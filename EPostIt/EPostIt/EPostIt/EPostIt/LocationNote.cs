@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Xamarin.Forms;
-using System.Diagnostics;
 
 namespace EPostIt
 {
@@ -25,7 +20,7 @@ namespace EPostIt
                 App.mainDatabase.Query<LocationNoteDB>($"UPDATE [LN] SET [IsTriggeredL]={val} WHERE [_idl]={Id}");
             }
         }
-        public bool isFirst { get; set; } //In case the landmark have just been created
+        public bool isFirst { get; set; }
         private bool isUpdate = false;
         public LocationNote(string s, Landmark l, double md, bool isFirst ) : base(s,true)
         {

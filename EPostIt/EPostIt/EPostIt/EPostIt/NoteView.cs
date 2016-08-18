@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Diagnostics;
 using Xamarin.Forms;
 
 namespace EPostIt
@@ -34,7 +29,6 @@ namespace EPostIt
         public string dateC { get; set; }
         public string Status { get; set; }
         private string noteType;
-        //Location-based only
         double distance;
         public NoteView(Note n)
         {

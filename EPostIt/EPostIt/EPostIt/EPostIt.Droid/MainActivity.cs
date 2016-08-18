@@ -1,18 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Android.App;
 using Android.Content.PM;
-using Android.Util;
-using Android.Runtime;
-using Android.Views;
-using Android.Widget;
 using Android.OS;
 using Android.Locations;
-using EPostIt;
-//using Acr.UserDialogs;
 
 namespace EPostIt.Droid
 {
@@ -70,19 +62,6 @@ namespace EPostIt.Droid
                 locationManager.RequestLocationUpdates(provider, 0, 0, this);
             }
         }
-        /*
-        public void OnLocationChanged(Location location)
-        {
-
-            currentLocation = location;
-            if (currentLocation!=null)
-            {
-                ManagerLocation.latitude = currentLocation.Latitude;
-                ManagerLocation.longitude = currentLocation.Longitude;
-                //Check for nearby events
-            }
-        }
-        */
         public void OnLocationChanged(Android.Locations.Location location)
         {
             currentLocation = location;

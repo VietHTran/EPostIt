@@ -268,8 +268,6 @@ namespace EPostIt
             items = new LandmarkViewList();
             landmarkContainer = new StackLayout
             {
-                //HorizontalOptions = LayoutOptions.FillAndExpand,
-                //VerticalOptions = LayoutOptions.FillAndExpand,
                 Spacing = 10,
             };
             if (items.Count == 1)
@@ -433,7 +431,6 @@ namespace EPostIt
             (sender as Button).IsEnabled = false;
             for (int i = landmarkContainer.Children.Count-1; i>=0 ; i--)
             {
-                //((LandmarkView)landmarkContainer.Children[i]).ReCalcDistance();
                 landmarkContainer.Children.RemoveAt(i);
                 items[i + 1].ReCalcDistance();
                 landmarkContainer.Children.Insert(i, items[i + 1]);
