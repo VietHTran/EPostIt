@@ -46,12 +46,6 @@ namespace EPostIt.Droid
         protected override void OnPause()
         {
             base.OnPause();
-            /*
-            if (locationManager != null)
-            {
-                locationManager.RemoveUpdates(this);
-            }
-            */
         }
 
         protected override void OnResume()

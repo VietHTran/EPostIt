@@ -49,5 +49,3 @@ C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\GitHub\EPostIt\EPostIt\EPostIt\
 C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\GitHub\EPostIt\EPostIt\EPostIt\EPostIt\EPostIt\bin\Debug\EPostIt.dll.mdb
 C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\GitHub\EPostIt\EPostIt\EPostIt\EPostIt\EPostIt\obj\Debug\EPostIt.dll.mdb
 C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\GitHub\EPostIt\EPostIt\EPostIt\EPostIt\EPostIt\bin\Debug\EPostIt.dll.mdb
-C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\GitHub\EPostIt\EPostIt\EPostIt\EPostIt\EPostIt\obj\Debug\EPostIt.dll.mdb
-C:\Users\Viet\Desktop\VietOnly\Anonymous\Xamarin\GitHub\EPostIt\EPostIt\EPostIt\EPostIt\EPostIt\bin\Debug\EPostIt.dll.mdb
